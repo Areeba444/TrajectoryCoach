@@ -51,6 +51,7 @@ Only non-wait decisions are written; every event still contributes to summary co
 - Optional OpenAI Responses integration with JSON schema and conservative validation.
 - Provider-error fallback to a deterministic scaffold; a ten-call default API budget.
 - An external Python runtime-weaving demonstration that preserves source and exceptions.
+- Read-only agent tool interface (`coach/tools.py`): trajectory summary, prior interventions, learner reflection and evidence-row check, with argument validation and a call budget. The agent loop that uses these tools is Phase 2 work.
 - Real log replay, ablations, provenance, engineering tests, and project documentation.
 
 The offline policies are deterministic. They do not demonstrate LLM reasoning or prove
@@ -162,7 +163,7 @@ no participants were recruited and no learning outcomes have been measured.
 
 ## Contents
 
-- `coach/`: event engine, policies, provider adapter, CLI
+- `coach/`: event engine, policies, provider adapter, agent tools, CLI
 - `data/`: synthetic demo; attributed authentic-data subset and manifest
 - `results/`: measured replay outputs, ablations, test and demo transcripts
 - `tests/`: deterministic correctness and boundary tests

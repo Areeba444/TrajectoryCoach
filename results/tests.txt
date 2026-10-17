@@ -21,8 +21,16 @@ test_missing_credentials_fail_before_network (test_tasks_and_provider.ContractTe
 test_refusal_is_rejected (test_tasks_and_provider.ContractTests.test_refusal_is_rejected) ... ok
 test_responses_transport_contract (test_tasks_and_provider.ContractTests.test_responses_transport_contract) ... ok
 test_task_boundaries (test_tasks_and_provider.ContractTests.test_task_boundaries) ... ok
+test_call_budget (test_tools.ToolTests.test_call_budget) ... ok
+test_evidence_row_check (test_tools.ToolTests.test_evidence_row_check) ... ok
+test_prior_interventions_and_limit_validation (test_tools.ToolTests.test_prior_interventions_and_limit_validation) ... ok
+test_reflection_is_returned_as_data (test_tools.ToolTests.test_reflection_is_returned_as_data) ... ok
+test_specs_list_every_tool (test_tools.ToolTests.test_specs_list_every_tool) ... ok
+test_summary_matches_engine_and_has_no_outcomes (test_tools.ToolTests.test_summary_matches_engine_and_has_no_outcomes) ... ok
+test_tools_do_not_change_engine_state (test_tools.ToolTests.test_tools_do_not_change_engine_state) ... ok
+test_unknown_tool_learner_and_arguments_are_rejected (test_tools.ToolTests.test_unknown_tool_learner_and_arguments_are_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 23 tests in 0.132s
+Ran 31 tests in 0.019s
 
 OK
