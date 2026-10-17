@@ -1,0 +1,192 @@
+[
+  {
+    "id": 1,
+    "short": "Plan More, Debug Less",
+    "year": "2025",
+    "venue": "AIED (A)",
+    "authors": "T. Phung, H. Choi, M. Wu, A. Singla, and C. Brooks",
+    "title": "Plan More, Debug Less: Applying Metacognitive Theory to AI-Assisted Programming Education",
+    "ref": "in AIED 2025, LNAI 15877, pp. 3-17, 2025.",
+    "url": "https://doi.org/10.1007/978-3-031-98414-3_1",
+    "access": "Published conference paper; full author copy inspected. Base paper.",
+    "summary": "Phung and colleagues investigate how metacognitive hint types relate to help-seeking and programming performance. Their AIMS system offers learner-requested planning, debugging, and optimization hints through JupyterLab, using GPT-4o and a five-hint quota per question. The field study involved 102 students and 14 Python data-science questions. Students requested 725 hints: 258 planning, 411 debugging, and 56 optimization. Median contemplation time was 14.0 minutes for planning and 7.1 minutes for debugging; planning use was associated with better solving performance (p = .013). These are observational associations, not randomized treatment effects. The authors explicitly acknowledge possible confounding by pre-existing self-regulation. A further limitation identified here is that selecting a hint type already requires the awareness the system aims to develop. This makes the paper an appropriate methodological baseline for comparing learner-requested support with trajectory-triggered invitations. Our proposed comparison retains equivalent tasks and assistance budgets, while testing timing separately from prompt wording and measuring subsequent independent learning.",
+    "cells": [
+      "102 learners; Python",
+      "Requested AIMS hints",
+      "Solving; engagement",
+      "Planning association",
+      "Voluntary selection"
+    ]
+  },
+  {
+    "id": 2,
+    "short": "Bridging awareness and behavior",
+    "year": "2026",
+    "venue": "Front. Psychol.",
+    "authors": "X. Hou, Z. Liu, G. Wang, and N. Shi",
+    "title": "Bridging awareness and behavior: decoding implicit metacognitive behaviors in AI-assisted programming via fine-grained log analysis",
+    "ref": "Frontiers in Psychology, vol. 17, art. 1790196, 2026.",
+    "url": "https://doi.org/10.3389/fpsyg.2026.1790196",
+    "access": "Original research; full publisher text inspected.",
+    "summary": "Hou and colleagues examine whether process-oriented AI scaffolds change programming behavior and metacognitive awareness. Their customized Jupyter environment uses behavioral thresholds to trigger non-directive prompts. The randomized study analyzed 122 undergraduates in a Python course, with 62 in the assisted condition and 60 controls. Post-test programming means were 85.2 and 76.5, respectively; the paper reports p < .001 and Cohen's d = .76. These figures are reproduced as reported rather than independently recalculated. Fine-grained logs and an adapted metacognitive inventory provide complementary evidence. The authors identify limited generalizability, indirect cognitive measurement, and the absence of long-term transfer evidence after the 21-day intervention. Our additional concern is that event proxies can be mistaken for direct observations of thinking. The paper directly motivates explicit uncertainty in trajectory explanations. It also prevents us from claiming that threshold-triggered metacognitive prompting is itself novel: the proposed contribution must instead be tested in observability constraints, intervention control, and independent transfer.",
+    "cells": [
+      "122 learners; Python",
+      "Threshold prompts",
+      "MAI; performance",
+      "85.2 vs 76.5",
+      "No delayed transfer"
+    ]
+  },
+  {
+    "id": 3,
+    "short": "Explainable SRL feedback",
+    "year": "2026",
+    "venue": "J. Comput. Assist. Learn.",
+    "authors": "C. C. Y. Yang, M. Li, and A. Y. Q. Huang",
+    "title": "Leveraging Large Language Models to Enhance Self-Regulated Learning in Programming Education With Explainable AI",
+    "ref": "Journal of Computer Assisted Learning, vol. 42, no. 2, e70206, 2026.",
+    "url": "https://doi.org/10.1002/jcal.70206",
+    "access": "Original article; full publisher text inspected.",
+    "summary": "Yang and colleagues combine predictive learning analytics, SHAP explanations, and GPT-4 feedback to support self-regulation. A prior dataset of 516 learners trains the predictive model; the intervention involves a separate cohort of 83 non-STEM undergraduates. Thirty-nine receive individualized reports and 44 form a comparison class. Reading and coding activity are combined with reported learning strategies. For learning-behavior explanations, normalized System Causability Scale scores are .823 for text and .687 for SHAP visualizations. Among 22 learners with complete strategy data, guided dimensions improve by .566 versus .214 for unguided dimensions (p < .001). The intact-class design and incomplete questionnaire coverage limit causal interpretation. The paper also states that raw data and processing code are unavailable for privacy reasons. Our additional distinction is that understandable explanations of predictive features do not demonstrate that those features cause learning. This study motivates human-readable evidence summaries, while our reference implementation avoids presenting behavioral correlations as diagnoses or causal explanations.",
+    "cells": [
+      "83 intervention learners",
+      "SHAP + GPT-4",
+      "SCS; strategy scores",
+      ".823 vs .687 SCS",
+      "Classes; incomplete data"
+    ]
+  },
+  {
+    "id": 4,
+    "short": "Less stress, same learning",
+    "year": "2026",
+    "venue": "Comput. Educ.: AI",
+    "authors": "P. Bassner, B. Lenk-Ostendorf, R. Beinstingel, T. Wasner, and S. Krusche",
+    "title": "Less stress, better scores, same learning: The dissociation of performance and learning in AI-supported programming education",
+    "ref": "Computers and Education: Artificial Intelligence, vol. 10, art. 100537, 2026.",
+    "url": "https://doi.org/10.1016/j.caeai.2025.100537",
+    "access": "Published article verified; institutional abstract inspected. Exact effect estimates unavailable in accessed text.",
+    "summary": "Bassner and colleagues distinguish assisted performance from learning in a three-arm randomized study of 275 introductory programming students. During a 90-minute concurrency exercise, participants used the scaffolded Iris tutor, unrestricted ChatGPT, or traditional web resources without AI. The evaluation combined automated exercise scoring with pre/post knowledge tests, code comprehension, motivation, and cognitive-load measures. Both AI groups achieved higher exercise scores, but neither showed superior knowledge gains or comprehension. Iris alone increased intrinsic motivation. The accessible institutional record reports these directions but does not provide numerical group means or exact effect estimates; none are invented here. This source-access limitation should be retained when presenting the review. Our methodological critique is that one short concurrency session cannot establish long-term effects across programming domains. Nevertheless, the study gives a crucial design constraint: successful assisted task completion must not serve as the sole learning outcome. Our proposed educational evaluation therefore includes a later task completed without AI and reports it separately from intervention-session performance.",
+    "cells": [
+      "275 learners; concurrency",
+      "Iris / ChatGPT / control",
+      "Scores; knowledge",
+      "Performance != learning",
+      "Short session"
+    ]
+  },
+  {
+    "id": 5,
+    "short": "LLM collaborative programming",
+    "year": "2025",
+    "venue": "Humanit. Soc. Sci. Commun.",
+    "authors": "Y.-M. Yan, C.-Q. Chen, Y.-B. Hu, and X.-D. Ye",
+    "title": "LLM-based collaborative programming: impact on students' computational thinking and self-efficacy",
+    "ref": "Humanities and Social Sciences Communications, vol. 12, art. 149, 2025.",
+    "url": "https://doi.org/10.1057/s41599-025-04471-1",
+    "access": "Published research article; full publisher text inspected.",
+    "summary": "Yan and colleagues study LLM support within collaborative programming rather than individual code generation. The analyzed sample contains 82 sixth- and seventh-grade learners transitioning from Scratch to C++. Teams of four work with or without an LLM learning partner, while the instructional design includes problem analysis, implementation, debugging, and evaluation. Computational-thinking post-test means are 81.35 for the experimental group and 73.08 for controls, with a reported small effect (eta squared = .04). Self-efficacy does not differ significantly at post-test (p = .43). The article uses both quasi-experimental and randomized descriptions; this reporting ambiguity should be preserved. Our critique concerns transfer from school teams to university novices, and whether individual-level analyses adequately account for shared team experiences. The study supports retaining collaboration in the G3 refinement. Accordingly, the proposed classroom trial assigns pairs to conditions and assesses independent transfer individually, with pair-level allocation and clustering explicitly reflected in the analysis plan rather than treating every interaction as independent.",
+    "cells": [
+      "82 learners; C++ teams",
+      "LLM partner",
+      "CT; self-efficacy",
+      "CT eta squared .04",
+      "Team dependence"
+    ]
+  },
+  {
+    "id": 6,
+    "short": "Classroom feedback intervention",
+    "year": "2026",
+    "venue": "PMLR 339",
+    "authors": "H. Heickal and A. Lan",
+    "title": "A Classroom Study of LLM-generated Feedback Intervention in Introductory Programming",
+    "ref": "in Impactful and Responsible AI Systems for Education Workshop, PMLR 339, pp. 12-21, 2026.",
+    "url": "https://proceedings.mlr.press/v339/heickal26a.html",
+    "access": "Published workshop research paper; full proceedings PDF inspected.",
+    "summary": "Heickal and Lan compare natural-language hints, generated failing test cases, and no-AI feedback in introductory Python. Their released ProgFeed dataset contains 6,693 submissions from 215 consenting students across 17 labs. Analyses consider correctness transitions, eventual success, and attempts until success. Natural-language feedback is associated with greater eventual success (logistic coefficient .84, p = .004) and a modestly higher success hazard per attempt (hazard ratio 1.09, p = .03). The latter is an attempt-based measure, not elapsed clock time. Immediate improvement differences are not significant (p = .50), showing that conclusions depend on the outcome chosen. The authors discuss assignment and exposure limitations, while generated test validity complicates interpretation. Our additional concern is that eventual exercise completion does not establish independent metacognitive skill. This work motivates separating short-term transitions from later learning and checking feedback quality. Unlike ProgFeed, the chosen Zenodo metadata lacks correctness outcomes, so its replay cannot reproduce these particular success-based analyses or claim equivalent evidence.",
+    "cells": [
+      "215 learners; 17 labs",
+      "Hints / tests / none",
+      "Success; attempts",
+      "HR 1.09 for hints",
+      "Exposure; validity"
+    ]
+  },
+  {
+    "id": 7,
+    "short": "Feedback reliability benchmark",
+    "year": "2025",
+    "venue": "PMLR 273",
+    "authors": "P. Silva and E. Costa",
+    "title": "Assessing Large Language Models for Automated Feedback Generation in Learning Programming Problem Solving",
+    "ref": "in Innovation and Responsibility in AI-Supported Education Workshop, PMLR 273, pp. 116-124, 2025.",
+    "url": "https://proceedings.mlr.press/v273/silva25a.html",
+    "access": "Published workshop research paper; full proceedings PDF inspected.",
+    "summary": "Silva and Costa evaluate whether language models accurately identify and explain reasoning errors in student programs. The benchmark contains 45 Python solutions from five students across five assignments. Four models are compared: GPT-4o, GPT-4o mini, GPT-4-Turbo, and Gemini-1.5-pro. Feedback is inspected for correct localization and explanation as well as misleading or hallucinated claims. Across generated hints, 63% are reported as fully correct and 37% contain some problem. The authors identify the small participant pool, uneven submissions, and prompt dependence as limitations. Our critique is that reliability on a compact code benchmark cannot be assumed for behavioral coaching, particularly when source code is absent. Even so, the work provides evidence that fluent feedback requires independent checking. The proposed system therefore validates response structure, restricts available evidence, and falls back to deterministic prompts on provider errors. These controls reduce specific failure modes but are not claimed to prove semantic correctness; a blinded human review remains necessary for evaluating live model outputs.",
+    "cells": [
+      "45 solutions; 5 students",
+      "Four LLMs",
+      "Feedback correctness",
+      "63% fully correct",
+      "Small benchmark"
+    ]
+  },
+  {
+    "id": 8,
+    "short": "Metacognitive cue generation",
+    "year": "2025",
+    "venue": "Intelligent Textbooks",
+    "authors": "A. Durg, C. Kultur, A. Zhang, and J. Savelka",
+    "title": "LLM-powered Framework for Automatic Generation of Metacognitive Scaffolding Cues for Introductory Programming in Higher Education",
+    "ref": "in Sixth International Workshop on Intelligent Textbooks, CEUR-WS 4010, pp. 25-36, 2025.",
+    "url": "https://ceur-ws.org/Vol-4010/itb25_s1p3.pdf",
+    "access": "Peer-reviewed workshop proceedings verified; full paper inspected.",
+    "summary": "Durg and colleagues generate Understand, Plan, and Reflect cues for introductory programming exercises. Their evaluation combines cue-type classification with a nine-item rubric applied to 126 cues by two authors. The reported Plan-clarity scores differ between reviewers (.72 and .91), and Reflect-depth scores diverge more strongly (.49 and .84). The authors acknowledge weak agreement and the need to improve the rubric. An additional reporting issue identified here is that the text describes 42 classification examples while its confusion-matrix entries sum to 88; those classification percentages are therefore not treated as independently reliable evidence. The study evaluates generated material rather than student learning, so cue quality cannot be equated with educational benefit. It nevertheless provides useful categories for the reference sample and a caution about subjective scoring. Our evaluation design includes rater calibration, independent annotation, and agreement reporting before interpreting prompt-quality differences. Clear distinctions between cue relevance, grounding, and learning outcomes are retained throughout the proposed experimental protocol.",
+    "cells": [
+      "126 generated cues",
+      "Understand / Plan / Reflect",
+      "Rubric; type",
+      "Depth .49 vs .84",
+      "Rater disagreement"
+    ]
+  },
+  {
+    "id": 9,
+    "short": "Instructor-written testing hints",
+    "year": "2025",
+    "venue": "SIGCSE TS",
+    "authors": "J. Perretta, A. DeOrio, A. Guha, and J. Bell",
+    "title": "Instructor-Written Hints as Automated Test Suite Quality Feedback",
+    "ref": "in SIGCSE TS 2025, vol. 1, 2025, doi: 10.1145/3641554.3701866.",
+    "url": "https://doi.org/10.1145/3641554.3701866",
+    "access": "Published conference paper; full author copy inspected.",
+    "summary": "Perretta and colleagues investigate automated delivery of instructor-written hints about faults missed by student test suites. Mutation testing supplies a concrete basis for feedback: students receive guidance about mutants their tests have not detected. The paper describes a controlled comparison across four assignments in two introductory courses, comprising 4,122 students, alongside broader submission and rating analyses. Hint access produces a small statistically significant improvement in detected mutants. In 25% of hint instances, students detect the relevant mutant after one test-suite revision. This outcome is immediate testing progress, not proof of retained skill. Our critique concerns historical-course comparisons, contextual differences among assignments, and the effort needed to author useful mutants and hints. The study is relevant because it establishes a strong non-LLM alternative with verifiable feedback evidence. A research contribution cannot simply assume that generated coaching is superior. The reference package therefore includes an interpretable deterministic baseline, while the educational protocol holds task content and feedback budgets constant across competing approaches.",
+    "cells": [
+      "4,122 learners",
+      "Instructor mutant hints",
+      "Mutants; revisions",
+      "25% one-revision detection",
+      "Context; authoring cost"
+    ]
+  },
+  {
+    "id": 10,
+    "short": "Automation and human oversight",
+    "year": "2025",
+    "venue": "HCI+NLP / ACL",
+    "authors": "G. Pitts, A. P. Hridi, and A. B. Lekshmi Narayanan",
+    "title": "A Survey of LLM-Based Applications in Programming Education: Balancing Automation and Human Oversight",
+    "ref": "in Fourth Workshop on Bridging Human-Computer Interaction and Natural Language Processing, pp. 255-262, 2025.",
+    "url": "https://doi.org/10.18653/v1/2025.hcinlp-1.21",
+    "access": "Published research survey with analytical framework; full proceedings paper inspected.",
+    "summary": "Pitts and colleagues synthesize LLM applications in programming education across formative feedback, assessment, and knowledge modeling. Their review draws on computing-education, HCI, and NLP venues during 2021-2025. Its comparison identifies 20 papers on formative feedback, 14 on assessment, and eight on knowledge modeling. The contribution is an analytical taxonomy and design synthesis, not a new classroom experiment or pooled effect estimate. Human oversight, scaffolding, and alignment with course goals recur as important design considerations. Our critique is that the paper-selection description does not establish an exhaustive systematic review, and heterogeneous evaluations cannot support a universal numerical claim about learning benefits. The review is included as secondary research because the assignment permits analytical frameworks, while the other nine entries provide system or empirical studies. It helps position the proposed coach within feedback and learning analytics. It also motivates teacher inspection of intervention evidence, explicit model limitations, and separate evaluation of automation quality and educational impact rather than treating all programming-assistant applications as equivalent.",
+    "cells": [
+      "42 categorized papers",
+      "Analytical survey",
+      "Taxonomy; synthesis",
+      "20 / 14 / 8 papers",
+      "No pooled effect"
+    ]
+  }
+]

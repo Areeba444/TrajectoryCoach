@@ -1,0 +1,23 @@
+[
+  [
+    "G1",
+    "Intervention timing under limited help-seeking",
+    "Request-driven scaffolds [1] and proactive systems [2] leave a testable comparison: under the same tasks and prompt budget, does trajectory-based invitation timing improve planning quality?",
+    "Compare an AIMS-inspired on-demand condition with proactive invitations. Hold the model, task context and maximum assistance constant. Current replay evaluates only operational behavior.",
+    "RQ1: Does proactive timing improve blinded planning-rubric scores? H1: adjusted mean exceeds the on-demand condition. Target: at least 0.5 points on a 0-4 rubric; a design target, not an observed effect."
+  ],
+  [
+    "G2",
+    "Grounded explanations with incomplete observations",
+    "Reliability failures [7], explanation usability [3], and annotation disagreement [8] motivate a bounded question about evidence fidelity, rather than claiming that explainability itself is new.",
+    "Attach source-row evidence, distinguish missing outcomes from failure, and compare constrained coaching against an unconstrained prompt generator using identical trajectory prefixes.",
+    "RQ2: Does evidence-constrained generation reduce unsupported claims? H2: lower claim-error proportion with no lower relevance rating. Target: <=5% unsupported claims and mean relevance >=3/4 on 100 held-out prefixes."
+  ],
+  [
+    "G3",
+    "Independent transfer after assistance is removed",
+    "Assisted performance can diverge from learning [4]; short-term process improvements [2] do not establish durable transfer. Collaborative settings [5] require attention to team dependence.",
+    "Run a pair-randomized study, then administer an individual no-AI transfer task after seven days. Analyze learning separately from task completion and prompt uptake.",
+    "RQ3: Does trajectory coaching improve delayed independent performance? H3: higher baseline-adjusted transfer score than on-demand support. Target: estimated standardized effect >=0.30 with interval reported; a small pilot cannot confirm a small effect."
+  ]
+]
