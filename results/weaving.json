@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "source_modified": false,
+  "probe_events": [
+    {
+      "probe": "return",
+      "function": "mean"
+    },
+    {
+      "probe": "duration",
+      "function": "mean",
+      "seconds": 5.5000127758830786e-06
+    },
+    {
+      "probe": "exception",
+      "function": "mean",
+      "type": "ZeroDivisionError"
+    },
+    {
+      "probe": "duration",
+      "function": "mean",
+      "seconds": 1.1500000255182385e-05
+    }
+  ]
+}

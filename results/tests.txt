@@ -1,0 +1,28 @@
+test_absence_and_focus_are_not_active_work (test_coach.CoachTests.test_absence_and_focus_are_not_active_work) ... ok
+test_chronology (test_coach.CoachTests.test_chronology) ... ok
+test_cooldown_and_response_are_independent (test_coach.CoachTests.test_cooldown_and_response_are_independent) ... ok
+test_equal_timestamp_preserves_order (test_coach.CoachTests.test_equal_timestamp_preserves_order) ... ok
+test_future_events_do_not_change_prior_decision (test_coach.CoachTests.test_future_events_do_not_change_prior_decision) ... ok
+test_idle_time_is_capped (test_coach.CoachTests.test_idle_time_is_capped) ... ok
+test_invalid_event_and_date (test_coach.CoachTests.test_invalid_event_and_date) ... ok
+test_no_cross_learner_leakage (test_coach.CoachTests.test_no_cross_learner_leakage) ... ok
+test_observable_triggers_without_diagnosis (test_coach.CoachTests.test_observable_triggers_without_diagnosis) ... ok
+test_prompt_budget (test_coach.CoachTests.test_prompt_budget) ... ok
+test_provider_failure_falls_back (test_coach.CoachTests.test_provider_failure_falls_back) ... ok
+test_reflection_boundaries (test_coach.CoachTests.test_reflection_boundaries) ... ok
+test_response_validation (test_coach.CoachTests.test_response_validation) ... ok
+test_session_reset (test_coach.CoachTests.test_session_reset) ... ok
+test_task_switch_clears_window (test_coach.CoachTests.test_task_switch_clears_window) ... ok
+test_window_expiry (test_coach.CoachTests.test_window_expiry) ... ok
+test_incomplete_download_cannot_claim_complete_subset (test_extraction.ExtractionTests.test_incomplete_download_cannot_claim_complete_subset) ... ok
+test_noncontiguous_learner_order_is_rejected (test_extraction.ExtractionTests.test_noncontiguous_learner_order_is_rejected) ... ok
+test_sort_preserves_ties_source_rows_and_complete_boundary (test_extraction.ExtractionTests.test_sort_preserves_ties_source_rows_and_complete_boundary) ... ok
+test_missing_credentials_fail_before_network (test_tasks_and_provider.ContractTests.test_missing_credentials_fail_before_network) ... ok
+test_refusal_is_rejected (test_tasks_and_provider.ContractTests.test_refusal_is_rejected) ... ok
+test_responses_transport_contract (test_tasks_and_provider.ContractTests.test_responses_transport_contract) ... ok
+test_task_boundaries (test_tasks_and_provider.ContractTests.test_task_boundaries) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.132s
+
+OK

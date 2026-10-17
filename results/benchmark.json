@@ -1,0 +1,132 @@
+[
+  {
+    "mode": "rule",
+    "input": "zenodo_24_students.csv.gz",
+    "events": 2598189,
+    "students": 24,
+    "phases": {
+      "wait": 2566236,
+      "plan": 7860,
+      "evaluate": 3791,
+      "monitor": 20302
+    },
+    "reasons": {
+      "No trigger": 2566236,
+      "First observed edit in this task/session": 7860,
+      "Submission observed; correctness unknown": 3791,
+      "Repeated executions within the observation window": 20302
+    },
+    "event_types": {
+      "focus_gained": 133587,
+      "focus_lost": 129975,
+      "text_insert": 1721905,
+      "text_remove": 560981,
+      "run": 32486,
+      "submit": 3791,
+      "text_paste": 15464
+    },
+    "runtime_seconds": 243.393,
+    "prompts_per_1000_events": 12.298,
+    "learning_effect": "NOT MEASURED",
+    "live_provider": false
+  },
+  {
+    "mode": "adaptive",
+    "input": "zenodo_24_students.csv.gz",
+    "events": 2598189,
+    "students": 24,
+    "phases": {
+      "wait": 2586249,
+      "plan": 7845,
+      "evaluate": 1213,
+      "monitor": 2882
+    },
+    "reasons": {
+      "No trigger": 2566236,
+      "First observed edit in this task/session": 7845,
+      "Waiting for learner response": 4785,
+      "Submission observed; correctness unknown": 1213,
+      "Cooldown active": 2172,
+      "Repeated executions within the observation window": 2882,
+      "Task/session prompt budget exhausted": 13056
+    },
+    "event_types": {
+      "focus_gained": 133587,
+      "focus_lost": 129975,
+      "text_insert": 1721905,
+      "text_remove": 560981,
+      "run": 32486,
+      "submit": 3791,
+      "text_paste": 15464
+    },
+    "runtime_seconds": 238.005,
+    "prompts_per_1000_events": 4.596,
+    "learning_effect": "NOT MEASURED",
+    "live_provider": false
+  },
+  {
+    "mode": "no_memory",
+    "input": "zenodo_24_students.csv.gz",
+    "events": 2598189,
+    "students": 24,
+    "phases": {
+      "wait": 2583113,
+      "plan": 7845,
+      "evaluate": 1469,
+      "monitor": 5762
+    },
+    "reasons": {
+      "No trigger": 2566236,
+      "First observed edit in this task/session": 7845,
+      "Cooldown active": 16877,
+      "Submission observed; correctness unknown": 1469,
+      "Repeated executions within the observation window": 5762
+    },
+    "event_types": {
+      "focus_gained": 133587,
+      "focus_lost": 129975,
+      "text_insert": 1721905,
+      "text_remove": 560981,
+      "run": 32486,
+      "submit": 3791,
+      "text_paste": 15464
+    },
+    "runtime_seconds": 239.411,
+    "prompts_per_1000_events": 5.803,
+    "learning_effect": "NOT MEASURED",
+    "live_provider": false
+  },
+  {
+    "mode": "no_cooldown",
+    "input": "zenodo_24_students.csv.gz",
+    "events": 2598189,
+    "students": 24,
+    "phases": {
+      "wait": 2585652,
+      "plan": 7848,
+      "evaluate": 1496,
+      "monitor": 3193
+    },
+    "reasons": {
+      "No trigger": 2566236,
+      "First observed edit in this task/session": 7848,
+      "Waiting for learner response": 5109,
+      "Submission observed; correctness unknown": 1496,
+      "Repeated executions within the observation window": 3193,
+      "Task/session prompt budget exhausted": 14307
+    },
+    "event_types": {
+      "focus_gained": 133587,
+      "focus_lost": 129975,
+      "text_insert": 1721905,
+      "text_remove": 560981,
+      "run": 32486,
+      "submit": 3791,
+      "text_paste": 15464
+    },
+    "runtime_seconds": 246.82,
+    "prompts_per_1000_events": 4.825,
+    "learning_effect": "NOT MEASURED",
+    "live_provider": false
+  }
+]

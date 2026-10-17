@@ -1,0 +1,41 @@
+TrajectoryCoach | SYNTHETIC EVENT WALKTHROUGH
+
+2026-10-17 10:00:00  focus_gained
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:00:05  text_insert
+  rule     -> plan     | First observed edit in this task/session
+  Before the next step, state your goal and one input-output example you expect.
+  adaptive -> plan     | First observed edit in this task/session
+  Before the next step, state your goal and one input-output example you expect.
+2026-10-17 10:00:15  run
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:00:25  text_remove
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:00:35  run
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:00:45  text_insert
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:01:00  run
+  rule     -> monitor  | Repeated executions within the observation window
+  The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?
+  adaptive -> wait     | Waiting for learner response
+2026-10-17 10:03:10  run
+  rule     -> monitor  | Repeated executions within the observation window
+  The recent window contains 4 runs. What hypothesis are you checking, and what result would support it?
+  adaptive -> monitor  | Repeated executions within the observation window
+  The recent window contains 4 runs. What hypothesis are you checking, and what result would support it?
+2026-10-17 10:03:30  text_insert
+  rule     -> wait     | No trigger
+  adaptive -> wait     | No trigger
+2026-10-17 10:07:00  submit
+  rule     -> evaluate | Submission observed; correctness unknown
+  A submission was recorded. What evidence would you use to check correctness, including an edge case?
+  adaptive -> evaluate | Submission observed; correctness unknown
+  A submission was recorded. What evidence would you use to check correctness, including an edge case?
+
+No bugs, test outcomes, or learning gains were inferred from this trace.
