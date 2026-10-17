@@ -1,0 +1,11 @@
+student,part,exercise,eventType,timestamp,timeToDeadline
+demo,1,1,focus_gained,2026-10-17 10:00:00,86400
+demo,1,1,text_insert,2026-10-17 10:00:05,86395
+demo,1,1,run,2026-10-17 10:00:15,86385
+demo,1,1,text_remove,2026-10-17 10:00:25,86375
+demo,1,1,run,2026-10-17 10:00:35,86365
+demo,1,1,text_insert,2026-10-17 10:00:45,86355
+demo,1,1,run,2026-10-17 10:01:00,86340
+demo,1,1,run,2026-10-17 10:03:10,86210
+demo,1,1,text_insert,2026-10-17 10:03:30,86190
+demo,1,1,submit,2026-10-17 10:07:00,85980

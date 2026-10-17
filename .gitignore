@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+data/IDE_logs.csv
+results/local/
+.venv/
+results/*/decisions.jsonl
