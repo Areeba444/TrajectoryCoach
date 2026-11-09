@@ -21,10 +21,11 @@ RESULTS = ROOT / 'results' / 'phase2'
 LOGS = ROOT / 'logs'
 
 
-def smoke(model, temperature, seed):
+def smoke(model, temperature, seed, prompt_version='v1'):
     from coach.groq_provider import GroqProvider
     from coach.core import Decision
-    p = GroqProvider(model=model, temperature=temperature, seed=seed, max_calls=4)
+    p = GroqProvider(model=model, temperature=temperature, seed=seed, max_calls=4,
+                     prompt_version=prompt_version)
     baseline = Decision('monitor', 'Repeated executions within the observation window',
                         'placeholder', {'student': '2', 'part': '1', 'exercise': '3',
                                         'source_row': 1234, 'time': 0, 'runs': 4, 'edits': 51,
@@ -44,11 +45,12 @@ def smoke(model, temperature, seed):
 
 
 def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
-         split='test', gate_seconds=20, min_evidence=5, price_in=None, price_out=None):
+         split='test', gate_seconds=20, min_evidence=5, price_in=None, price_out=None,
+         prompt_version='v1'):
     # The full system is gate_seconds=20 plus min_evidence=5 (see run_experiments.FULL).
     # A run with another floor is saved under a suffixed name so it cannot overwrite
     # the headline result; min_evidence=0 is the '- evidence floor' contrast.
-    tag = '' if min_evidence == 5 else f'_floor{min_evidence}'
+    tag = ('' if min_evidence == 5 else f'_floor{min_evidence}') + ('' if prompt_version == 'v1' else f'_{prompt_version}')
     from coach.groq_provider import GroqProvider
     RESULTS.mkdir(parents=True, exist_ok=True)
     LOGS.mkdir(parents=True, exist_ok=True)
@@ -72,7 +74,7 @@ def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
           f'every {step}th for the model runs', flush=True)
 
     con = GroqProvider(model=model, temperature=temperature, seed=seed,
-                       max_calls=10 * len(chosen) + 50, constrained=True, use_tools=True)
+                       max_calls=10 * len(chosen) + 50, constrained=True, use_tools=True, prompt_version=prompt_version)
     unc = GroqProvider(model=model, temperature=temperature, seed=seed,
                        max_calls=2 * len(chosen) + 10, constrained=False, use_tools=False)
     con.key = unc.key = con.key  # same credential, separate budgets
@@ -113,7 +115,7 @@ def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
     out = {
         'split': split, 'sampled_prefixes': len(chosen), 'model': con.model,
         'temperature': temperature, 'seed': seed, 'gate_seconds': gate_seconds,
-        'min_evidence': min_evidence, 'delivered_scaffolds_in_split': total,
+        'min_evidence': min_evidence, 'prompt_version': prompt_version, 'delivered_scaffolds_in_split': total,
         'constrained': grounding.score(con_records),
         'unconstrained': grounding.score(unc_records),
         'efficiency_constrained': con.efficiency(price_in, price_out),
@@ -152,10 +154,11 @@ if __name__ == '__main__':
     ap.add_argument('--split', default='test', choices=['test', 'dev'])
     ap.add_argument('--gate-seconds', type=int, default=20, dest='gate_seconds')
     ap.add_argument('--min-evidence', type=int, default=5, dest='min_evidence')
+    ap.add_argument('--prompt-version', default='v1', choices=['v1', 'v2'], dest='prompt_version')
     ap.add_argument('--price-in', type=float, dest='price_in')
     ap.add_argument('--price-out', type=float, dest='price_out')
     a = vars(ap.parse_args())
     if a.pop('smoke'):
-        smoke(a['model'], a['temperature'], a['seed'])
+        smoke(a['model'], a['temperature'], a['seed'], a['prompt_version'])
     else:
         main(**a)

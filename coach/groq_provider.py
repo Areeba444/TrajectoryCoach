@@ -24,7 +24,7 @@ ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
 MAX_RETRIES = 6
 DEFAULT_MODEL = 'openai/gpt-oss-20b'   # Llama 3.x left the Groq free tier in Aug 2026
 
-SYSTEM = (
+SYSTEM_V1 = (
     'You are a programming reflection coach embedded in an IDE. You see only an event '
     'trajectory: keystrokes, runs, focus changes and submissions. The trajectory never '
     'reveals whether code compiled, whether tests passed, what the bug is, or how the '
@@ -38,23 +38,49 @@ SYSTEM = (
     'Reply with JSON only: {"phase":...,"prompt":...,"reason":...,"evidence_row":...}'
 )
 
+# v2 was written after inspecting the v1 live run, where the checker flagged
+# outcome words ("working", "works", "wrong") in the model's own questions. It adds a
+# vocabulary rule to the instructions only. The checker and validator are unchanged.
+SYSTEM_V2 = SYSTEM_V1.replace(
+    'Ask one short metacognitive question',
+    'Do not describe the state of the learner\'s code or progress at all: no words about '
+    'it working, failing, being right, being wrong, or being fixed. Instead ask about '
+    'their intention, their plan, or how they could check their own work. '
+    'Ask one short metacognitive question')
+SYSTEMS = {'v1': SYSTEM_V1, 'v2': SYSTEM_V2}
+SYSTEM = SYSTEM_V1
+
 FREE = (
     'You are a programming coach embedded in an IDE. Here is what the system has observed '
     'about a learner. Write a short coaching message to them.'
 )
 
 
+def _extract_json(text):
+    """Parse a JSON object from a reply that may carry prose or code fences."""
+    text = (text or '').strip()
+    try:
+        return json.loads(text)
+    except ValueError:
+        a, b = text.find('{'), text.rfind('}')
+        if a < 0 or b <= a:
+            raise
+        return json.loads(text[a:b + 1])
+
+
 class GroqProvider:
     """Bounded, instrumented client. One instance per experiment run."""
 
     def __init__(self, model=None, max_calls=200, temperature=0.0, seed=0,
-                 constrained=True, use_tools=True, timeout=45):
+                 constrained=True, use_tools=True, timeout=45, prompt_version='v1'):
         self.key = os.environ.get('GROQ_API_KEY')
         if not self.key:
             raise ValueError('Set GROQ_API_KEY in the environment; never put a key in a file')
         self.model = model or os.environ.get('GROQ_MODEL') or DEFAULT_MODEL
         self.max_calls, self.temperature, self.seed = max_calls, temperature, seed
         self.constrained, self.use_tools, self.timeout = constrained, use_tools, timeout
+        self.system = SYSTEMS[prompt_version]
+        self.prompt_version = prompt_version
         self.calls = 0
         self._tool_support = None
         self._reasoning_param = None
@@ -132,14 +158,18 @@ class GroqProvider:
         context = dict(context)
         context.setdefault('evidence_row', baseline.evidence.get('source_row'))
         box = ToolBox(coach, max_calls=6) if (coach is not None and self.use_tools) else None
-        messages = [{'role': 'system', 'content': SYSTEM},
+        messages = [{'role': 'system', 'content': self.system},
                     {'role': 'user', 'content': json.dumps(context)}]
         trace = {'student': baseline.evidence.get('student'),
                  'source_row': baseline.evidence.get('source_row'),
                  'authorised_phase': baseline.phase, 'steps': []}
         body = {'model': self.model, 'messages': messages, 'temperature': self.temperature,
-                'seed': self.seed, 'max_tokens': 400,
-                'response_format': {'type': 'json_object'}}
+                'seed': self.seed, 'max_tokens': 400}
+        # The API refuses tool calling together with JSON mode, so JSON mode is used
+        # only when no tools are offered; with tools the schema is enforced by the
+        # validator after the reply is parsed.
+        if box is None or self._tool_support is False:
+            body['response_format'] = {'type': 'json_object'}
         if box is not None and self._tool_support is not False:
             body['tools'] = [{'type': 'function',
                               'function': {k: v for k, v in spec.items() if k != 'type'}}
@@ -153,6 +183,7 @@ class GroqProvider:
                 if 'tools' in body and self._tool_support is not False:
                     self._tool_support = False
                     body.pop('tools', None)
+                    body['response_format'] = {'type': 'json_object'}
                     trace['steps'].append({'step': 'tools_disabled', 'detail': str(exc)[:200]})
                     payload = self._post(body)
                 else:
@@ -182,7 +213,7 @@ class GroqProvider:
         text = msg.get('content') or ''
         trace['tool_calls'] = len([s for s in trace['steps'] if s['step'] == 'tool'])
         try:
-            decision = validate_output(json.loads(text), baseline)
+            decision = validate_output(_extract_json(text), baseline)
             trace['accepted'] = True
         except Exception as exc:
             trace['accepted'] = False

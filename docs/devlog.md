@@ -261,3 +261,27 @@ threshold was adjusted after seeing the numbers.
 
 *Reproduce:* `python -m scripts.run_llm_experiments --prefixes 100`
 
+---
+
+## 2026-11-09 (night) — Live G2 run on the full system
+
+**Run.** `openai/gpt-oss-20b` on Groq, temperature 0, seed 0, 100 prefixes
+sampled every 20th from the 2,038 scaffolds the full system delivers on the
+test split. `error_count` 0, so no constrained prompt was a fallback.
+
+**Result.** Unsupported-claim rate 0.14 (14/100) constrained against 0.53
+(53/100) unconstrained, same model and contexts. The first run, made without
+the evidence floor, gave 0.39 against 0.72 and is kept as
+`e4_g2_grounding_floor0.json`. The H2 target of 5% was not met.
+
+**What the flagged prompts are.** All 14 are `outcome` hits from the word list:
+"working" in "a working solution" (10), "works" in "confirm your solution
+works" (2) and "going wrong" (2). The first 12 are generic goal wording, not a
+claim about this learner. The last two presuppose a defect the log cannot show.
+The 100 replies contain only 33 distinct prompts, so one template drives much of
+the rate. The checker was not changed and the headline stays at the measured
+0.14; the manual reading is reported beside it and was done by the two authors.
+
+**Also.** Zero tool calls: the model does not accept tool calling together with
+JSON mode, so the tool path was not exercised live.
+
