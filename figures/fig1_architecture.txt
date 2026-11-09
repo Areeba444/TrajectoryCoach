@@ -1,0 +1,54 @@
+================================================================================
+Figure 1: TrajectoryCoach System Architecture (Pipeline Diagram)
+================================================================================
+
+ [Event Stream (Zenodo 24 Students)]
+         │
+         │  (Keystroke, File change, Execution, Submit events)
+         ▼
+ ┌──────────────────────────────────────────────────────────────┐
+ │                  Telemetry Ingestion Engine                  │
+ │  • Chronological sorting                                     │
+ │  • Non-contiguous order detection                            │
+ │  • Capped idle time & session resets                         │
+ └──────────────────────────────┬───────────────────────────────┘
+                                │
+                                ▼
+ ┌──────────────────────────────────────────────────────────────┐
+ │                Rolling Window Feature Extractor              │
+ │  • Window size (60s)                                         │
+ │  • Activity counters (edits, idle, runs)                     │
+ │  • Phase classification (plan, monitor, evaluate, submit)    │
+ └──────────────────────────────┬───────────────────────────────┘
+                                │
+                                ▼
+ ┌──────────────────────────────────────────────────────────────┐
+ │                 G1: Timing Gate (TimingGate)                 │
+ │  • GATE_SECONDS = 45s (Cognitive Pause Detection)            │
+ │  • PAUSE_HORIZON = 300s (Drop on Stale Horizon)              │
+ │  • BURST_THRESHOLD = 15s (Inhibit burst interruption)        │
+ │  • Hold triggered scaffold until genuine pause occurs        │
+ │  • Supersede prior pending scaffold if newer event arrives   │
+ └──────────────────────────────┬───────────────────────────────┘
+                                │
+                                ▼
+ ┌──────────────────────────────────────────────────────────────┐
+ │                G2: Grounding & Evidence Floor                │
+ │  • THIN_EVIDENCE_THRESHOLD = 5 window events                 │
+ │  • Forbidden pattern detection (no hallucinated grades, etc.)│
+ │  • Validates prompt before release                           │
+ └──────────────────────────────┬───────────────────────────────┘
+                                │
+                                ▼
+ ┌──────────────────────────────────────────────────────────────┐
+ │                 Decision Engine & Providers                  │
+ │  • Rule Policy (Deterministic Fallback / Offline)            │
+ │  • Groq Provider (LLaMA-3-70B via Tool Calling Contract)     │
+ │  • Response Validation & Cooldown Enforcer                   │
+ └──────────────────────────────┬───────────────────────────────┘
+                                │
+                                ▼
+                   [Released Metacognitive Scaffold]
+                       (Zero Burst Interruptions)
+
+================================================================================

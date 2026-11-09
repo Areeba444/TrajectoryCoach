@@ -20,8 +20,8 @@ python scripts/make_splits.py                     # writes data/splits.json
 python -m scripts.run_experiments --split test    # E1, E2, E3, E5, E6
 python -m scripts.run_transfer_study              # E4 / G3
 python -m scripts.run_failure_analysis            # 6 failure categories
-python -m scripts.make_tables                     # LaTeX tables to stdout
-python -m scripts.make_figures                    # figures/ (requires matplotlib)
+python -m scripts.make_tables                     # writes paper/tables/*.tex and prints to stdout
+python -m scripts.make_figures                    # writes figures/*.txt (and PNGs if matplotlib installed)
 ```
 
 Live CLI (file-watch mode):
