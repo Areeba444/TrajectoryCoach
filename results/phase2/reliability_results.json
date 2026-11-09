@@ -1,0 +1,28 @@
+{
+  "aligned_items": 30,
+  "rater_minahil": {
+    "timing_mean": 3.467,
+    "timing_sd": 0.562,
+    "relevance_mean": 3.3,
+    "relevance_sd": 0.586
+  },
+  "rater_areeba": {
+    "timing_mean": 3.467,
+    "timing_sd": 0.618,
+    "relevance_mean": 3.467,
+    "relevance_sd": 0.499
+  },
+  "pooled": {
+    "timing_mean": 3.467,
+    "relevance_mean": 3.383
+  },
+  "linearly_weighted_kappa": {
+    "timing": 0.3284,
+    "relevance": 0.3426
+  },
+  "h2_target_relevance_ge_3_0": {
+    "target": 3.0,
+    "achieved": 3.383,
+    "status": "MET"
+  }
+}

@@ -1,31 +1,31 @@
 row_id,student,part,exercise,source_row,phase,prompt,timing,relevance
-1,2,3,1,318178,plan,"Before the next step, state your goal and one input-output example you expect.",,
-2,2,1,30,294176,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-3,23,2,8,2546679,monitor,"The recent window contains 5 runs. What hypothesis are you checking, and what result would support it?",,
-4,2,5,19,374751,plan,"Before the next step, state your goal and one input-output example you expect.",,
-5,20,3,17,2100209,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",,
-6,2,3,17,312467,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",,
-7,2,5,1,356527,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",,
-8,20,2,5,2085904,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-9,11,4,10,976545,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-10,2,4,15,349180,plan,"Before the next step, state your goal and one input-output example you expect.",,
-11,2,4,15,355251,monitor,"The recent window contains 7 runs. What hypothesis are you checking, and what result would support it?",,
-12,5,5,18,685010,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-13,5,7,11,723938,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-14,2,7,6,425481,monitor,"The recent window contains 5 runs. What hypothesis are you checking, and what result would support it?",,
-15,2,4,14,353730,plan,"Before the next step, state your goal and one input-output example you expect.",,
-16,23,3,16,2578784,plan,"Before the next step, state your goal and one input-output example you expect.",,
-17,14,5,11,1583270,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-18,2,6,17,399719,plan,"Before the next step, state your goal and one input-output example you expect.",,
-19,2,7,11,436725,plan,"Before the next step, state your goal and one input-output example you expect.",,
-20,14,3,4,1547114,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-21,20,6,15,2144325,monitor,"The recent window contains 6 runs. What hypothesis are you checking, and what result would support it?",,
-22,14,1,28,1530370,monitor,"The recent window contains 4 runs. What hypothesis are you checking, and what result would support it?",,
-23,14,3,14,1552184,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-24,2,7,2,407720,plan,"Before the next step, state your goal and one input-output example you expect.",,
-25,20,2,19,2090996,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-26,20,5,18,2129633,plan,"Before the next step, state your goal and one input-output example you expect.",,
-27,17,1,2,1931814,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",,
-28,23,3,14,2574455,plan,"Before the next step, state your goal and one input-output example you expect.",,
-29,5,1,30,645080,monitor,"The recent window contains 8 runs. What hypothesis are you checking, and what result would support it?",,
-30,2,3,17,312810,monitor,"The recent window contains 6 runs. What hypothesis are you checking, and what result would support it?",,
+1,2,3,1,318178,plan,"Before the next step, state your goal and one input-output example you expect.",4,3
+2,2,1,30,294176,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+3,23,2,8,2546679,monitor,"The recent window contains 5 runs. What hypothesis are you checking, and what result would support it?",3,4
+4,2,5,19,374751,plan,"Before the next step, state your goal and one input-output example you expect.",3,3
+5,20,3,17,2100209,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",3,3
+6,2,3,17,312467,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",4,3
+7,2,5,1,356527,monitor,"The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",3,3
+8,20,2,5,2085904,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+9,11,4,10,976545,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",3,3
+10,2,4,15,349180,plan,"Before the next step, state your goal and one input-output example you expect.",3,2
+11,2,4,15,355251,monitor,"The recent window contains 7 runs. What hypothesis are you checking, and what result would support it?",4,4
+12,5,5,18,685010,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+13,5,7,11,723938,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",3,3
+14,2,7,6,425481,monitor,"The recent window contains 5 runs. What hypothesis are you checking, and what result would support it?",4,3
+15,2,4,14,353730,plan,"Before the next step, state your goal and one input-output example you expect.",3,3
+16,23,3,16,2578784,plan,"Before the next step, state your goal and one input-output example you expect.",4,3
+17,14,5,11,1583270,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+18,2,6,17,399719,plan,"Before the next step, state your goal and one input-output example you expect.",2,3
+19,2,7,11,436725,plan,"Before the next step, state your goal and one input-output example you expect.",3,4
+20,14,3,4,1547114,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",3,3
+21,20,6,15,2144325,monitor,"The recent window contains 6 runs. What hypothesis are you checking, and what result would support it?",4,4
+22,14,1,28,1530370,monitor,"The recent window contains 4 runs. What hypothesis are you checking, and what result would support it?",3,3
+23,14,3,14,1552184,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+24,2,7,2,407720,plan,"Before the next step, state your goal and one input-output example you expect.",3,2
+25,20,2,19,2090996,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,4
+26,20,5,18,2129633,plan,"Before the next step, state your goal and one input-output example you expect.",3,3
+27,17,1,2,1931814,evaluate,"A submission was recorded. What evidence would you use to check correctness, including an edge case?",4,3
+28,23,3,14,2574455,plan,"Before the next step, state your goal and one input-output example you expect.",4,3
+29,5,1,30,645080,monitor,"The recent window contains 8 runs. What hypothesis are you checking, and what result would support it?",4,4
+30,2,3,17,312810,monitor,"The recent window contains 6 runs. What hypothesis are you checking, and what result would support it?",3,3
