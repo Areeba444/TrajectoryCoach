@@ -104,7 +104,7 @@ Configuration & Scaffolds & Interruption & Pause-aligned & Coverage \\
 ''')
 
 
-def table_efficiency(exp, llm):
+def table_efficiency(exp, llm, llm_v1=None):
     runs = exp['runs']
     rows = []
     for label, key in (('Rule baseline', 'E1_baseline_rule'),
@@ -117,21 +117,24 @@ def table_efficiency(exp, llm):
             f"{r.get('prompts_per_1000_events', 0):.2f}"]) + r' \\')
     det = '\n'.join(rows)
     if llm:
-        e = llm['efficiency_constrained']
-        u = llm['efficiency_unconstrained']
         model = llm['model'].replace('_', r'\_')
-        live = (r'\midrule' + '\n'
-                r'\multicolumn{5}{l}{\textit{Live model: %s, temperature %s, seed %s}} \\' % (
-                    model, llm['temperature'], llm['seed']) + '\n'
-                + ' & '.join(['Constrained generation', str(e['api_calls']),
-                              f"{e['total_tokens']:,}".replace(',', '\\,'),
-                              num(e['mean_latency_seconds'], 2),
-                              num(e['rejection_rate'], 3)]) + r' \\' + '\n'
-                + ' & '.join(['Unconstrained generation', str(u['api_calls']),
-                              f"{u['total_tokens']:,}".replace(',', '\\,'),
-                              num(u['mean_latency_seconds'], 2), '--']) + r' \\' + '\n'
-                + r'\multicolumn{5}{l}{\footnotesize Columns for the live rows are: API '
-                  r'calls, total tokens, mean latency (s), validator rejection rate.} \\')
+        def live_row(label, run, key, rej=True):
+            e = run[key]
+            return ' & '.join([label, str(e['api_calls']),
+                               f"{e['total_tokens']:,}".replace(',', '\\,'),
+                               num(e['mean_latency_seconds'], 2),
+                               num(e['rejection_rate'], 3) if rej else '--']) + r' \\'
+        lines = [r'\midrule',
+                 r'\multicolumn{5}{l}{\textit{Live model: %s, temperature %s, seed %s}} \\' % (
+                     model, llm['temperature'], llm['seed'])]
+        if llm_v1:
+            lines.append(live_row('Constrained, prompt v1', llm_v1, 'efficiency_constrained'))
+        lines.append(live_row('Constrained, prompt v2' if llm_v1 else 'Constrained generation',
+                              llm, 'efficiency_constrained'))
+        lines.append(live_row('Unconstrained generation', llm, 'efficiency_unconstrained', False))
+        lines.append(r'\multicolumn{5}{l}{\footnotesize Columns for the live rows are: API '
+                     r'calls, total tokens, mean latency (s), validator rejection rate.} \\')
+        live = '\n'.join(lines)
     else:
         live = (r'\midrule' + '\n'
                 r'\multicolumn{5}{l}{\textit{Live model runs: %s}} \\' % MISSING)
@@ -172,7 +175,7 @@ Category & Cases & Share of delivered \\
 ''')
 
 
-def gap_rows(exp, g3, llm):
+def gap_rows(exp, g3, llm, llm_v1=None):
     runs = exp['runs']
     prop = runs.get('E3_proposed_full', {})
     base = runs.get('E2_base_paper_pause', {})
@@ -182,6 +185,8 @@ def gap_rows(exp, g3, llm):
     g1_verdict = 'Partially'
     if llm:
         g2_ours = num(llm['constrained']['unsupported_rate'])
+        if llm_v1:
+            g2_ours = f"{g2_ours} (v2); {num(llm_v1['constrained']['unsupported_rate'])} (v1)"
         g2_base = num(llm['unconstrained']['unsupported_rate'])
         rate = llm['constrained']['unsupported_rate']
         g2_verdict = 'Fully' if rate is not None and rate <= 0.05 else 'Partially'
@@ -201,7 +206,7 @@ def gap_rows(exp, g3, llm):
         ('Gap 2: grounding', 'Evidence floor, JSON schema, validator, read-only tools',
          'Share of scaffolds containing an unsupported claim',
          f'{g2_base} (unconstrained, same model)', g2_ours, g2_verdict,
-         'Deterministic screen, not a semantic verifier'),
+         'Deterministic screen, not a semantic verifier; v2 prompt written after v1 flags'),
         ('Gap 3: transfer', 'Delayed no-AI transfer task and four-point rubric',
          'Spearman $r$ with latent skill, simulated learners',
          f'{g3_base} (assisted completion)', g3_ours, g3_verdict,
@@ -272,18 +277,22 @@ def main():
     exp = load('experiments_test.json')
     g3 = load('e4_g3_transfer.json')
     fa = load('failure_analysis.json')
-    llm = load('e4_g2_grounding.json')
+    llm_v1 = load('e4_g2_grounding.json')
+    llm_v2 = load('e4_g2_grounding_v2.json')
+    llm = llm_v2 or llm_v1
+    if not llm_v2:
+        llm_v1 = None
     if exp:
         write('main.tex', table_main(exp))
         write('ablation.tex', table_ablation(exp))
-        write('efficiency.tex', table_efficiency(exp, llm))
+        write('efficiency.tex', table_efficiency(exp, llm, llm_v1))
     if fa:
         write('failures.tex', table_failures(fa))
     h = load('human_ratings.json')
     if h:
         write('ratings.tex', table_ratings(h))
     if exp and g3:
-        rows = gap_rows(exp, g3, llm)
+        rows = gap_rows(exp, g3, llm, llm_v1)
         write('gaps.tex', table_gaps(rows))
         (ROOT / 'docs' / 'gap_resolution.md').write_text(readme_gaps(rows), encoding='utf-8')
         print('wrote', ROOT / 'docs' / 'gap_resolution.md')

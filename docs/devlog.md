@@ -285,3 +285,42 @@ the rate. The checker was not changed and the headline stays at the measured
 **Also.** Zero tool calls: the model does not accept tool calling together with
 JSON mode, so the tool path was not exercised live.
 
+
+---
+
+## 2026-11-10 — Prompt v2 and the second live G2 run
+
+**Why.** The v1 run missed the 5% target (0.14). All 14 flags were outcome
+words ("working", "works", "wrong") in the model's own questions, and the
+model's tool path had never run live because the API refuses tool calling
+together with JSON mode.
+
+**What changed (and what did not).** `SYSTEM_V2` adds one instruction: do not
+describe the state of the learner's code or progress; ask about intention,
+plan or self-checking. With tools offered, JSON mode is now off and the JSON is
+parsed from the reply and passed through the same validator. The checker, the
+validator, the sample and the seed are unchanged. v2 was written after reading
+which words v1 was flagged for, so it is a documented fix, not a fresh result.
+v1 stays in the repo (`e4_g2_grounding.json`).
+
+**Failed attempt.** The first v2 test run hit the Groq daily token limit. Failed
+calls had been scored as deterministic fallback text, which is always clean, so
+the run showed a false 0/100 (only 22 unconstrained replies came back) and a
+false `tool_calling_supported: false` (any API error switched tools off). Both
+bugs were fixed: a rate limit now stops the run and writes no results, and tools
+are disabled only on an HTTP 400. The invalid result files were deleted. Batch
+mode with a checkpoint (`--max-new`, resume, `--fresh`) was added so a run can
+span the rate limits.
+
+**Run.** Dev check first (20 prefixes, 0 flagged, 0 rejections), then the test
+run once, in four batches. `error_count` 0.
+
+**Result.** Constrained 0/100 flagged, unconstrained 55/100 (v1 run: 14/100 and
+53/100). Validator rejections 0. Tool calls 0 with `tool_calling_supported`
+true: the tools were offered and the model never called one. The 100 constrained
+replies contain 26 distinct prompts (v1: 33); the commonest appears 24 times.
+The 95% upper bound for 0 of 100 is about 3.6%.
+
+**Read this with.** One model, one seed, one 100-prefix sample from one split; a
+word-list checker, so 0 flagged means none caught; v2 designed after inspecting
+v1's flags; low prompt diversity.

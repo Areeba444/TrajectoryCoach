@@ -96,6 +96,8 @@ Live-model runs, which need network and a key:
 ```bash
 python -m scripts.run_llm_experiments --smoke          # one call, checks the key
 python -m scripts.run_llm_experiments --prefixes 100   # E4 / G2 and live E6
+python -m scripts.run_llm_experiments --prefixes 100 --prompt-version v2 --sleep 3 --max-new 25
+                                                       # prompt v2, in batches; rerun the same command to continue
 python -m scripts.make_tables                          # refresh the tables
 ```
 
