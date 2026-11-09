@@ -1,0 +1,11 @@
+{"step": 1, "type": "event", "student": "2", "event": "text_insert", "time": 1458000000, "source_row": 102}
+{"step": 2, "type": "decision", "phase": "plan", "reason": "First observed edit in this task/session", "prompt": "Before the next step, state your goal and one input-output example you expect.", "provider": "deterministic", "evidence": {"student": "2", "part": "1", "exercise": "1", "session": 1, "source_row": 102, "window_events": 1, "runs": 0, "edits": 1, "submissions": 0, "outcomes_observed": false}}
+{"step": 3, "type": "gate", "action": "hold", "student": "2", "gate_seconds": 45, "triggered_at": 1458000000}
+{"step": 4, "type": "event", "student": "2", "event": "run", "time": 1458000030, "source_row": 115}
+{"step": 5, "type": "gate", "action": "tick", "student": "2", "gap": 30, "result": "still_held"}
+{"step": 6, "type": "event", "student": "2", "event": "run", "time": 1458000050, "source_row": 122}
+{"step": 7, "type": "gate", "action": "tick", "student": "2", "gap": 20, "result": "still_held"}
+{"step": 8, "type": "event", "student": "2", "event": "text_insert", "time": 1458000160, "source_row": 135}
+{"step": 9, "type": "gate", "action": "tick", "student": "2", "gap": 110, "result": "released"}
+{"step": 10, "type": "scaffold_delivered", "student": "2", "phase": "plan", "prompt": "Before the next step, state your goal and one input-output example you expect.", "pause_gap": 110, "interrupted": false, "outcome": "released"}
+

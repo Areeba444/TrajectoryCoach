@@ -1,0 +1,2 @@
+{"note": "Agent trace logs are written here by run_experiments.py and run_failure_analysis.py. The .gitignore excludes decisions.jsonl from large runs. Representative sample traces below are stored as agent_trace_sample_*.jsonl"}
+

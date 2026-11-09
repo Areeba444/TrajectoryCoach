@@ -57,9 +57,17 @@ class TrajectoryCoach:
     Thresholds are engineering defaults, not validated diagnoses of cognition.
     Session gaps > 30 minutes reset local state. A task switch clears its window.
     Equal timestamps keep source order; backwards time is rejected.
+
+    Phase 2 additions:
+      gate_seconds    – G1: hold scaffold until pause >= gate_seconds (0 = disabled)
+      min_evidence    – G2: suppress scaffold if fewer events in window
+      use_timing_gate – toggle G1 integration (False for ablation E5-6)
+      use_evidence_floor – toggle G2 integration (False for ablation E5-5)
     """
     def __init__(self, mode='adaptive', window_seconds=300, cooldown=180,
-                 max_prompts=3, run_threshold=3, provider=None):
+                 max_prompts=3, run_threshold=3, provider=None,
+                 gate_seconds=45, min_evidence=5,
+                 use_timing_gate=False, use_evidence_floor=False):
         if mode not in {'rule','adaptive','no_memory','no_cooldown'}:
             raise ValueError('Unknown mode')
         if min(window_seconds,run_threshold,max_prompts)<=0 or cooldown<0:
@@ -68,6 +76,16 @@ class TrajectoryCoach:
         self.cooldown, self.max_prompts, self.run_threshold = cooldown,max_prompts,run_threshold
         self.provider = provider
         self.states = {}
+        self.gate_seconds = gate_seconds
+        self.min_evidence = min_evidence
+        self.use_timing_gate = use_timing_gate
+        self.use_evidence_floor = use_evidence_floor
+
+        # G1: timing gate (lazy import to avoid circular dependency)
+        self._gate = None
+        if use_timing_gate and gate_seconds > 0:
+            from .timing import TimingGate
+            self._gate = TimingGate(gate_seconds=gate_seconds)
 
     def reflect(self, student, text, now):
         state=self.states.get(str(student))
@@ -115,6 +133,14 @@ class TrajectoryCoach:
             phase,reason='monitor','Repeated executions within the observation window'
         if event.event in EDIT: s.first_edit=False
         s.last_time,s.last_event=event.time,event.event
+
+        # G2: evidence floor check (before adaptive suppression)
+        if self.use_evidence_floor and phase != 'wait':
+            from .grounding import evidence_floor_met
+            if not evidence_floor_met(evidence):
+                phase = 'wait'
+                reason = f'Thin evidence: fewer than {self.min_evidence} events in window'
+
         if self.mode!='rule' and phase!='wait':
             if self.mode!='no_memory' and s.task_prompts>=self.max_prompts:
                 phase,reason='wait','Task/session prompt budget exhausted'
@@ -122,6 +148,7 @@ class TrajectoryCoach:
                 phase,reason='wait','Waiting for learner response'
             elif self.mode!='no_cooldown' and s.last_prompt is not None and event.time-s.last_prompt<self.cooldown:
                 phase,reason='wait','Cooldown active'
+
         prompts={
             'plan':'Before the next step, state your goal and one input-output example you expect.',
             'monitor':f"The recent window contains {counts['run']} runs. What hypothesis are you checking, and what result would support it?",
@@ -137,6 +164,28 @@ class TrajectoryCoach:
                 d=self.provider.generate(d,context)
             except Exception as exc:
                 d.provider='fallback:'+type(exc).__name__
+
+        # G1: timing gate integration
+        if self._gate is not None:
+            if d.phase != 'wait':
+                # A new juncture — supersede any held scaffold, then hold this one
+                self._gate.supersede(event.student)
+                self._gate.hold(event.student, d, event.time)
+                # Return wait while gate holds the scaffold
+                wait_d = Decision('wait', 'Gate: awaiting cognitive pause', '', evidence)
+                return wait_d
+            else:
+                # Tick the gate; may release a held scaffold
+                released = self._gate.tick(event.student, event.time)
+                if released is not None:
+                    # A held scaffold is now released
+                    if released.phase != 'wait':
+                        s.task_prompts += 1
+                        s.last_prompt = event.time
+                        s.pending_until = event.time + 120
+                        s.recent_decisions.append({'phase': released.phase, 'reason': released.reason})
+                    return released
+
         if d.phase!='wait':
             s.task_prompts+=1; s.last_prompt=event.time; s.pending_until=event.time+120
             s.recent_decisions.append({'phase':d.phase,'reason':d.reason})

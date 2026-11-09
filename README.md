@@ -1,6 +1,68 @@
 # TrajectoryCoach: Evidence-Grounded Metacognitive Scaffolding for Collaborative Programming
 
-**AI4015 Agentic Artificial Intelligence, Fall 2026, Phase 1.** Project seed G3-11 (project code G3-11).
+**AI4015 Agentic Artificial Intelligence, Fall 2026 — Phase 2.** Project G3-11.
+
+| | |
+|---|---|
+| Group members | Minahil Kashif (23i-0554, group head), Areeba Javed (23i-0570) |
+| Supervisor | Naeem Tareen |
+| Base paper | Phung et al., *Plan More, Debug Less*, AIED 2025 |
+| Repository | https://github.com/Areeba444/TrajectoryCoach |
+
+---
+
+## Phase 2 — Quick start
+
+```powershell
+# Install nothing — Python 3.10+ stdlib only
+python -m unittest discover -s tests -v          # 49 tests
+python scripts/make_splits.py                     # writes data/splits.json
+python -m scripts.run_experiments --split test    # E1, E2, E3, E5, E6
+python -m scripts.run_transfer_study              # E4 / G3
+python -m scripts.run_failure_analysis            # 6 failure categories
+python -m scripts.make_tables                     # LaTeX tables to stdout
+python -m scripts.make_figures                    # figures/ (requires matplotlib)
+```
+
+Live CLI (file-watch mode):
+```powershell
+python -m coach.cli --input data/demo.csv --replay
+python -m coach.cli --input data/demo.csv --replay --groq   # requires GROQ_API_KEY
+```
+
+LLM grounding experiment (requires GROQ_API_KEY):
+```powershell
+$env:GROQ_API_KEY = 'gsk_...'
+python -m scripts.run_llm_experiments --smoke     # 1 prefix smoke test
+python -m scripts.run_llm_experiments --prefixes 100
+```
+
+---
+
+## Gap-Resolution Table
+
+| Gap | Method / component | Metric | Base paper result | Our result | Addressed? |
+|---|---|---|---|---|---|
+| **G1** Intervention timing | Timing gate (`coach/timing.py`): hold scaffold until 45s inactivity pause; cluster-bootstrapped CI by learner | Interruption rate ↓ / Pause-aligned rate ↑ | On-demand pause: 0.1273 interruption, 0.3554 pause-aligned | **0.0206** interruption, **0.4485** pause-aligned | **Fully** |
+| **G2** Grounding with incomplete observations | Evidence floor (`coach/grounding.py`): suppress scaffold if < 5 events in window; forbidden-pattern screen | Unsupported-claim rate ≤ 5% | Unconstrained LLM: not measured | Thin-evidence category eliminated; pattern violations tracked | **Partially** (LLM run needs GROQ_API_KEY) |
+| **G3** Transfer after assistance removed | Simulated learner study (`coach/simulator.py`): 120 learners × 3 conditions × 5 seeds | Spearman r (transfer ~ latent skill) | No transfer measure in base paper | transfer r = 0.974 all conditions; sensitivity: n_tasks ≥ 4 needed | **Partially** (simulated, not real learners) |
+
+---
+
+## Changes since Phase 1
+
+| Phase 1 promise | What happened instead | Where recorded |
+|---|---|---|
+| VS Code extension as end product | CLI session watching a real file; event schema unchanged, editor front end is a drop-in | README, devlog iter 1 |
+| Two educator raters, 0–4 timing scale | Log-derived timing measures + 30-item author rating (single condition) | devlog iter 6 |
+| Blind cross-condition human rating | Abandoned — delivery offset visible in timestamp; noted in devlog | devlog iter 6 |
+| Seven-day human transfer study | Instrument validation on simulated learners only | README, devlog iter 5 |
+| OpenAI provider | Groq adapter (`coach/groq_provider.py`); OpenAI path kept in `coach/provider.py` | README |
+| Held-out learners 24+ from Zenodo | Split within existing 24 learners, rule fixed in advance | `data/splits.json`, devlog iter 1 |
+
+---
+
+**AI4015 Agentic Artificial Intelligence, Fall 2026, Phase 1 baseline.** Project seed G3-11 (project code G3-11).
 
 | | |
 |---|---|

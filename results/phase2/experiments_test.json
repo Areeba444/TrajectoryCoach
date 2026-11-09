@@ -1,0 +1,254 @@
+{
+  "split": "test",
+  "n_events": 726897,
+  "e1_rule_baseline": {
+    "scaffold_count": 10687,
+    "runtime_seconds": 49.235,
+    "peak_memory_mb": 431.618,
+    "events_per_second": 14763.8,
+    "scaffolds_delivered": 2769,
+    "total_junctures": 10687,
+    "interruption_rate": 0.0,
+    "pause_aligned_rate": 0.2591,
+    "coverage": 0.2591,
+    "deliberation_delta": 2003.9884
+  },
+  "e2_on_demand": [
+    {
+      "scaffolds_delivered": 821,
+      "total_junctures": 821,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 12602.7357,
+      "model": "pause",
+      "seed": 0,
+      "total_requests": 821
+    },
+    {
+      "scaffolds_delivered": 821,
+      "total_junctures": 821,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 12602.7357,
+      "model": "pause",
+      "seed": 1,
+      "total_requests": 821
+    },
+    {
+      "scaffolds_delivered": 821,
+      "total_junctures": 821,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 12602.7357,
+      "model": "pause",
+      "seed": 2,
+      "total_requests": 821
+    },
+    {
+      "scaffolds_delivered": 290,
+      "total_junctures": 500,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.58,
+      "coverage": 0.58,
+      "deliberation_delta": 82.4621,
+      "model": "stuck",
+      "seed": 0,
+      "total_requests": 500
+    },
+    {
+      "scaffolds_delivered": 290,
+      "total_junctures": 500,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.58,
+      "coverage": 0.58,
+      "deliberation_delta": 82.4621,
+      "model": "stuck",
+      "seed": 1,
+      "total_requests": 500
+    },
+    {
+      "scaffolds_delivered": 290,
+      "total_junctures": 500,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.58,
+      "coverage": 0.58,
+      "deliberation_delta": 82.4621,
+      "model": "stuck",
+      "seed": 2,
+      "total_requests": 500
+    },
+    {
+      "scaffolds_delivered": 333,
+      "total_junctures": 500,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.666,
+      "coverage": 0.666,
+      "deliberation_delta": 10657.2402,
+      "model": "uniform",
+      "seed": 0,
+      "total_requests": 500
+    },
+    {
+      "scaffolds_delivered": 307,
+      "total_junctures": 467,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.6574,
+      "coverage": 0.6574,
+      "deliberation_delta": 10107.6971,
+      "model": "uniform",
+      "seed": 1,
+      "total_requests": 467
+    },
+    {
+      "scaffolds_delivered": 325,
+      "total_junctures": 486,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.6687,
+      "coverage": 0.6687,
+      "deliberation_delta": 13607.9077,
+      "model": "uniform",
+      "seed": 2,
+      "total_requests": 486
+    }
+  ],
+  "e3_full_system": {
+    "name": "full_system",
+    "desc": "Full system (E3)",
+    "scaffold_count": 1328,
+    "interruption_rate": 0.0,
+    "pause_aligned_rate": 1.0,
+    "coverage": 1.0,
+    "deliberation_delta": 89.2214,
+    "runtime_seconds": 56.109,
+    "peak_memory_mb": 666.593,
+    "bootstrap_ci": {
+      "interruption_rate": [
+        0.0,
+        0.0
+      ],
+      "pause_aligned_rate": [
+        1.0,
+        1.0
+      ],
+      "coverage": [
+        1.0,
+        1.0
+      ],
+      "deliberation_delta": [
+        85.2127,
+        95.442
+      ]
+    }
+  },
+  "e5_ablations": [
+    {
+      "name": "full_system",
+      "desc": "Full system (E3)",
+      "scaffold_count": 1328,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 89.2214,
+      "runtime_seconds": 56.109,
+      "peak_memory_mb": 666.593,
+      "bootstrap_ci": {
+        "interruption_rate": [
+          0.0,
+          0.0
+        ],
+        "pause_aligned_rate": [
+          1.0,
+          1.0
+        ],
+        "coverage": [
+          1.0,
+          1.0
+        ],
+        "deliberation_delta": [
+          85.2127,
+          95.442
+        ]
+      }
+    },
+    {
+      "name": "no_cooldown",
+      "desc": "No cooldown",
+      "scaffold_count": 1360,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 88.6074,
+      "runtime_seconds": 57.422,
+      "peak_memory_mb": 666.581
+    },
+    {
+      "name": "no_budget",
+      "desc": "No episode budget",
+      "scaffold_count": 1649,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 88.6173,
+      "runtime_seconds": 54.109,
+      "peak_memory_mb": 666.482
+    },
+    {
+      "name": "no_response_wait",
+      "desc": "No response wait",
+      "scaffold_count": 1649,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 88.6173,
+      "runtime_seconds": 52.515,
+      "peak_memory_mb": 666.474
+    },
+    {
+      "name": "no_evidence_floor",
+      "desc": "No evidence floor (G2 disabled)",
+      "scaffold_count": 1655,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 1.0,
+      "coverage": 1.0,
+      "deliberation_delta": 1912.7154,
+      "runtime_seconds": 56.016,
+      "peak_memory_mb": 666.266
+    },
+    {
+      "name": "no_timing_gate",
+      "desc": "No timing gate (G1 disabled)",
+      "scaffold_count": 2364,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.5427,
+      "coverage": 0.5427,
+      "deliberation_delta": 86.6656,
+      "runtime_seconds": 56.11,
+      "peak_memory_mb": 667.275
+    },
+    {
+      "name": "phase1_policy",
+      "desc": "Phase 1 policy (original defaults)",
+      "scaffold_count": 3828,
+      "interruption_rate": 0.0,
+      "pause_aligned_rate": 0.4572,
+      "coverage": 0.4572,
+      "deliberation_delta": 3118.5606,
+      "runtime_seconds": 52.046,
+      "peak_memory_mb": 667.067
+    }
+  ],
+  "e6_efficiency": {
+    "events_per_second": 13895.4,
+    "runtime_seconds": 52.312,
+    "peak_memory_mb": 666.582,
+    "n_events": 726897,
+    "rule_baseline": {
+      "runtime_seconds": 49.235,
+      "events_per_second": 14763.8,
+      "peak_memory_mb": 431.618
+    }
+  }
+}

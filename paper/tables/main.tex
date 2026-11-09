@@ -1,0 +1,17 @@
+\begin{table}[t]
+\caption{Main system results on the test split (8 learners, 726\,897 events).
+$\Delta_{\text{delib}}$ = mean seconds of deliberation time before scaffold delivery;
+lower is better for E3 (gate holds until pause).
+Bootstrap 95\,\% CI for E3 shown in parentheses.}
+\label{tab:main}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+System & Scaffolds & Pause-aligned & Interrupted & $\Delta_{\text{delib}}$ (s) \\
+\midrule
+E1 Rule baseline & 10,687 & 0.2591 & 0.0000 & 2004.0 \\
+E2 On-demand (pause) & 821 & 1.0000 & 0.0000 & 12602.7 \\
+E3 Full system & 1,328 & 1.0000 & 0.0000 & 89.2 (85.2--95.4) \\
+\bottomrule
+\end{tabular}
+\end{table}

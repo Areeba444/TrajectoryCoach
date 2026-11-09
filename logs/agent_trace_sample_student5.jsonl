@@ -1,0 +1,12 @@
+{"step": 1, "type": "event", "student": "5", "event": "text_insert", "time": 1458100000, "source_row": 2201}
+{"step": 2, "type": "decision", "phase": "plan", "reason": "First observed edit in this task/session", "prompt": "Before the next step, state your goal and one input-output example you expect.", "provider": "deterministic", "evidence": {"student": "5", "part": "2", "exercise": "3", "session": 1, "source_row": 2201, "window_events": 1, "runs": 0, "edits": 1, "submissions": 0, "outcomes_observed": false}}
+{"step": 3, "type": "gate", "action": "hold", "student": "5", "gate_seconds": 45, "triggered_at": 1458100000}
+{"step": 4, "type": "event", "student": "5", "event": "run", "time": 1458100010, "source_row": 2208}
+{"step": 5, "type": "gate", "action": "tick", "student": "5", "gap": 10, "result": "still_held"}
+{"step": 6, "type": "event", "student": "5", "event": "run", "time": 1458100018, "source_row": 2215}
+{"step": 7, "type": "gate", "action": "tick", "student": "5", "gap": 8, "result": "still_held"}
+{"step": 8, "type": "event", "student": "5", "event": "run", "time": 1458100025, "source_row": 2225}
+{"step": 9, "type": "decision", "phase": "monitor", "reason": "Repeated executions within the observation window", "prompt": "The recent window contains 3 runs. What hypothesis are you checking?", "provider": "deterministic", "evidence": {"student": "5", "part": "2", "exercise": "3", "source_row": 2225, "window_events": 4, "runs": 3, "edits": 1, "submissions": 0, "outcomes_observed": false}}
+{"step": 10, "type": "gate", "action": "supersede", "student": "5", "note": "Newer juncture (monitor) superseded held scaffold (plan)"}
+{"step": 11, "type": "failure", "category": "superseded_while_held", "student": "5", "original_phase": "plan", "triggered_at": 1458100000, "superseded_at": 1458100025}
+

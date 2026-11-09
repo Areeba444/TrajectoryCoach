@@ -1,0 +1,195 @@
+% TrajectoryCoach — Phase 2 Research Paper
+% AI4015 Agentic Artificial Intelligence, Fall 2026
+% Project G3-11
+%
+% Compile with: pdflatex main.tex (on Overleaf, compiler: pdfLaTeX)
+% Upload paper/ AND figures/ to Overleaf.
+%
+% IMPORTANT: All \todo{} markers must be replaced by the authors in their own words.
+% AI-generated prose is not allowed (see Deliverable C requirements).
+
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{todonotes}
+
+% Tables are \input from generated files — never retype numbers by hand.
+% Run python -m scripts.make_tables to regenerate.
+
+\begin{document}
+
+\title{Trajectory-Aware Metacognitive Scaffolding:\\
+Evidence-Grounded, Pause-Timed Interventions in CS1 Programming Education}
+
+\author{
+  \IEEEauthorblockN{Minahil Kashif}
+  \IEEEauthorblockA{
+    \textit{FAST-NUCES, Islamabad}\\
+    Project G3-11, AI4015\\
+    23i-0554\\
+    minahil.kashif@nu.edu.pk
+  }
+  \and
+  \IEEEauthorblockN{Areeba Javed}
+  \IEEEauthorblockA{
+    \textit{FAST-NUCES, Islamabad}\\
+    Project G3-11, AI4015\\
+    23i-0570\\
+    areeba.javed@nu.edu.pk
+  }
+}
+
+\maketitle
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+\todo[inline]{Write last. 150--250 words. Problem, what you built, main
+numbers, contribution. No learning claims. Use: 0.0206 vs 0.1273 vs 0.6567;
+coverage cost; null behavioural result; 0.974 transfer r.}
+\end{abstract}
+
+\begin{IEEEkeywords}
+metacognitive scaffolding, programming education, timing gate, evidence grounding, transfer
+\end{IEEEkeywords}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+\todo[inline]{Cognitive offloading; why plan/monitor/evaluate matter; three
+gaps as research questions; bulleted contributions. Cite base paper + at least
+4 others from refs.bib.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Related Work}
+\label{sec:related}
+\todo[inline]{Phase 1 literature review rewritten by THEME, not paper-by-paper.
+Five themes, each ending with what is missing. Use all 11 verified refs.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Problem Formulation}
+\label{sec:problem}
+\todo[inline]{Event stream definition; four event types; what is NOT observable
+(correctness, tests, code, affect); RQ1--3 and H1--3; where a measure changed
+and why.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Proposed System}
+\label{sec:system}
+\todo[inline]{Walk through Fig.~\ref{fig:architecture}. Subsections: state,
+policy, agent + tools, provider contract, then one per gap component (G1 timing
+gate, G2 evidence floor, G3 transfer instrument). Gate stats: 3,269 held /
+2,038 released / 1,060 superseded / 171 dropped.}
+
+\begin{figure}[htbp]
+  \centering
+  % \includegraphics[width=\columnwidth]{../figures/fig1_architecture.pdf}
+  \caption{System architecture. \todo{Replace placeholder with actual figure.}}
+  \label{fig:architecture}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Experimental Setup}
+\label{sec:setup}
+\todo[inline]{Dataset (Leinonen \& Hellas 2022, doi:10.5281/zenodo.6903968),
+split rule (index~\% 3 == 2 $\to$ test), model string, temperature 0, seeds,
+3 runs for stochastic. State plainly that E2 is your adaptation, not reproduced
+numbers. 726,897 test events / 966 learner-question units / 10,687 decision
+points.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Evaluation Methodology}
+\label{sec:methodology}
+\todo[inline]{One sentence + formula per measure; cluster bootstrap over
+learners; juncture precision is circular by construction; the replay caveat
+(no learner ever saw a scaffold).}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+\todo[inline]{Table~\ref{tab:main}, Fig.~\ref{fig:tradeoff}, then one
+subsection per gap. Include coverage trade-off (5.8$\times$ lower than rule
+baseline) in main text, not only in Limitations.}
+
+\begin{table}[htbp]
+  \caption{Main Results (Test Split)}
+  \label{tab:main}
+  % \input{tables/main.tex}
+  \todo[inline]{Run make\_tables.py and \textbackslash input the generated file.}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  % \includegraphics[width=\columnwidth]{../figures/fig2_tradeoff.pdf}
+  \caption{Interruption rate vs coverage across conditions.}
+  \label{fig:tradeoff}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Ablation and Comparative Analysis}
+\label{sec:ablation}
+\todo[inline]{Table~\ref{tab:ablation}, Fig.~\ref{fig:ablation}. Gate carries
+everything: 0.0206 $\to$ 0.2690 $\to$ 0.6567. Response wait never binds
+(identical rows). Say so explicitly.}
+
+\begin{table}[htbp]
+  \caption{Ablation Study (Test Split)}
+  \label{tab:ablation}
+  % \input{tables/ablation.tex}
+  \todo[inline]{Insert generated ablation table.}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  % \includegraphics[width=\columnwidth]{../figures/fig3_ablation.pdf}
+  \caption{Interruption rate across ablation variants.}
+  \label{fig:ablation}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Failure Analysis}
+\label{sec:failures}
+\todo[inline]{Table~\ref{tab:failures}, Fig.~\ref{fig:failures}, every
+category with cause and fix, 2 successes + 2 failures with real traces.
+9.32\% failure rate; 466/1,205 submissions suppressed.}
+
+\begin{table}[htbp]
+  \caption{Failure Type Analysis (Full System, Test Split)}
+  \label{tab:failures}
+  % \input{tables/failures.tex}
+  \todo[inline]{Insert generated failures table.}
+\end{table}
+
+\begin{figure}[htbp]
+  \centering
+  % \includegraphics[width=\columnwidth]{../figures/fig5_failures.pdf}
+  \caption{Failure type distribution.}
+  \label{fig:failures}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Limitations and Threats to Validity}
+\label{sec:limitations}
+\todo[inline]{Include all 9 honesty points from PHASE2\_PLAN.md Part 8:
+replay caveat, E2 reconstruction, circular precision, pattern-screen limits,
+simulated transfer, self-rating conflict, 8-learner test set, coverage
+trade-off, two unkept Phase 1 promises.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+\todo[inline]{3--4 sentences: main findings + future work. Future: reserved
+submission budget slot; real longitudinal transfer study; VS Code extension.}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
+

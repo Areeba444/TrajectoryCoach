@@ -1,1 +1,13 @@
-# Runtime and tests use only Python 3.10+ standard library.
+# TrajectoryCoach — Phase 2 dependencies
+#
+# Core runtime: Python 3.10+ standard library only.
+# No third-party packages are required to run the agent, replay experiments,
+# or execute the full test suite (python -m unittest discover -s tests).
+#
+# Optional — only needed for figure generation (make_figures.py):
+# matplotlib>=3.7
+
+# No required packages — stdlib only.
+# If you want to generate matplotlib figures, install:
+#   pip install matplotlib
+

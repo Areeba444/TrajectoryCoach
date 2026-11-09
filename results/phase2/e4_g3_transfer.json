@@ -1,0 +1,152 @@
+{
+  "conditions": [
+    {
+      "condition": "unassisted",
+      "runs": [
+        {
+          "condition": "unassisted",
+          "seed": 0,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9775,
+          "assisted_completion_r": 0.709
+        },
+        {
+          "condition": "unassisted",
+          "seed": 1,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9694,
+          "assisted_completion_r": 0.6769
+        },
+        {
+          "condition": "unassisted",
+          "seed": 2,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9745,
+          "assisted_completion_r": 0.6153
+        },
+        {
+          "condition": "unassisted",
+          "seed": 3,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9725,
+          "assisted_completion_r": 0.6487
+        },
+        {
+          "condition": "unassisted",
+          "seed": 4,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9776,
+          "assisted_completion_r": 0.5231
+        }
+      ],
+      "mean_transfer_r": 0.9743,
+      "mean_assisted_r": 0.6346
+    },
+    {
+      "condition": "on_demand",
+      "runs": [
+        {
+          "condition": "on_demand",
+          "seed": 0,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9775,
+          "assisted_completion_r": 0.6974
+        },
+        {
+          "condition": "on_demand",
+          "seed": 1,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9694,
+          "assisted_completion_r": 0.6528
+        },
+        {
+          "condition": "on_demand",
+          "seed": 2,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9745,
+          "assisted_completion_r": 0.615
+        },
+        {
+          "condition": "on_demand",
+          "seed": 3,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9725,
+          "assisted_completion_r": 0.664
+        },
+        {
+          "condition": "on_demand",
+          "seed": 4,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9776,
+          "assisted_completion_r": 0.5938
+        }
+      ],
+      "mean_transfer_r": 0.9743,
+      "mean_assisted_r": 0.6446
+    },
+    {
+      "condition": "trajectory",
+      "runs": [
+        {
+          "condition": "trajectory",
+          "seed": 0,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9775,
+          "assisted_completion_r": 0.7274
+        },
+        {
+          "condition": "trajectory",
+          "seed": 1,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9694,
+          "assisted_completion_r": 0.672
+        },
+        {
+          "condition": "trajectory",
+          "seed": 2,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9745,
+          "assisted_completion_r": 0.633
+        },
+        {
+          "condition": "trajectory",
+          "seed": 3,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9725,
+          "assisted_completion_r": 0.7013
+        },
+        {
+          "condition": "trajectory",
+          "seed": 4,
+          "n_learners": 120,
+          "transfer_spearman_r": 0.9776,
+          "assisted_completion_r": 0.681
+        }
+      ],
+      "mean_transfer_r": 0.9743,
+      "mean_assisted_r": 0.6829
+    }
+  ],
+  "sensitivity": [
+    {
+      "n_tasks": 2,
+      "spearman_r": 0.9313,
+      "sd": 0.01
+    },
+    {
+      "n_tasks": 4,
+      "spearman_r": 0.9596,
+      "sd": 0.0048
+    },
+    {
+      "n_tasks": 6,
+      "spearman_r": 0.9737,
+      "sd": 0.0041
+    },
+    {
+      "n_tasks": 8,
+      "spearman_r": 0.979,
+      "sd": 0.0048
+    }
+  ]
+}

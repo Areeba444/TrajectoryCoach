@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Ablation study (E5): effect of removing individual components on the test split.
+Full system is repeated for reference.}
+\label{tab:ablation}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Variant & Scaffolds & Pause-aligned & Interrupted & $\Delta_{\text{delib}}$ (s) \\
+\midrule
+Full system (E3) & 1,328 & 1.0000 & 0.0000 & 89.2 \\
+No cooldown & 1,360 & 1.0000 & 0.0000 & 88.6 \\
+No episode budget & 1,649 & 1.0000 & 0.0000 & 88.6 \\
+No response wait & 1,649 & 1.0000 & 0.0000 & 88.6 \\
+No evidence floor (G2 disabled) & 1,655 & 1.0000 & 0.0000 & 1912.7 \\
+No timing gate (G1 disabled) & 2,364 & 0.5427 & 0.0000 & 86.7 \\
+Phase 1 policy (original defaults) & 3,828 & 0.4572 & 0.0000 & 3118.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
