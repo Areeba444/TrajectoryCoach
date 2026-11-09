@@ -232,3 +232,32 @@ These were observed and deliberately left, with reasons.
 - **The VS Code extension promised in Phase 1 was not built.** The delivered
   interface is a command-line session that watches a real file on disk. The
   event schema is unchanged, so an editor front end remains a drop-in.
+
+---
+
+## 2026-11-09 (evening) — First live G2 run used the wrong system
+
+**Observed.** The first live Groq run (`openai/gpt-oss-20b`, temperature 0,
+seed 0, 100 prefixes) reported 2,804 delivered scaffolds on the test split.
+The full system delivers 2,038. 2,804 is the `- evidence floor` ablation.
+`scripts/run_llm_experiments.py` built its engine with the timing gate but
+without `min_evidence=5`, so the sample included the thin-window scaffolds the
+evidence floor exists to remove.
+
+**Result of that run (kept, relabelled).** Unsupported-claim rate 0.39 (39/100)
+constrained against 0.72 (72/100) unconstrained. The 5% target in H2 was not
+met. It is the `- evidence floor` contrast for G2, not the headline.
+
+**Also observed.** `tool_calling_supported` came back false and tool calls were
+zero: this model does not accept tool calling together with JSON mode, so the
+adapter dropped the tools. The live run therefore did not exercise the
+read-only tools. This is reported as a limitation.
+
+**Change.** The script now takes `--min-evidence` (default 5, the full
+system). A run with another floor is saved under a suffixed name
+(`e4_g2_grounding_floor0.json`, `logs/g2_*_floor0.jsonl`) so it cannot overwrite
+the headline file. The checker and the validator were not touched, so no
+threshold was adjusted after seeing the numbers.
+
+*Reproduce:* `python -m scripts.run_llm_experiments --prefixes 100`
+

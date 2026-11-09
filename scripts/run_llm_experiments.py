@@ -44,13 +44,18 @@ def smoke(model, temperature, seed):
 
 
 def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
-         split='test', gate_seconds=20, price_in=None, price_out=None):
+         split='test', gate_seconds=20, min_evidence=5, price_in=None, price_out=None):
+    # The full system is gate_seconds=20 plus min_evidence=5 (see run_experiments.FULL).
+    # A run with another floor is saved under a suffixed name so it cannot overwrite
+    # the headline result; min_evidence=0 is the '- evidence floor' contrast.
+    tag = '' if min_evidence == 5 else f'_floor{min_evidence}'
     from coach.groq_provider import GroqProvider
     RESULTS.mkdir(parents=True, exist_ok=True)
     LOGS.mkdir(parents=True, exist_ok=True)
 
     print('pass 1: finding candidate prefixes ...', flush=True)
-    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds)
+    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds,
+                             min_evidence=min_evidence)
     candidates = []
     for e in iter_events(split):
         d = engine.observe(e)
@@ -73,7 +78,8 @@ def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
     con.key = unc.key = con.key  # same credential, separate budgets
 
     print('pass 2: generating ...', flush=True)
-    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds)
+    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds,
+                             min_evidence=min_evidence)
     con_records, unc_records, index = [], [], 0
     errors = []
     for e in iter_events(split):
@@ -107,18 +113,19 @@ def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
     out = {
         'split': split, 'sampled_prefixes': len(chosen), 'model': con.model,
         'temperature': temperature, 'seed': seed, 'gate_seconds': gate_seconds,
+        'min_evidence': min_evidence, 'delivered_scaffolds_in_split': total,
         'constrained': grounding.score(con_records),
         'unconstrained': grounding.score(unc_records),
         'efficiency_constrained': con.efficiency(price_in, price_out),
         'efficiency_unconstrained': unc.efficiency(price_in, price_out),
         'errors': errors[:50], 'error_count': len(errors),
     }
-    (RESULTS / 'e4_g2_grounding.json').write_text(json.dumps(out, indent=2), encoding='utf-8')
+    (RESULTS / f'e4_g2_grounding{tag}.json').write_text(json.dumps(out, indent=2), encoding='utf-8')
     for name, recs in (('g2_constrained', con_records), ('g2_unconstrained', unc_records)):
-        with (LOGS / f'{name}.jsonl').open('w', encoding='utf-8') as w:
+        with (LOGS / f'{name}{tag}.jsonl').open('w', encoding='utf-8') as w:
             for r in recs:
                 w.write(json.dumps(r) + '\n')
-    with (LOGS / 'g2_agent_traces.jsonl').open('w', encoding='utf-8') as w:
+    with (LOGS / f'g2_agent_traces{tag}.jsonl').open('w', encoding='utf-8') as w:
         for t in con.traces:
             w.write(json.dumps(t) + '\n')
     print('\n--- G2 grounding ---')
@@ -127,7 +134,7 @@ def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
     print(f"unconstrained unsupported rate {out['unconstrained']['unsupported_rate']} "
           f"({out['unconstrained']['prompts_with_unsupported_claim']}/{out['unconstrained']['prompts']})")
     print(json.dumps(out['efficiency_constrained'], indent=2))
-    print(f"\nwrote {RESULTS / 'e4_g2_grounding.json'}")
+    print(f"\nwrote {RESULTS / f'e4_g2_grounding{tag}.json'}")
 
 
 def dict_to_decision(d):
@@ -144,6 +151,7 @@ if __name__ == '__main__':
     ap.add_argument('--sleep', type=float, default=1.0)
     ap.add_argument('--split', default='test', choices=['test', 'dev'])
     ap.add_argument('--gate-seconds', type=int, default=20, dest='gate_seconds')
+    ap.add_argument('--min-evidence', type=int, default=5, dest='min_evidence')
     ap.add_argument('--price-in', type=float, dest='price_in')
     ap.add_argument('--price-out', type=float, dest='price_out')
     a = vars(ap.parse_args())
