@@ -19,6 +19,9 @@ import sys
 _ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_ROOT))
 
+from coach.core import TrajectoryCoach
+from coach.dataset import load_split
+
 OUTPUT_DIR = _ROOT / 'results' / 'phase2'
 OUTPUT = OUTPUT_DIR / 'rating_sheet.csv'
 
@@ -26,56 +29,55 @@ OUTPUT = OUTPUT_DIR / 'rating_sheet.csv'
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--n', type=int, default=30, help='Number of items to sample')
-    parser.add_argument('--seed', type=int, default=0, help='Random seed')
-    parser.add_argument('--results', default=str(_ROOT / 'results' / 'phase2' / 'experiments_test.json'))
+    parser.add_argument('--seed', type=int, default=42, help='Random seed')
     args = parser.parse_args()
 
-    results_path = pathlib.Path(args.results)
-    if not results_path.exists():
-        print(f'Error: results file not found: {results_path}')
-        print('Run python -m scripts.run_experiments --split test first.')
-        sys.exit(1)
+    print('Extracting real delivered scaffolds from full system (E3) on test split...')
+    coach = TrajectoryCoach(
+        mode='adaptive',
+        cooldown=180,
+        max_prompts=3,
+        use_timing_gate=True,
+        use_evidence_floor=True
+    )
+    events = load_split(split='test')
 
-    results = json.loads(results_path.read_text(encoding='utf-8'))
-
-    # Collect all non-wait decisions from E3 (full system)
-    e3 = results.get('e3_full_system', {})
-    # We need to re-run to get actual decision texts – load from decisions.jsonl if present
-    decisions_file = _ROOT / 'results' / 'phase2' / 'decisions.jsonl'
-
-    items = []
-    if decisions_file.exists():
-        with decisions_file.open(encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    d = json.loads(line)
-                    if d.get('phase', 'wait') != 'wait' and d.get('prompt', '').strip():
-                        items.append(d)
-                except json.JSONDecodeError:
-                    continue
-    else:
-        # Fallback: generate placeholder items from experiment metadata
-        print('Warning: decisions.jsonl not found; generating placeholder rating sheet.')
-        for i in range(args.n):
-            items.append({
-                'phase': 'monitor',
-                'prompt': f'[Placeholder item {i+1}] What hypothesis are you checking?',
-                'evidence': {
-                    'student': 'unknown', 'part': '1', 'exercise': str(i),
-                    'source_row': i, 'time': float(i * 100),
-                },
-                'reason': 'Placeholder',
+    by_phase = {'plan': [], 'monitor': [], 'evaluate': []}
+    for e in events:
+        d = coach.observe(e)
+        if d.phase in by_phase and d.prompt:
+            by_phase[d.phase].append({
+                'student': e.student,
+                'part': e.part,
+                'exercise': e.exercise,
+                'source_row': e.source_row,
+                'phase': d.phase,
+                'prompt': d.prompt,
+                'reason': d.reason,
             })
 
-    # Sample args.n items
+    print(f'Delivered scaffolds by phase: ' +
+          f'plan={len(by_phase["plan"])}, ' +
+          f'monitor={len(by_phase["monitor"])}, ' +
+          f'evaluate={len(by_phase["evaluate"])}')
+
     rng = random.Random(args.seed)
-    if len(items) > args.n:
-        sample = rng.sample(items, args.n)
-    else:
-        sample = items
+    # Stratify sample evenly across available phases
+    per_phase = args.n // 3
+    sample = []
+    for ph in ['plan', 'monitor', 'evaluate']:
+        pool = by_phase[ph]
+        k = min(per_phase, len(pool))
+        sample.extend(rng.sample(pool, k))
+
+    # If any remainder, sample from all remaining
+    if len(sample) < args.n:
+        needed = args.n - len(sample)
+        remaining = [item for ph in by_phase for item in by_phase[ph] if item not in sample]
+        sample.extend(rng.sample(remaining, needed))
+
+    # Shuffle sample order
+    rng.shuffle(sample)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     with OUTPUT.open('w', newline='', encoding='utf-8') as f:
@@ -85,13 +87,12 @@ def main():
         ])
         writer.writeheader()
         for i, d in enumerate(sample, 1):
-            ev = d.get('evidence', {})
             writer.writerow({
                 'row_id': i,
-                'student': ev.get('student', ''),
-                'part': ev.get('part', ''),
-                'exercise': ev.get('exercise', ''),
-                'source_row': ev.get('source_row', ''),
+                'student': d.get('student', ''),
+                'part': d.get('part', ''),
+                'exercise': d.get('exercise', ''),
+                'source_row': d.get('source_row', ''),
                 'phase': d.get('phase', ''),
                 'prompt': d.get('prompt', ''),
                 'timing': '',    # rater fills: 0 = interrupts, 4 = well-timed
@@ -111,4 +112,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
