@@ -1,254 +1,788 @@
 {
   "split": "test",
-  "n_events": 726897,
-  "e1_rule_baseline": {
-    "scaffold_count": 10687,
-    "runtime_seconds": 49.235,
-    "peak_memory_mb": 431.618,
-    "events_per_second": 14763.8,
-    "scaffolds_delivered": 2769,
-    "total_junctures": 10687,
-    "interruption_rate": 0.0,
-    "pause_aligned_rate": 0.2591,
-    "coverage": 0.2591,
-    "deliberation_delta": 2003.9884
-  },
-  "e2_on_demand": [
-    {
-      "scaffolds_delivered": 821,
-      "total_junctures": 821,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 12602.7357,
-      "model": "pause",
-      "seed": 0,
-      "total_requests": 821
-    },
-    {
-      "scaffolds_delivered": 821,
-      "total_junctures": 821,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 12602.7357,
-      "model": "pause",
-      "seed": 1,
-      "total_requests": 821
-    },
-    {
-      "scaffolds_delivered": 821,
-      "total_junctures": 821,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 12602.7357,
-      "model": "pause",
-      "seed": 2,
-      "total_requests": 821
-    },
-    {
-      "scaffolds_delivered": 290,
-      "total_junctures": 500,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.58,
-      "coverage": 0.58,
-      "deliberation_delta": 82.4621,
-      "model": "stuck",
-      "seed": 0,
-      "total_requests": 500
-    },
-    {
-      "scaffolds_delivered": 290,
-      "total_junctures": 500,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.58,
-      "coverage": 0.58,
-      "deliberation_delta": 82.4621,
-      "model": "stuck",
-      "seed": 1,
-      "total_requests": 500
-    },
-    {
-      "scaffolds_delivered": 290,
-      "total_junctures": 500,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.58,
-      "coverage": 0.58,
-      "deliberation_delta": 82.4621,
-      "model": "stuck",
-      "seed": 2,
-      "total_requests": 500
-    },
-    {
-      "scaffolds_delivered": 333,
-      "total_junctures": 500,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.666,
-      "coverage": 0.666,
-      "deliberation_delta": 10657.2402,
-      "model": "uniform",
-      "seed": 0,
-      "total_requests": 500
-    },
-    {
-      "scaffolds_delivered": 307,
-      "total_junctures": 467,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.6574,
-      "coverage": 0.6574,
-      "deliberation_delta": 10107.6971,
-      "model": "uniform",
-      "seed": 1,
-      "total_requests": 467
-    },
-    {
-      "scaffolds_delivered": 325,
-      "total_junctures": 486,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.6687,
-      "coverage": 0.6687,
-      "deliberation_delta": 13607.9077,
-      "model": "uniform",
-      "seed": 2,
-      "total_requests": 486
-    }
-  ],
-  "e3_full_system": {
-    "name": "full_system",
-    "desc": "Full system (E3)",
-    "scaffold_count": 1328,
-    "interruption_rate": 0.0,
-    "pause_aligned_rate": 1.0,
-    "coverage": 1.0,
-    "deliberation_delta": 89.2214,
-    "runtime_seconds": 56.109,
-    "peak_memory_mb": 666.593,
-    "bootstrap_ci": {
-      "interruption_rate": [
-        0.0,
-        0.0
-      ],
-      "pause_aligned_rate": [
-        1.0,
-        1.0
-      ],
-      "coverage": [
-        1.0,
-        1.0
-      ],
-      "deliberation_delta": [
-        85.2127,
-        95.442
-      ]
-    }
-  },
-  "e5_ablations": [
-    {
-      "name": "full_system",
-      "desc": "Full system (E3)",
-      "scaffold_count": 1328,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 89.2214,
-      "runtime_seconds": 56.109,
-      "peak_memory_mb": 666.593,
-      "bootstrap_ci": {
-        "interruption_rate": [
-          0.0,
-          0.0
+  "split_rule": "learners sorted by integer id; every third learner (index % 3 == 2) is test",
+  "events": 726897,
+  "learner_question_units": 966,
+  "decision_points": 10687,
+  "runs": {
+    "E1_baseline_rule": {
+      "mode": "rule",
+      "config": {},
+      "gate_stats": {},
+      "events": 726897,
+      "phases": {
+        "wait": 716210,
+        "plan": 2475,
+        "evaluate": 1205,
+        "monitor": 7007
+      },
+      "reasons": {
+        "No trigger": 716210,
+        "First observed edit in this task/session": 2475,
+        "Submission observed; correctness unknown": 1205,
+        "Repeated executions within the observation window": 7007
+      },
+      "runtime_seconds": 24.731,
+      "events_per_second": 29392,
+      "peak_memory_mb": 7.7,
+      "prompts": 10687,
+      "prompts_per_1000_events": 14.702,
+      "timing": {
+        "prompts": 10687,
+        "interruption_rate": 0.2736034434359502,
+        "interruption_ci": [
+          0.19713127533520425,
+          0.3830282861896839
         ],
-        "pause_aligned_rate": [
-          1.0,
-          1.0
+        "pause_aligned": 0.22999906428370917,
+        "pause_aligned_ci": [
+          0.18385148736300605,
+          0.2864349011588275
         ],
-        "coverage": [
-          1.0,
-          1.0
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.7934874146158885,
+        "median_response_gap": 5,
+        "deliberation_delta": -0.013800957119192622,
+        "deliberation_delta_ci": [
+          -0.019148499237412235,
+          -0.005693920298315649
         ],
-        "deliberation_delta": [
-          85.2127,
-          95.442
-        ]
+        "learners_prompted": 8
       }
     },
-    {
-      "name": "no_cooldown",
-      "desc": "No cooldown",
-      "scaffold_count": 1360,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 88.6074,
-      "runtime_seconds": 57.422,
-      "peak_memory_mb": 666.581
+    "E3_proposed_full": {
+      "mode": "adaptive",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 3269,
+        "released": 2038,
+        "superseded": 1060,
+        "dropped": 171
+      },
+      "events": 726897,
+      "phases": {
+        "wait": 724859,
+        "evaluate": 597,
+        "monitor": 1025,
+        "plan": 416
+      },
+      "reasons": {
+        "No trigger": 714367,
+        "Observation window below the evidence floor": 1881,
+        "Held for a natural pause": 3269,
+        "Submission observed; correctness unknown": 597,
+        "Repeated executions within the observation window": 1025,
+        "Waiting for learner response": 986,
+        "First observed edit in this task/session": 416,
+        "Cooldown active": 432,
+        "Task/session prompt budget exhausted": 3924
+      },
+      "runtime_seconds": 24.753,
+      "events_per_second": 29366,
+      "peak_memory_mb": 1.5,
+      "prompts": 2038,
+      "prompts_per_1000_events": 2.804,
+      "timing": {
+        "prompts": 2038,
+        "interruption_rate": 0.020608439646712464,
+        "interruption_ci": [
+          0.01328125,
+          0.028348688873139617
+        ],
+        "pause_aligned": 0.44847890088321885,
+        "pause_aligned_ci": [
+          0.35249554367201424,
+          0.5514138817480719
+        ],
+        "juncture_precision": 0.7173699705593719,
+        "juncture_coverage": 0.1368017217179751,
+        "median_response_gap": 16.0,
+        "deliberation_delta": 0.007911750779313862,
+        "deliberation_delta_ci": [
+          -0.0016431527570300003,
+          0.0171589020334696
+        ],
+        "learners_prompted": 8
+      }
     },
-    {
-      "name": "no_budget",
-      "desc": "No episode budget",
-      "scaffold_count": 1649,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 88.6173,
-      "runtime_seconds": 54.109,
-      "peak_memory_mb": 666.482
+    "E5_ablation_no_timing_gate": {
+      "mode": "adaptive",
+      "config": {
+        "min_evidence": 5
+      },
+      "gate_stats": {},
+      "events": 726897,
+      "phases": {
+        "wait": 724533,
+        "evaluate": 601,
+        "monitor": 1183,
+        "plan": 580
+      },
+      "reasons": {
+        "No trigger": 716210,
+        "Observation window below the evidence floor": 1968,
+        "Submission observed; correctness unknown": 601,
+        "Repeated executions within the observation window": 1183,
+        "Waiting for learner response": 1455,
+        "First observed edit in this task/session": 580,
+        "Cooldown active": 539,
+        "Task/session prompt budget exhausted": 4361
+      },
+      "runtime_seconds": 23.986,
+      "events_per_second": 30305,
+      "peak_memory_mb": 1.7,
+      "prompts": 2364,
+      "prompts_per_1000_events": 3.252,
+      "timing": {
+        "prompts": 2364,
+        "interruption_rate": 0.26903553299492383,
+        "interruption_ci": [
+          0.225,
+          0.2957534761367907
+        ],
+        "pause_aligned": 0.31049069373942473,
+        "pause_aligned_ci": [
+          0.21829916476841307,
+          0.4235294117647059
+        ],
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.22082904463366707,
+        "median_response_gap": 6.0,
+        "deliberation_delta": -0.015077880341232693,
+        "deliberation_delta_ci": [
+          -0.02555709343014434,
+          -0.0068894142697475185
+        ],
+        "learners_prompted": 8
+      }
     },
-    {
-      "name": "no_response_wait",
-      "desc": "No response wait",
-      "scaffold_count": 1649,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 88.6173,
-      "runtime_seconds": 52.515,
-      "peak_memory_mb": 666.474
+    "E5_ablation_no_evidence_floor": {
+      "mode": "adaptive",
+      "config": {
+        "gate_seconds": 20
+      },
+      "gate_stats": {
+        "held": 4621,
+        "released": 2804,
+        "superseded": 1122,
+        "dropped": 695
+      },
+      "events": 726897,
+      "phases": {
+        "wait": 724093,
+        "plan": 1406,
+        "evaluate": 543,
+        "monitor": 855
+      },
+      "reasons": {
+        "No trigger": 713619,
+        "Held for a natural pause": 4621,
+        "First observed edit in this task/session": 1406,
+        "Cooldown active": 515,
+        "Submission observed; correctness unknown": 543,
+        "Waiting for learner response": 1021,
+        "Repeated executions within the observation window": 855,
+        "Task/session prompt budget exhausted": 4317
+      },
+      "runtime_seconds": 23.825,
+      "events_per_second": 30510,
+      "peak_memory_mb": 2.0,
+      "prompts": 2804,
+      "prompts_per_1000_events": 3.857,
+      "timing": {
+        "prompts": 2804,
+        "interruption_rate": 0.026390870185449358,
+        "interruption_ci": [
+          0.02218430034129693,
+          0.029878971255673223
+        ],
+        "pause_aligned": 0.42368045649072755,
+        "pause_aligned_ci": [
+          0.3523252232830305,
+          0.502031340684852
+        ],
+        "juncture_precision": 0.5592011412268189,
+        "juncture_coverage": 0.14634602788434548,
+        "median_response_gap": 15.0,
+        "deliberation_delta": 0.0025346099028274198,
+        "deliberation_delta_ci": [
+          -0.004338149474029426,
+          0.00789310513233398
+        ],
+        "learners_prompted": 8
+      }
     },
-    {
-      "name": "no_evidence_floor",
-      "desc": "No evidence floor (G2 disabled)",
-      "scaffold_count": 1655,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 1.0,
-      "coverage": 1.0,
-      "deliberation_delta": 1912.7154,
-      "runtime_seconds": 56.016,
-      "peak_memory_mb": 666.266
+    "E5_ablation_no_memory": {
+      "mode": "no_memory",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 4989,
+        "released": 2955,
+        "superseded": 1858,
+        "dropped": 176
+      },
+      "events": 726897,
+      "phases": {
+        "wait": 723942,
+        "evaluate": 688,
+        "monitor": 1851,
+        "plan": 416
+      },
+      "reasons": {
+        "No trigger": 713485,
+        "Observation window below the evidence floor": 1880,
+        "Held for a natural pause": 4989,
+        "Submission observed; correctness unknown": 688,
+        "Repeated executions within the observation window": 1851,
+        "Cooldown active": 3588,
+        "First observed edit in this task/session": 416
+      },
+      "runtime_seconds": 23.929,
+      "events_per_second": 30377,
+      "peak_memory_mb": 2.3,
+      "prompts": 2955,
+      "prompts_per_1000_events": 4.065,
+      "timing": {
+        "prompts": 2955,
+        "interruption_rate": 0.02098138747884941,
+        "interruption_ci": [
+          0.010670731707317074,
+          0.030534351145038167
+        ],
+        "pause_aligned": 0.444331641285956,
+        "pause_aligned_ci": [
+          0.35417370733355863,
+          0.5485
+        ],
+        "juncture_precision": 0.7455160744500846,
+        "juncture_coverage": 0.2061382988677833,
+        "median_response_gap": 16,
+        "deliberation_delta": 0.008514767582376634,
+        "deliberation_delta_ci": [
+          0.0005577247298528397,
+          0.017109413279627953
+        ],
+        "learners_prompted": 8
+      }
     },
-    {
-      "name": "no_timing_gate",
-      "desc": "No timing gate (G1 disabled)",
-      "scaffold_count": 2364,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.5427,
-      "coverage": 0.5427,
-      "deliberation_delta": 86.6656,
-      "runtime_seconds": 56.11,
-      "peak_memory_mb": 667.275
+    "E5_ablation_no_cooldown": {
+      "mode": "no_cooldown",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 3399,
+        "released": 2129,
+        "superseded": 1096,
+        "dropped": 174
+      },
+      "events": 726897,
+      "phases": {
+        "wait": 724768,
+        "evaluate": 622,
+        "monitor": 1091,
+        "plan": 416
+      },
+      "reasons": {
+        "No trigger": 714294,
+        "Observation window below the evidence floor": 1868,
+        "Held for a natural pause": 3399,
+        "Submission observed; correctness unknown": 622,
+        "Repeated executions within the observation window": 1091,
+        "Waiting for learner response": 1041,
+        "First observed edit in this task/session": 416,
+        "Task/session prompt budget exhausted": 4166
+      },
+      "runtime_seconds": 24.272,
+      "events_per_second": 29948,
+      "peak_memory_mb": 1.6,
+      "prompts": 2129,
+      "prompts_per_1000_events": 2.929,
+      "timing": {
+        "prompts": 2129,
+        "interruption_rate": 0.020197275716298733,
+        "interruption_ci": [
+          0.014057198254968492,
+          0.02710413694721826
+        ],
+        "pause_aligned": 0.4485674025364021,
+        "pause_aligned_ci": [
+          0.35092529129540784,
+          0.553058024046001
+        ],
+        "juncture_precision": 0.7219351808360732,
+        "juncture_coverage": 0.1438195938991298,
+        "median_response_gap": 16,
+        "deliberation_delta": 0.008218161923357652,
+        "deliberation_delta_ci": [
+          -0.0013264171890931373,
+          0.018156805392503653
+        ],
+        "learners_prompted": 8
+      }
     },
-    {
-      "name": "phase1_policy",
-      "desc": "Phase 1 policy (original defaults)",
-      "scaffold_count": 3828,
-      "interruption_rate": 0.0,
-      "pause_aligned_rate": 0.4572,
-      "coverage": 0.4572,
-      "deliberation_delta": 3118.5606,
-      "runtime_seconds": 52.046,
-      "peak_memory_mb": 667.067
-    }
-  ],
-  "e6_efficiency": {
-    "events_per_second": 13895.4,
-    "runtime_seconds": 52.312,
-    "peak_memory_mb": 666.582,
-    "n_events": 726897,
-    "rule_baseline": {
-      "runtime_seconds": 49.235,
-      "events_per_second": 14763.8,
-      "peak_memory_mb": 431.618
+    "E5_ablation_no_budget": {
+      "mode": "no_budget",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 4989,
+        "released": 2955,
+        "superseded": 1858,
+        "dropped": 176
+      },
+      "events": 726897,
+      "phases": {
+        "wait": 723942,
+        "evaluate": 688,
+        "monitor": 1851,
+        "plan": 416
+      },
+      "reasons": {
+        "No trigger": 713485,
+        "Observation window below the evidence floor": 1880,
+        "Held for a natural pause": 4989,
+        "Submission observed; correctness unknown": 688,
+        "Repeated executions within the observation window": 1851,
+        "Waiting for learner response": 2454,
+        "First observed edit in this task/session": 416,
+        "Cooldown active": 1134
+      },
+      "runtime_seconds": 24.19,
+      "events_per_second": 30049,
+      "peak_memory_mb": 2.3,
+      "prompts": 2955,
+      "prompts_per_1000_events": 4.065,
+      "timing": {
+        "prompts": 2955,
+        "interruption_rate": 0.02098138747884941,
+        "interruption_ci": [
+          0.010670731707317074,
+          0.030534351145038167
+        ],
+        "pause_aligned": 0.444331641285956,
+        "pause_aligned_ci": [
+          0.35417370733355863,
+          0.5485
+        ],
+        "juncture_precision": 0.7455160744500846,
+        "juncture_coverage": 0.2061382988677833,
+        "median_response_gap": 16,
+        "deliberation_delta": 0.008514767582376634,
+        "deliberation_delta_ci": [
+          0.0005577247298528397,
+          0.017109413279627953
+        ],
+        "learners_prompted": 8
+      }
+    },
+    "E5_ablation_none_phase1": {
+      "mode": "adaptive",
+      "config": {},
+      "gate_stats": {},
+      "events": 726897,
+      "phases": {
+        "wait": 723069,
+        "plan": 2470,
+        "evaluate": 399,
+        "monitor": 959
+      },
+      "reasons": {
+        "No trigger": 716210,
+        "First observed edit in this task/session": 2470,
+        "Submission observed; correctness unknown": 399,
+        "Waiting for learner response": 1317,
+        "Cooldown active": 658,
+        "Repeated executions within the observation window": 959,
+        "Task/session prompt budget exhausted": 4884
+      },
+      "runtime_seconds": 23.791,
+      "events_per_second": 30554,
+      "peak_memory_mb": 2.6,
+      "prompts": 3828,
+      "prompts_per_1000_events": 5.266,
+      "timing": {
+        "prompts": 3828,
+        "interruption_rate": 0.6567398119122257,
+        "interruption_ci": [
+          0.5858225590726706,
+          0.7203967761934283
+        ],
+        "pause_aligned": 0.1677115987460815,
+        "pause_aligned_ci": [
+          0.1120584652862363,
+          0.22643936957220973
+        ],
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.34116215963319924,
+        "median_response_gap": 2.0,
+        "deliberation_delta": -0.004205548647648887,
+        "deliberation_delta_ci": [
+          -0.006472190064722032,
+          -0.0016091062664610606
+        ],
+        "learners_prompted": 8
+      }
+    },
+    "E2_base_paper_pause": {
+      "mode": "on_demand_pause",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_pause",
+          "seed": 0,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.105,
+          "prompts": 469,
+          "prompts_per_1000_events": 0.645,
+          "timing": {
+            "prompts": 469,
+            "interruption_rate": 0.13646055437100213,
+            "interruption_ci": [
+              0.04384133611691023,
+              0.24358974358974358
+            ],
+            "pause_aligned": 0.3411513859275053,
+            "pause_aligned_ci": [
+              0.2568627450980392,
+              0.41651705565529623
+            ],
+            "juncture_precision": 0.4584221748400853,
+            "juncture_coverage": 0.019462898849068964,
+            "median_response_gap": 10.0,
+            "deliberation_delta": -0.006129730661659671,
+            "deliberation_delta_ci": [
+              -0.016332609671503077,
+              0.0014470915363473385
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_pause",
+          "seed": 1,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.11,
+          "prompts": 466,
+          "prompts_per_1000_events": 0.641,
+          "timing": {
+            "prompts": 466,
+            "interruption_rate": 0.11158798283261803,
+            "interruption_ci": [
+              0.04448742746615087,
+              0.19960474308300397
+            ],
+            "pause_aligned": 0.39914163090128757,
+            "pause_aligned_ci": [
+              0.3072289156626506,
+              0.45884413309982486
+            ],
+            "juncture_precision": 0.4356223175965665,
+            "juncture_coverage": 0.018433610929166278,
+            "median_response_gap": 13.0,
+            "deliberation_delta": -0.004726902858433016,
+            "deliberation_delta_ci": [
+              -0.0154577801385551,
+              0.0029623423032127576
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_pause",
+          "seed": 2,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.1,
+          "prompts": 448,
+          "prompts_per_1000_events": 0.616,
+          "timing": {
+            "prompts": 448,
+            "interruption_rate": 0.13392857142857142,
+            "interruption_ci": [
+              0.04491725768321513,
+              0.24197002141327623
+            ],
+            "pause_aligned": 0.32589285714285715,
+            "pause_aligned_ci": [
+              0.23284313725490197,
+              0.4123505976095618
+            ],
+            "juncture_precision": 0.5,
+            "juncture_coverage": 0.020305043510807523,
+            "median_response_gap": 10.0,
+            "deliberation_delta": -0.009498486830425,
+            "deliberation_delta_ci": [
+              -0.021083985972827676,
+              0.0004918309794227587
+            ],
+            "learners_prompted": 8
+          }
+        }
+      ],
+      "prompts_mean": 461.0,
+      "prompts_sd": 11.3578,
+      "prompts_per_1000_events_mean": 0.634,
+      "prompts_per_1000_events_sd": 0.0157,
+      "interruption_rate_mean": 0.1273,
+      "interruption_rate_sd": 0.0137,
+      "pause_aligned_mean": 0.3554,
+      "pause_aligned_sd": 0.0386,
+      "juncture_precision_mean": 0.4647,
+      "juncture_precision_sd": 0.0326,
+      "juncture_coverage_mean": 0.0194,
+      "juncture_coverage_sd": 0.0009,
+      "deliberation_delta_mean": -0.0068,
+      "deliberation_delta_sd": 0.0025
+    },
+    "E2_base_paper_stuck": {
+      "mode": "on_demand_stuck",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_stuck",
+          "seed": 0,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.163,
+          "prompts": 497,
+          "prompts_per_1000_events": 0.684,
+          "timing": {
+            "prompts": 497,
+            "interruption_rate": 0.8651911468812877,
+            "interruption_ci": [
+              0.8303571428571429,
+              0.8951456310679612
+            ],
+            "pause_aligned": 0.07243460764587525,
+            "pause_aligned_ci": [
+              0.04242424242424243,
+              0.10482180293501048
+            ],
+            "juncture_precision": 0.45271629778672035,
+            "juncture_coverage": 0.0193693272199869,
+            "median_response_gap": 1,
+            "deliberation_delta": -0.006047911383113174,
+            "deliberation_delta_ci": [
+              -0.015774669535385068,
+              0.0010253857179807905
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_stuck",
+          "seed": 1,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.173,
+          "prompts": 494,
+          "prompts_per_1000_events": 0.68,
+          "timing": {
+            "prompts": 494,
+            "interruption_rate": 0.8299595141700404,
+            "interruption_ci": [
+              0.7953736654804271,
+              0.8670411985018727
+            ],
+            "pause_aligned": 0.06882591093117409,
+            "pause_aligned_ci": [
+              0.03676470588235294,
+              0.12337662337662338
+            ],
+            "juncture_precision": 0.4473684210526316,
+            "juncture_coverage": 0.019182183961822776,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.009341266432232662,
+            "deliberation_delta_ci": [
+              -0.01656052732728863,
+              -0.0031118248930417226
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_stuck",
+          "seed": 2,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.16,
+          "prompts": 474,
+          "prompts_per_1000_events": 0.652,
+          "timing": {
+            "prompts": 474,
+            "interruption_rate": 0.8143459915611815,
+            "interruption_ci": [
+              0.7679245283018868,
+              0.865424430641822
+            ],
+            "pause_aligned": 0.06751054852320675,
+            "pause_aligned_ci": [
+              0.03211009174311927,
+              0.10759493670886076
+            ],
+            "juncture_precision": 0.4767932489451477,
+            "juncture_coverage": 0.019930756994479274,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.0057419446920688,
+            "deliberation_delta_ci": [
+              -0.01171994287950182,
+              -3.642643478624544e-05
+            ],
+            "learners_prompted": 8
+          }
+        }
+      ],
+      "prompts_mean": 488.3333,
+      "prompts_sd": 12.5033,
+      "prompts_per_1000_events_mean": 0.672,
+      "prompts_per_1000_events_sd": 0.0174,
+      "interruption_rate_mean": 0.8365,
+      "interruption_rate_sd": 0.026,
+      "pause_aligned_mean": 0.0696,
+      "pause_aligned_sd": 0.0025,
+      "juncture_precision_mean": 0.459,
+      "juncture_precision_sd": 0.0157,
+      "juncture_coverage_mean": 0.0195,
+      "juncture_coverage_sd": 0.0004,
+      "deliberation_delta_mean": -0.007,
+      "deliberation_delta_sd": 0.002
+    },
+    "E2_base_paper_uniform": {
+      "mode": "on_demand_uniform",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_uniform",
+          "seed": 0,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.074,
+          "prompts": 496,
+          "prompts_per_1000_events": 0.682,
+          "timing": {
+            "prompts": 496,
+            "interruption_rate": 0.8366935483870968,
+            "interruption_ci": [
+              0.7971311475409836,
+              0.8673469387755102
+            ],
+            "pause_aligned": 0.06854838709677419,
+            "pause_aligned_ci": [
+              0.03783783783783784,
+              0.11727078891257996
+            ],
+            "juncture_precision": 0.46169354838709675,
+            "juncture_coverage": 0.0193693272199869,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.015233307575083017,
+            "deliberation_delta_ci": [
+              -0.026162547202342255,
+              -0.0052787346126248035
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_uniform",
+          "seed": 1,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.083,
+          "prompts": 474,
+          "prompts_per_1000_events": 0.652,
+          "timing": {
+            "prompts": 474,
+            "interruption_rate": 0.7953586497890295,
+            "interruption_ci": [
+              0.7315436241610739,
+              0.8430335097001763
+            ],
+            "pause_aligned": 0.08227848101265822,
+            "pause_aligned_ci": [
+              0.03718199608610567,
+              0.13895781637717122
+            ],
+            "juncture_precision": 0.47890295358649787,
+            "juncture_coverage": 0.019837185365397213,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.008440777788531747,
+            "deliberation_delta_ci": [
+              -0.014134808516608982,
+              -0.0031103971025092303
+            ],
+            "learners_prompted": 8
+          }
+        },
+        {
+          "mode": "on_demand_uniform",
+          "seed": 2,
+          "events": 726897,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.074,
+          "prompts": 481,
+          "prompts_per_1000_events": 0.662,
+          "timing": {
+            "prompts": 481,
+            "interruption_rate": 0.8544698544698545,
+            "interruption_ci": [
+              0.8141414141414142,
+              0.888641425389755
+            ],
+            "pause_aligned": 0.06652806652806653,
+            "pause_aligned_ci": [
+              0.039568345323741004,
+              0.116
+            ],
+            "juncture_precision": 0.41995841995842,
+            "juncture_coverage": 0.017872181154673903,
+            "median_response_gap": 1,
+            "deliberation_delta": -0.007514520869949872,
+            "deliberation_delta_ci": [
+              -0.012305347417371153,
+              -0.002618017359473507
+            ],
+            "learners_prompted": 8
+          }
+        }
+      ],
+      "prompts_mean": 483.6667,
+      "prompts_sd": 11.2398,
+      "prompts_per_1000_events_mean": 0.6653,
+      "prompts_per_1000_events_sd": 0.0153,
+      "interruption_rate_mean": 0.8288,
+      "interruption_rate_sd": 0.0303,
+      "pause_aligned_mean": 0.0725,
+      "pause_aligned_sd": 0.0086,
+      "juncture_precision_mean": 0.4535,
+      "juncture_precision_sd": 0.0303,
+      "juncture_coverage_mean": 0.019,
+      "juncture_coverage_sd": 0.001,
+      "deliberation_delta_mean": -0.0104,
+      "deliberation_delta_sd": 0.0042
     }
   }
 }

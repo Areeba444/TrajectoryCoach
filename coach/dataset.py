@@ -1,59 +1,43 @@
-"""Fixed dev/test split loader. No learning outcome is available.
-
-Split rule (fixed before any experiment): every third learner by sorted
-integer id (index % 3 == 2) goes to test.  This rule uses no outcome, so
-it cannot be tuned.  Test learners were never used for threshold, prompt or
-design decisions.
-"""
-import csv, gzip, pathlib
+"""Loading the IDE log and the fixed learner split."""
+import csv, gzip, json, pathlib
 from .core import Event
 
-# Fixed split rule — do not change without supervisor approval.
-_ALL_IDS = list(range(24))                      # learners 0..23
-TEST_IDS  = {str(i) for i in _ALL_IDS if _ALL_IDS.index(i) % 3 == 2}
-DEV_IDS   = {str(i) for i in _ALL_IDS if _ALL_IDS.index(i) % 3 != 2}
-
-_DATA_DEFAULT = pathlib.Path(__file__).resolve().parents[1] / 'data' / 'zenodo_24_students.csv.gz'
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+DEFAULT_SOURCE = ROOT / 'data' / 'zenodo_24_students.csv.gz'
+DEFAULT_SPLITS = ROOT / 'data' / 'splits.json'
 
 
-def learner_ids(split: str) -> list[str]:
-    """Return sorted string ids for 'dev' or 'test'."""
-    if split == 'test':
-        return sorted(TEST_IDS, key=int)
-    if split == 'dev':
-        return sorted(DEV_IDS, key=int)
-    raise ValueError(f'Unknown split: {split!r}. Use "dev" or "test".')
+def load_splits(path=DEFAULT_SPLITS):
+    return json.loads(pathlib.Path(path).read_text(encoding='utf-8'))
 
 
-def load_split(gz_path: str | None = None, split: str = 'test') -> list[Event]:
-    """Return events for the requested split in chronological source order.
+def learners_for(split, path=DEFAULT_SPLITS):
+    if split == 'all':
+        s = load_splits(path)
+        return set(s['dev']) | set(s['test'])
+    s = load_splits(path)
+    if split not in ('dev', 'test'):
+        raise ValueError('split must be dev, test or all')
+    return set(s[split])
 
-    Events are sorted by student then timestamp (matching the preprocessing
-    step in extract_subset.py).  No course outcomes are included.
-    """
-    path = pathlib.Path(gz_path) if gz_path else _DATA_DEFAULT
-    ids  = set(learner_ids(split))
-    events: list[Event] = []
-    opener = gzip.open if str(path).endswith('.gz') else open
-    with opener(path, 'rt', encoding='utf-8', newline='') as f:
+
+def iter_events(split='test', source=DEFAULT_SOURCE, splits_path=DEFAULT_SPLITS):
+    """Yield Event objects for the learners in one split, in source order."""
+    keep = learners_for(split, splits_path)
+    opener = gzip.open if str(source).endswith('.gz') else open
+    with opener(source, 'rt', encoding='utf-8', newline='') as f:
         for rownum, row in enumerate(csv.DictReader(f), 2):
-            if str(row['student']) not in ids:
-                continue
-            try:
-                events.append(Event.from_row(row, rownum))
-            except (ValueError, KeyError):
-                continue   # skip malformed rows; count is not checked here
-    return events
+            if str(row['student']) in keep:
+                yield Event.from_row(row, rownum)
 
 
-def split_info() -> dict:
-    """Return a dict describing the split rule and learner counts."""
-    return {
-        'rule'       : 'index % 3 == 2 → test',
-        'dev_ids'    : sorted(DEV_IDS,  key=int),
-        'test_ids'   : sorted(TEST_IDS, key=int),
-        'n_dev'      : len(DEV_IDS),
-        'n_test'     : len(TEST_IDS),
-        'note'       : 'Rule uses no outcome; test set never used for design decisions.',
-    }
+def group_by_learner_exercise(events):
+    """Group events into (student, part, exercise) units, preserving order.
 
+    This unit matches the 'per student per question' rate reported by the
+    base paper, which the on-demand comparator samples from.
+    """
+    groups = {}
+    for e in events:
+        groups.setdefault((e.student, e.part, e.exercise), []).append(e)
+    return groups

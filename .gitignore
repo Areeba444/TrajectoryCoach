@@ -5,7 +5,19 @@ data/IDE_logs.csv
 results/local/
 .venv/
 results/*/decisions.jsonl
-*.pdf
-PHASE2_PLAN.md
 
+# Phase 2
+.env
+solution.py
+logs/session_*.jsonl
+__pycache__/
+*.pyc
 
+# LaTeX build artefacts
+paper/*.aux
+paper/*.log
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.out
+paper/*.bbl
+paper/*.blg

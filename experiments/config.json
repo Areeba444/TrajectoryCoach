@@ -1,61 +1,47 @@
 {
-  "_comment": "Fixed experiment configuration for Phase 2. Every setting that produced a reported number traces back to this file.",
-  "split_rule": "index % 3 == 2 -> test",
-  "test_learner_ids": ["2", "5", "8", "11", "14", "17", "20", "23"],
-  "dev_learner_ids": ["0", "1", "3", "4", "6", "7", "9", "10", "12", "13", "15", "16", "18", "19", "21", "22"],
-  "data": "data/zenodo_24_students.csv.gz",
-
-  "policy": {
-    "window_seconds": 300,
-    "cooldown": 180,
-    "max_prompts": 3,
-    "run_threshold": 3
+  "split": {
+    "file": "data/splits.json",
+    "rule": "learners sorted by integer id; every third learner (index % 3 == 2) is test",
+    "dev_learners": 16, "test_learners": 8,
+    "test_only_for": "reported results", "dev_only_for": "all design decisions"
   },
-
-  "g1_timing_gate": {
-    "gate_seconds": 45,
-    "pause_horizon": 300,
-    "burst_threshold": 15
+  "policy_defaults": {
+    "window_seconds": 300, "cooldown": 180, "max_prompts": 3,
+    "run_threshold": 3, "gate_seconds": 20, "gate_horizon": 600, "min_evidence": 5
   },
-
-  "g2_grounding": {
-    "min_evidence": 5,
-    "thin_evidence_threshold": 5
+  "metric_constants": {
+    "burst_seconds": 5, "pause_seconds": 20, "coverage_tolerance_seconds": 30,
+    "behaviour_window_seconds": 300, "min_actions_for_behaviour_window": 5,
+    "bootstrap_replicates": 1000, "bootstrap_unit": "learner"
   },
-
-  "g3_transfer": {
-    "n_learners": 120,
-    "n_tasks": 6,
-    "latent_skill_range": [0.3, 0.9]
+  "experiments": {
+    "E1": {"what": "uncapped rule baseline", "script": "scripts/run_experiments.py",
+           "config": {"mode": "rule"}, "seeds": [0]},
+    "E2": {"what": "base paper on-demand policy, our adaptation",
+           "script": "scripts/run_experiments.py",
+           "config": {"request_models": ["pause", "stuck", "uniform"],
+                      "rate_per_student_question": 0.5077,
+                      "rate_source": "Phung et al. 2025: 725 hints / (102 students x 14 questions)"},
+           "seeds": [0, 1, 2], "headline": "pause"},
+    "E3": {"what": "full proposed system", "script": "scripts/run_experiments.py",
+           "config": {"mode": "adaptive", "gate_seconds": 20, "min_evidence": 5},
+           "seeds": [0]},
+    "E4": {"what": "one experiment per gap",
+           "G1": "scripts/run_experiments.py (timing measures)",
+           "G2": "scripts/run_llm_experiments.py (constrained vs unconstrained)",
+           "G3": "scripts/run_transfer_study.py (simulated learners, 5 seeds)"},
+    "E5": {"what": "ablation, one component removed at a time",
+           "script": "scripts/run_experiments.py",
+           "variants": ["no_timing_gate", "no_evidence_floor", "no_cooldown",
+                        "no_budget", "no_memory", "none_phase1"]},
+    "E6": {"what": "efficiency and reliability",
+           "offline": "runtime, events per second, peak memory, scaffolds per 1000 events",
+           "live": "API calls, tokens, latency, tool calls, validator rejection rate"}
   },
-
-  "baselines": {
-    "aims_request_rate": 0.5077,
-    "aims_source": "725 hints / 102 students / 14 questions from Phung et al. 2025"
-  },
-
-  "stochastic": {
-    "seeds": [0, 1, 2],
-    "bootstrap_n": 1000,
-    "bootstrap_seed": 0,
-    "transfer_seeds": [0, 1, 2, 3, 4]
-  },
-
-  "llm": {
-    "temperature": 0,
-    "groq_model": "llama3-8b-8192",
-    "max_tool_rounds": 3,
-    "max_api_calls": 10
-  },
-
-  "ablation_variants": [
-    {"name": "full_system",       "desc": "Full system (E3)"},
-    {"name": "no_cooldown",       "desc": "No cooldown"},
-    {"name": "no_budget",         "desc": "No episode budget"},
-    {"name": "no_response_wait",  "desc": "No response wait"},
-    {"name": "no_evidence_floor", "desc": "No evidence floor (G2 disabled)"},
-    {"name": "no_timing_gate",    "desc": "No timing gate (G1 disabled)"},
-    {"name": "phase1_policy",     "desc": "Phase 1 policy (original defaults)"}
-  ]
+  "live_model": {
+    "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+    "model_env": "GROQ_MODEL", "key_env": "GROQ_API_KEY",
+    "temperature": 0.0, "seed": 0, "max_tokens": 400,
+    "tool_call_budget_per_decision": 6
+  }
 }
-

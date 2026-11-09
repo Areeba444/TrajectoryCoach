@@ -1,152 +1,278 @@
 {
-  "conditions": [
-    {
-      "condition": "unassisted",
-      "runs": [
-        {
-          "condition": "unassisted",
-          "seed": 0,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9775,
-          "assisted_completion_r": 0.709
-        },
-        {
-          "condition": "unassisted",
-          "seed": 1,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9694,
-          "assisted_completion_r": 0.6769
-        },
-        {
-          "condition": "unassisted",
-          "seed": 2,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9745,
-          "assisted_completion_r": 0.6153
-        },
-        {
-          "condition": "unassisted",
-          "seed": 3,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9725,
-          "assisted_completion_r": 0.6487
-        },
-        {
-          "condition": "unassisted",
-          "seed": 4,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9776,
-          "assisted_completion_r": 0.5231
-        }
-      ],
-      "mean_transfer_r": 0.9743,
-      "mean_assisted_r": 0.6346
-    },
-    {
-      "condition": "on_demand",
-      "runs": [
-        {
-          "condition": "on_demand",
-          "seed": 0,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9775,
-          "assisted_completion_r": 0.6974
-        },
-        {
-          "condition": "on_demand",
-          "seed": 1,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9694,
-          "assisted_completion_r": 0.6528
-        },
-        {
-          "condition": "on_demand",
-          "seed": 2,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9745,
-          "assisted_completion_r": 0.615
-        },
-        {
-          "condition": "on_demand",
-          "seed": 3,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9725,
-          "assisted_completion_r": 0.664
-        },
-        {
-          "condition": "on_demand",
-          "seed": 4,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9776,
-          "assisted_completion_r": 0.5938
-        }
-      ],
-      "mean_transfer_r": 0.9743,
-      "mean_assisted_r": 0.6446
-    },
-    {
-      "condition": "trajectory",
-      "runs": [
-        {
-          "condition": "trajectory",
-          "seed": 0,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9775,
-          "assisted_completion_r": 0.7274
-        },
-        {
-          "condition": "trajectory",
-          "seed": 1,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9694,
-          "assisted_completion_r": 0.672
-        },
-        {
-          "condition": "trajectory",
-          "seed": 2,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9745,
-          "assisted_completion_r": 0.633
-        },
-        {
-          "condition": "trajectory",
-          "seed": 3,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9725,
-          "assisted_completion_r": 0.7013
-        },
-        {
-          "condition": "trajectory",
-          "seed": 4,
-          "n_learners": 120,
-          "transfer_spearman_r": 0.9776,
-          "assisted_completion_r": 0.681
-        }
-      ],
-      "mean_transfer_r": 0.9743,
-      "mean_assisted_r": 0.6829
-    }
+  "learners_per_run": 120,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
   ],
-  "sensitivity": [
-    {
-      "n_tasks": 2,
-      "spearman_r": 0.9313,
-      "sd": 0.01
+  "target_transfer_correlation": 0.7,
+  "note": "Simulated learners only. This validates the transfer instrument; it is not evidence about human learning.",
+  "by_condition": {
+    "unassisted": {
+      "runs": [
+        {
+          "condition": "unassisted",
+          "seed": 0,
+          "learners": 120,
+          "transfer_vs_skill": 0.8331661666163812,
+          "assisted_vs_skill": 0.5876581336373801,
+          "assisted_vs_reliance_within_skill": 0.028697842671168344,
+          "mean_transfer_score": 2.285416666666667,
+          "mean_assisted_completion": 0.37916666666666665,
+          "mean_skill_gain": 0.0
+        },
+        {
+          "condition": "unassisted",
+          "seed": 1,
+          "learners": 120,
+          "transfer_vs_skill": 0.798074819386828,
+          "assisted_vs_skill": 0.7040623103505509,
+          "assisted_vs_reliance_within_skill": 0.046779867001871034,
+          "mean_transfer_score": 2.379166666666667,
+          "mean_assisted_completion": 0.45694444444444443,
+          "mean_skill_gain": 0.0
+        },
+        {
+          "condition": "unassisted",
+          "seed": 2,
+          "learners": 120,
+          "transfer_vs_skill": 0.8122893403016814,
+          "assisted_vs_skill": 0.7751091955328478,
+          "assisted_vs_reliance_within_skill": 0.0005309610538503361,
+          "mean_transfer_score": 2.372916666666667,
+          "mean_assisted_completion": 0.4222222222222222,
+          "mean_skill_gain": 0.0
+        },
+        {
+          "condition": "unassisted",
+          "seed": 3,
+          "learners": 120,
+          "transfer_vs_skill": 0.7712156341690054,
+          "assisted_vs_skill": 0.7292577233378105,
+          "assisted_vs_reliance_within_skill": -0.060374970813207696,
+          "mean_transfer_score": 2.222916666666667,
+          "mean_assisted_completion": 0.41527777777777775,
+          "mean_skill_gain": 0.0
+        },
+        {
+          "condition": "unassisted",
+          "seed": 4,
+          "learners": 120,
+          "transfer_vs_skill": 0.7794506604888644,
+          "assisted_vs_skill": 0.6526993745118136,
+          "assisted_vs_reliance_within_skill": 0.08166343956633938,
+          "mean_transfer_score": 2.2270833333333333,
+          "mean_assisted_completion": 0.3958333333333333,
+          "mean_skill_gain": 0.0
+        }
+      ],
+      "transfer_vs_skill_mean": 0.7988,
+      "transfer_vs_skill_sd": 0.025,
+      "assisted_vs_skill_mean": 0.6898,
+      "assisted_vs_skill_sd": 0.0722,
+      "assisted_vs_reliance_within_skill_mean": 0.0195,
+      "assisted_vs_reliance_within_skill_sd": 0.0535,
+      "mean_transfer_score_mean": 2.2975,
+      "mean_transfer_score_sd": 0.0759,
+      "mean_assisted_completion_mean": 0.4139,
+      "mean_assisted_completion_sd": 0.0294,
+      "mean_skill_gain_mean": 0.0,
+      "mean_skill_gain_sd": 0.0,
+      "pooled_transfer_vs_skill": 0.8202,
+      "pooled_transfer_ci": [
+        0.7887,
+        0.8465
+      ],
+      "pooled_assisted_vs_skill": 0.7106,
+      "pooled_assisted_ci": [
+        0.6627,
+        0.7529
+      ],
+      "meets_target": true
     },
-    {
-      "n_tasks": 4,
-      "spearman_r": 0.9596,
-      "sd": 0.0048
+    "on_demand": {
+      "runs": [
+        {
+          "condition": "on_demand",
+          "seed": 0,
+          "learners": 120,
+          "transfer_vs_skill": 0.848160381355534,
+          "assisted_vs_skill": 0.7438816695919394,
+          "assisted_vs_reliance_within_skill": 0.1426633609941901,
+          "mean_transfer_score": 2.285416666666667,
+          "mean_assisted_completion": 0.5458333333333333,
+          "mean_skill_gain": 0.010530460743071644
+        },
+        {
+          "condition": "on_demand",
+          "seed": 1,
+          "learners": 120,
+          "transfer_vs_skill": 0.7800933107723377,
+          "assisted_vs_skill": 0.6722674024258015,
+          "assisted_vs_reliance_within_skill": 0.15654942578985245,
+          "mean_transfer_score": 2.4479166666666665,
+          "mean_assisted_completion": 0.5972222222222222,
+          "mean_skill_gain": 0.014253139386448382
+        },
+        {
+          "condition": "on_demand",
+          "seed": 2,
+          "learners": 120,
+          "transfer_vs_skill": 0.8071235427688939,
+          "assisted_vs_skill": 0.7505427444954612,
+          "assisted_vs_reliance_within_skill": 0.05197487530366643,
+          "mean_transfer_score": 2.3958333333333335,
+          "mean_assisted_completion": 0.5722222222222223,
+          "mean_skill_gain": 0.012065228766818342
+        },
+        {
+          "condition": "on_demand",
+          "seed": 3,
+          "learners": 120,
+          "transfer_vs_skill": 0.7912488976580848,
+          "assisted_vs_skill": 0.7706135965860128,
+          "assisted_vs_reliance_within_skill": 0.22261703102900285,
+          "mean_transfer_score": 2.23125,
+          "mean_assisted_completion": 0.5541666666666667,
+          "mean_skill_gain": 0.014615978639265937
+        },
+        {
+          "condition": "on_demand",
+          "seed": 4,
+          "learners": 120,
+          "transfer_vs_skill": 0.7488440668521678,
+          "assisted_vs_skill": 0.6518847546973681,
+          "assisted_vs_reliance_within_skill": 0.1271757565889595,
+          "mean_transfer_score": 2.21875,
+          "mean_assisted_completion": 0.5902777777777778,
+          "mean_skill_gain": 0.013750733005582612
+        }
+      ],
+      "transfer_vs_skill_mean": 0.7951,
+      "transfer_vs_skill_sd": 0.0365,
+      "assisted_vs_skill_mean": 0.7178,
+      "assisted_vs_skill_sd": 0.0523,
+      "assisted_vs_reliance_within_skill_mean": 0.1402,
+      "assisted_vs_reliance_within_skill_sd": 0.0613,
+      "mean_transfer_score_mean": 2.3158,
+      "mean_transfer_score_sd": 0.1017,
+      "mean_assisted_completion_mean": 0.5719,
+      "mean_assisted_completion_sd": 0.0222,
+      "mean_skill_gain_mean": 0.013,
+      "mean_skill_gain_sd": 0.0017,
+      "pooled_transfer_vs_skill": 0.7967,
+      "pooled_transfer_ci": [
+        0.7619,
+        0.8249
+      ],
+      "pooled_assisted_vs_skill": 0.7096,
+      "pooled_assisted_ci": [
+        0.6611,
+        0.7514
+      ],
+      "meets_target": true
     },
-    {
-      "n_tasks": 6,
-      "spearman_r": 0.9737,
-      "sd": 0.0041
-    },
-    {
-      "n_tasks": 8,
-      "spearman_r": 0.979,
-      "sd": 0.0048
+    "trajectory": {
+      "runs": [
+        {
+          "condition": "trajectory",
+          "seed": 0,
+          "learners": 120,
+          "transfer_vs_skill": 0.8428694239273811,
+          "assisted_vs_skill": 0.7640892555921951,
+          "assisted_vs_reliance_within_skill": 0.14017891669075455,
+          "mean_transfer_score": 2.2979166666666666,
+          "mean_assisted_completion": 0.5138888888888888,
+          "mean_skill_gain": 0.015498361728610226
+        },
+        {
+          "condition": "trajectory",
+          "seed": 1,
+          "learners": 120,
+          "transfer_vs_skill": 0.7843967757931898,
+          "assisted_vs_skill": 0.6829479141264069,
+          "assisted_vs_reliance_within_skill": 0.09253219312218576,
+          "mean_transfer_score": 2.470833333333333,
+          "mean_assisted_completion": 0.5583333333333333,
+          "mean_skill_gain": 0.020991360091757064
+        },
+        {
+          "condition": "trajectory",
+          "seed": 2,
+          "learners": 120,
+          "transfer_vs_skill": 0.7984633316649739,
+          "assisted_vs_skill": 0.7661249257349797,
+          "assisted_vs_reliance_within_skill": 0.005133693343344909,
+          "mean_transfer_score": 2.408333333333333,
+          "mean_assisted_completion": 0.5319444444444444,
+          "mean_skill_gain": 0.0183637581115007
+        },
+        {
+          "condition": "trajectory",
+          "seed": 3,
+          "learners": 120,
+          "transfer_vs_skill": 0.794254959530742,
+          "assisted_vs_skill": 0.7261111906330455,
+          "assisted_vs_reliance_within_skill": 0.13467732851889566,
+          "mean_transfer_score": 2.252083333333333,
+          "mean_assisted_completion": 0.5208333333333334,
+          "mean_skill_gain": 0.023201952106949697
+        },
+        {
+          "condition": "trajectory",
+          "seed": 4,
+          "learners": 120,
+          "transfer_vs_skill": 0.7430622766256436,
+          "assisted_vs_skill": 0.6797912065090616,
+          "assisted_vs_reliance_within_skill": 0.1297360527890685,
+          "mean_transfer_score": 2.2416666666666667,
+          "mean_assisted_completion": 0.5527777777777777,
+          "mean_skill_gain": 0.022162187115686204
+        }
+      ],
+      "transfer_vs_skill_mean": 0.7926,
+      "transfer_vs_skill_sd": 0.0357,
+      "assisted_vs_skill_mean": 0.7238,
+      "assisted_vs_skill_sd": 0.0419,
+      "assisted_vs_reliance_within_skill_mean": 0.1005,
+      "assisted_vs_reliance_within_skill_sd": 0.0565,
+      "mean_transfer_score_mean": 2.3342,
+      "mean_transfer_score_sd": 0.101,
+      "mean_assisted_completion_mean": 0.5356,
+      "mean_assisted_completion_sd": 0.0195,
+      "mean_skill_gain_mean": 0.02,
+      "mean_skill_gain_sd": 0.0031,
+      "pooled_transfer_vs_skill": 0.7958,
+      "pooled_transfer_ci": [
+        0.7611,
+        0.8251
+      ],
+      "pooled_assisted_vs_skill": 0.7232,
+      "pooled_assisted_ci": [
+        0.6762,
+        0.7616
+      ],
+      "meets_target": true
     }
-  ]
+  },
+  "sensitivity_transfer_task_count": {
+    "2": {
+      "transfer_vs_skill_mean": 0.6388,
+      "transfer_vs_skill_sd": 0.021
+    },
+    "4": {
+      "transfer_vs_skill_mean": 0.7899,
+      "transfer_vs_skill_sd": 0.0358
+    },
+    "6": {
+      "transfer_vs_skill_mean": 0.8489,
+      "transfer_vs_skill_sd": 0.0269
+    },
+    "8": {
+      "transfer_vs_skill_mean": 0.8723,
+      "transfer_vs_skill_sd": 0.0118
+    }
+  }
 }

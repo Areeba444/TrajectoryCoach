@@ -1,108 +1,147 @@
 {
-  "total_junctures": 1328,
-  "failure_types": {
-    "1": {
-      "label": "Superseded while held",
-      "count": 0,
-      "share": 0.0
-    },
-    "2": {
-      "label": "Suppressed submission (no evaluate scaffold at submit)",
-      "count": 1202,
-      "share": 0.9051
-    },
-    "3": {
-      "label": "Held then dropped (no pause arrived)",
-      "count": 0,
-      "share": 0.0
-    },
-    "4": {
-      "label": "Late delivery (>120s after triggering juncture)",
-      "count": 503,
-      "share": 0.3788
-    },
-    "5": {
-      "label": "Abandoned after (no learner event within 30 min)",
-      "count": 541,
-      "share": 0.4074
-    },
-    "6": {
-      "label": "Interrupted a burst",
-      "count": 0,
-      "share": 0.0
-    }
+  "split": "test",
+  "delivered_scaffolds": 2038,
+  "submissions_in_split": 1205,
+  "category_definitions": {
+    "held_then_dropped": "Scaffold held for a pause that never came inside the horizon.",
+    "superseded": "A newer juncture replaced a scaffold that was still waiting.",
+    "suppressed_submission": "A submission produced no evaluate scaffold because the episode budget or cooldown was active. This is the most costly silence, since a submission is the clearest moment to ask for a self-check.",
+    "thin_evidence": "Scaffold delivered from a window holding very few events, so the stated reason rests on almost no observation.",
+    "abandoned_after": "Learner produced no further event within 30 minutes, so the scaffold could not be acted on in that session.",
+    "late_delivery": "The gate delayed the scaffold by more than 120 s past the juncture that triggered it, so it may no longer match what the learner is doing."
   },
-  "success_examples": [
+  "counts": {
+    "suppressed_submission": 466,
+    "abandoned_after": 59,
+    "late_delivery": 92,
+    "interrupted_burst": 42,
+    "held_then_dropped": 171,
+    "superseded": 1060
+  },
+  "rates_over_delivered": {
+    "suppressed_submission": 0.2287,
+    "abandoned_after": 0.0289,
+    "late_delivery": 0.0451,
+    "interrupted_burst": 0.0206,
+    "held_then_dropped": 0.0839,
+    "superseded": 0.5201
+  },
+  "failure_scaffolds": 190,
+  "failure_rate": 0.0932,
+  "representative_failures": [
     {
       "student": "2",
-      "triggered_at": 63620211819,
       "phase": "evaluate",
-      "delivered_at": 63620211882,
-      "outcome": "released",
-      "pause_gap": 63,
-      "interrupted": false
+      "reason": "Submission observed; correctness unknown",
+      "prompt": "A submission was recorded. What evidence would you use to check correctness, including an edge case?",
+      "source_row": 292689,
+      "window_events": 138,
+      "runs": 1,
+      "edits": 131,
+      "delivery_delay": 20,
+      "response_gap": 58614,
+      "flags": [
+        "abandoned_after"
+      ]
     },
     {
       "student": "2",
-      "triggered_at": 63620270898,
-      "phase": "evaluate",
-      "delivered_at": 63620271003,
-      "outcome": "released",
-      "pause_gap": 54,
-      "interrupted": false
+      "phase": "plan",
+      "reason": "First observed edit in this task/session",
+      "prompt": "Before the next step, state your goal and one input-output example you expect.",
+      "source_row": 302009,
+      "window_events": 5,
+      "runs": 1,
+      "edits": 1,
+      "delivery_delay": 56,
+      "response_gap": 1822,
+      "flags": [
+        "abandoned_after"
+      ]
+    },
+    {
+      "student": "11",
+      "phase": "plan",
+      "reason": "First observed edit in this task/session",
+      "prompt": "Before the next step, state your goal and one input-output example you expect.",
+      "source_row": 1059512,
+      "window_events": 14,
+      "runs": 0,
+      "edits": 1,
+      "delivery_delay": 177,
+      "response_gap": 42,
+      "flags": [
+        "late_delivery"
+      ]
+    },
+    {
+      "student": "11",
+      "phase": "plan",
+      "reason": "First observed edit in this task/session",
+      "prompt": "Before the next step, state your goal and one input-output example you expect.",
+      "source_row": 1065576,
+      "window_events": 7,
+      "runs": 0,
+      "edits": 1,
+      "delivery_delay": 36,
+      "response_gap": 2,
+      "flags": [
+        "interrupted_burst"
+      ]
     }
   ],
-  "failure_examples": {
-    "1": [],
-    "2": [
-      {
-        "student": "2",
-        "time": 63620211819,
-        "phase": "wait",
-        "reason": "Gate: awaiting cognitive pause"
-      },
-      {
-        "student": "2",
-        "time": 63620212170,
-        "phase": "wait",
-        "reason": "Gate: awaiting cognitive pause"
-      }
-    ],
-    "3": [],
-    "4": [
-      {
-        "student": "2",
-        "triggered_at": 63620271628,
-        "phase": "evaluate",
-        "delivered_at": 63620271751,
-        "outcome": "released",
-        "pause_gap": 77,
-        "interrupted": false
-      },
-      {
-        "student": "2",
-        "triggered_at": 63620274808,
-        "phase": "evaluate",
-        "delivered_at": 63620274947,
-        "outcome": "released",
-        "pause_gap": 139,
-        "interrupted": false
-      }
-    ],
-    "5": [
-      {
-        "student": "2",
-        "time": 63620214114,
-        "gap": 55467,
-        "type": "abandoned"
-      },
-      {
-        "student": "2",
-        "time": 63620275479,
-        "gap": 8624,
-        "type": "abandoned"
-      }
-    ],
-    "6": []
-  }
+  "representative_successes": [
+    {
+      "student": "2",
+      "phase": "evaluate",
+      "reason": "Submission observed; correctness unknown",
+      "prompt": "A submission was recorded. What evidence would you use to check correctness, including an edge case?",
+      "source_row": 289983,
+      "window_events": 40,
+      "runs": 2,
+      "edits": 27,
+      "delivery_delay": 20,
+      "response_gap": 43,
+      "flags": []
+    },
+    {
+      "student": "2",
+      "phase": "evaluate",
+      "reason": "Submission observed; correctness unknown",
+      "prompt": "A submission was recorded. What evidence would you use to check correctness, including an edge case?",
+      "source_row": 290031,
+      "window_events": 48,
+      "runs": 0,
+      "edits": 41,
+      "delivery_delay": 20,
+      "response_gap": 12,
+      "flags": []
+    },
+    {
+      "student": "2",
+      "phase": "plan",
+      "reason": "First observed edit in this task/session",
+      "prompt": "Before the next step, state your goal and one input-output example you expect.",
+      "source_row": 351248,
+      "window_events": 8,
+      "runs": 0,
+      "edits": 1,
+      "delivery_delay": 102,
+      "response_gap": 73,
+      "flags": []
+    },
+    {
+      "student": "2",
+      "phase": "monitor",
+      "reason": "Repeated executions within the observation window",
+      "prompt": "The recent window contains 3 runs. What hypothesis are you checking, and what result would support it?",
+      "source_row": 351346,
+      "window_events": 65,
+      "runs": 3,
+      "edits": 48,
+      "delivery_delay": 20,
+      "response_gap": 1,
+      "flags": []
+    }
+  ]
 }

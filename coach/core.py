@@ -46,46 +46,52 @@ class LearnerState:
     task_prompts: int = 0
     last_prompt: Optional[float] = None
     pending_until: float = 0
+    held: Optional['Decision'] = None
     reflection: str = ''
     reflection_time: Optional[float] = None
     first_edit: bool = True
     recent_decisions: deque = field(default_factory=lambda:deque(maxlen=5))
 
 class TrajectoryCoach:
-    """rule = uncapped trigger baseline; adaptive = stateful policy prototype.
+    """Policy modes.
+
+    rule         every candidate juncture fires; the uncapped Phase 1 baseline.
+    adaptive     full policy: episode budget, response wait and cooldown.
+    no_memory    ablation: no episode budget and no response wait.
+    no_cooldown  ablation: no cooldown between prompts.
+    no_budget    ablation: no episode budget; wait and cooldown still apply.
+
 
     Thresholds are engineering defaults, not validated diagnoses of cognition.
     Session gaps > 30 minutes reset local state. A task switch clears its window.
     Equal timestamps keep source order; backwards time is rejected.
-
-    Phase 2 additions:
-      gate_seconds    – G1: hold scaffold until pause >= gate_seconds (0 = disabled)
-      min_evidence    – G2: suppress scaffold if fewer events in window
-      use_timing_gate – toggle G1 integration (False for ablation E5-6)
-      use_evidence_floor – toggle G2 integration (False for ablation E5-5)
     """
     def __init__(self, mode='adaptive', window_seconds=300, cooldown=180,
                  max_prompts=3, run_threshold=3, provider=None,
-                 gate_seconds=45, min_evidence=5,
-                 use_timing_gate=False, use_evidence_floor=False):
-        if mode not in {'rule','adaptive','no_memory','no_cooldown'}:
+                 gate_seconds=0, gate_horizon=600, min_evidence=0):
+        # gate_seconds > 0 turns on the G1 timing gate: a scaffold that would
+        # land inside a typing burst is held and delivered only once the
+        # learner has been inactive for gate_seconds. A held scaffold is
+        # dropped if the learner has not paused within gate_horizon seconds.
+        # gate_seconds = 0 reproduces the Phase 1 behaviour exactly.
+        # min_evidence > 0 turns on the G2 evidence floor: no scaffold is
+        # delivered from an observation window holding fewer than
+        # min_evidence events, because the stated reason would rest on almost
+        # nothing. min_evidence = 0 reproduces the Phase 1 behaviour.
+        if mode not in {'rule','adaptive','no_memory','no_cooldown','no_budget'}:
             raise ValueError('Unknown mode')
         if min(window_seconds,run_threshold,max_prompts)<=0 or cooldown<0:
             raise ValueError('Invalid policy configuration')
         self.mode, self.window_seconds = mode, window_seconds
         self.cooldown, self.max_prompts, self.run_threshold = cooldown,max_prompts,run_threshold
+        if gate_seconds < 0 or gate_horizon <= 0:
+            raise ValueError('Invalid timing gate configuration')
+        if min_evidence < 0: raise ValueError('Invalid evidence floor')
+        self.gate_seconds, self.gate_horizon = gate_seconds, gate_horizon
+        self.min_evidence = min_evidence
         self.provider = provider
         self.states = {}
-        self.gate_seconds = gate_seconds
-        self.min_evidence = min_evidence
-        self.use_timing_gate = use_timing_gate
-        self.use_evidence_floor = use_evidence_floor
-
-        # G1: timing gate (lazy import to avoid circular dependency)
-        self._gate = None
-        if use_timing_gate and gate_seconds > 0:
-            from .timing import TimingGate
-            self._gate = TimingGate(gate_seconds=gate_seconds)
+        self.gate_stats = Counter()
 
     def reflect(self, student, text, now):
         state=self.states.get(str(student))
@@ -103,12 +109,25 @@ class TrajectoryCoach:
         if s.last_time is not None and event.time<s.last_time:
             raise ValueError('Events must be ordered within each student')
         gap=0 if s.last_time is None else event.time-s.last_time
+        released=None
+        if s.held is not None:
+            if gap>=self.gate_seconds:
+                released=s.held
+                at=s.last_time+self.gate_seconds
+                released.evidence['delivery_delay']=round(at-released.evidence['time'],3)
+                released.evidence['time']=at
+                released.evidence['gated']=True
+                s.held=None; self.gate_stats['released']+=1
+            elif event.time-s.held.evidence['time']>self.gate_horizon:
+                s.held=None; self.gate_stats['dropped']+=1
         new_session=s.last_time is None or gap>1800
         new_task=s.task!=(event.part,event.exercise)
         if new_session or new_task:
             s.history.clear(); s.counts.clear(); s.first_edit=True; s.task_prompts=0
             s.last_prompt=None; s.pending_until=0; s.reflection=''; s.reflection_time=None
             s.recent_decisions.clear(); s.task=(event.part,event.exercise)
+            if s.held is not None and released is None:
+                s.held=None; self.gate_stats['dropped']+=1
         if new_session:
             s.session+=1; s.session_seconds=0
         elif s.last_event!='focus_lost':
@@ -125,6 +144,13 @@ class TrajectoryCoach:
                   'submissions':counts['submit'],'active_seconds_estimate':s.session_seconds,
                   'current_event':event.event,'gap_seconds':gap,
                   'outcomes_observed':False}
+        if released is not None:
+            if event.event in EDIT: s.first_edit=False
+            s.last_time,s.last_event=event.time,event.event
+            s.task_prompts+=1; s.last_prompt=released.evidence['time']
+            s.pending_until=released.evidence['time']+120
+            s.recent_decisions.append({'phase':released.phase,'reason':released.reason})
+            return released
         phase,reason='wait','No trigger'
         if event.event=='submit': phase,reason='evaluate','Submission observed; correctness unknown'
         elif s.first_edit and event.event in EDIT:
@@ -133,22 +159,15 @@ class TrajectoryCoach:
             phase,reason='monitor','Repeated executions within the observation window'
         if event.event in EDIT: s.first_edit=False
         s.last_time,s.last_event=event.time,event.event
-
-        # G2: evidence floor check (before adaptive suppression)
-        if self.use_evidence_floor and phase != 'wait':
-            from .grounding import evidence_floor_met
-            if not evidence_floor_met(evidence):
-                phase = 'wait'
-                reason = f'Thin evidence: fewer than {self.min_evidence} events in window'
-
+        if phase!='wait' and self.min_evidence and len(s.history)<self.min_evidence:
+            phase,reason='wait','Observation window below the evidence floor'
         if self.mode!='rule' and phase!='wait':
-            if self.mode!='no_memory' and s.task_prompts>=self.max_prompts:
+            if self.mode not in ('no_memory','no_budget') and s.task_prompts>=self.max_prompts:
                 phase,reason='wait','Task/session prompt budget exhausted'
             elif self.mode!='no_memory' and event.time<s.pending_until:
                 phase,reason='wait','Waiting for learner response'
             elif self.mode!='no_cooldown' and s.last_prompt is not None and event.time-s.last_prompt<self.cooldown:
                 phase,reason='wait','Cooldown active'
-
         prompts={
             'plan':'Before the next step, state your goal and one input-output example you expect.',
             'monitor':f"The recent window contains {counts['run']} runs. What hypothesis are you checking, and what result would support it?",
@@ -164,28 +183,11 @@ class TrajectoryCoach:
                 d=self.provider.generate(d,context)
             except Exception as exc:
                 d.provider='fallback:'+type(exc).__name__
-
-        # G1: timing gate integration
-        if self._gate is not None:
-            if d.phase != 'wait':
-                # A new juncture — supersede any held scaffold, then hold this one
-                self._gate.supersede(event.student)
-                self._gate.hold(event.student, d, event.time)
-                # Return wait while gate holds the scaffold
-                wait_d = Decision('wait', 'Gate: awaiting cognitive pause', '', evidence)
-                return wait_d
-            else:
-                # Tick the gate; may release a held scaffold
-                released = self._gate.tick(event.student, event.time)
-                if released is not None:
-                    # A held scaffold is now released
-                    if released.phase != 'wait':
-                        s.task_prompts += 1
-                        s.last_prompt = event.time
-                        s.pending_until = event.time + 120
-                        s.recent_decisions.append({'phase': released.phase, 'reason': released.reason})
-                    return released
-
+        if d.phase!='wait' and self.gate_seconds:
+            d.evidence['gated']=False
+            if s.held is not None: self.gate_stats['superseded']+=1
+            s.held=d; self.gate_stats['held']+=1
+            return Decision('wait','Held for a natural pause','',evidence)
         if d.phase!='wait':
             s.task_prompts+=1; s.last_prompt=event.time; s.pending_until=event.time+120
             s.recent_decisions.append({'phase':d.phase,'reason':d.reason})

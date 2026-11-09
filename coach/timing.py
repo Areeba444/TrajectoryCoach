@@ -1,298 +1,185 @@
-"""Gap 1 — Intervention timing: timing gate, juncture detection, metrics.
+"""G1 metrics: is a scaffold delivered at an appropriate moment?
 
-The gate holds a triggered scaffold until a cognitive pause (gap ≥
-GATE_SECONDS) arrives within PAUSE_HORIZON.  If a newer juncture triggers
-first, the held scaffold is superseded.  If the horizon expires with no
-pause, the scaffold is dropped.
+Phase 1 proposed educator ratings of timing appropriateness. Two educator
+raters were not available inside Phase 2, so timing is measured from the logs
+instead, with a small blind human rating kept as a validation sample. The
+log-derived measures below are fixed before any comparison is run.
 
-Thresholds are engineering defaults, not validated diagnoses of cognition.
-No course outcome is observed or inferred.
+IMPORTANT. This is a replay of logs recorded in 2016. No learner in the data
+ever saw a scaffold from this system. Nothing measured here can be an effect
+of prompting. Every measure below describes *which moments a policy selects*
+and what the learner did at those moments anyway. deliberation_delta in
+particular is a property of the selected moments, not a treatment effect, and
+must not be reported as one.
+
+interruption_rate   prompt lands inside a typing burst: an edit within
+                    BURST seconds before and within BURST seconds after. A
+                    lower value is better; this is the primary G1 measure.
+pause_aligned       prompt is followed by a natural pause of at least PAUSE
+                    seconds, so the learner can read it without losing flow.
+juncture_precision  prompt lands on an observable decision point (first edit
+                    of a task, a repeated-execution window, or a submission).
+                    True by construction for the proposed policy; reported for
+                    completeness, not as evidence.
+juncture_coverage   share of all observable decision points that received a
+                    prompt within COVER seconds.
+median_response_gap seconds from the prompt to the learner's next event.
+deliberation_delta  change in the deliberation ratio, edits / (edits + runs),
+                    in the 300 s after the prompt compared with the 300 s
+                    before. The ratio is bounded in [0, 1], so it is stable
+                    when a window contains very few executions. Positive means
+                    proportionally more editing and less blind re-running,
+                    which is the behavioural direction a planning or
+                    monitoring scaffold is meant to encourage. Windows with
+                    fewer than MIN_WINDOW events are not scored.
 """
-import math, random
-from collections import defaultdict
-from dataclasses import dataclass, field
-from typing import Optional
-from .core import Decision, Event
+import bisect, random, statistics
+from .core import EDIT
 
-# ── Thresholds (all in seconds) ────────────────────────────────────────────
-GATE_SECONDS    = 45    # inactivity gap that counts as a cognitive pause
-PAUSE_HORIZON   = 300   # discard the held scaffold if no pause by this point
-BURST_THRESHOLD = 15    # gaps below this are treated as typing bursts
+BURST = 5.0
+PAUSE = 20.0
+COVER = 30.0
+WINDOW = 300.0
+MIN_WINDOW = 5
 
 
-# ── Per-learner gate state ──────────────────────────────────────────────────
-@dataclass
-class _GateState:
-    pending_decision: Optional[Decision] = None
-    pending_since: Optional[float]       = None   # wall-clock when scaffold was held
-    last_event_time: Optional[float]     = None
+class TimingIndex:
+    """Per-learner timeline used to score any policy's delivered prompts."""
 
+    def __init__(self, events):
+        self.times, self.kinds = {}, {}
+        for e in events:
+            self.times.setdefault(e.student, []).append(e.time)
+            self.kinds.setdefault(e.student, []).append(e.event)
 
-class TimingGate:
-    """Holds one pending scaffold per learner until a pause confirms delivery.
+    def _slice(self, student, lo, hi):
+        t = self.times.get(student)
+        if not t:
+            return [], []
+        a, b = bisect.bisect_left(t, lo), bisect.bisect_right(t, hi)
+        return t[a:b], self.kinds[student][a:b]
 
-    Thread-safety: not required (single-threaded replay).
-    """
+    def _edit_within(self, student, at, before):
+        lo, hi = (at - BURST, at) if before else (at, at + BURST)
+        _, kinds = self._slice(student, lo, hi)
+        return any(k in EDIT for k in kinds)
 
-    def __init__(self,
-                 gate_seconds: float = GATE_SECONDS,
-                 pause_horizon: float = PAUSE_HORIZON):
-        self.gate_seconds  = gate_seconds
-        self.pause_horizon = pause_horizon
-        self._states: dict[str, _GateState] = defaultdict(_GateState)
+    def _next_gap(self, student, at):
+        t = self.times.get(student) or []
+        i = bisect.bisect_right(t, at)
+        return (t[i] - at) if i < len(t) else None
 
-    # ── Public interface ────────────────────────────────────────────────────
+    def _deliberation(self, student, lo, hi):
+        """Share of actions that are edits rather than executions, in [0, 1]."""
+        _, kinds = self._slice(student, lo, hi)
+        runs = sum(1 for k in kinds if k == 'run')
+        edits = sum(1 for k in kinds if k in EDIT)
+        total = runs + edits
+        return (edits / total) if total >= MIN_WINDOW else None
 
-    def hold(self, student: str, decision: Decision, now: float) -> None:
-        """Register a scaffold as pending for this learner."""
-        gs = self._states[student]
-        gs.pending_decision = decision
-        gs.pending_since    = now
-        gs.last_event_time  = now
-
-    def tick(self, student: str, event_time: float) -> Optional[Decision]:
-        """
-        Notify the gate of a new event.  Returns the held Decision if the
-        gap since the last event constitutes a pause (≥ gate_seconds) and
-        the horizon has not expired.  Returns None otherwise.
-        """
-        gs = self._states[student]
-        if gs.pending_decision is None:
-            gs.last_event_time = event_time
-            return None
-
-        gap = (event_time - gs.last_event_time) if gs.last_event_time is not None else 0.0
-        gs.last_event_time = event_time
-
-        # Horizon check — drop if too much time passed without a pause
-        age = event_time - gs.pending_since
-        if age > self.pause_horizon:
-            gs.pending_decision = None
-            gs.pending_since    = None
-            return None
-
-        # Pause check
-        if gap >= self.gate_seconds:
-            decision = gs.pending_decision
-            gs.pending_decision = None
-            gs.pending_since    = None
-            return decision
-
-        return None
-
-    def supersede(self, student: str) -> bool:
-        """Cancel the held scaffold because a newer juncture arrived."""
-        gs = self._states[student]
-        had = gs.pending_decision is not None
-        gs.pending_decision = None
-        gs.pending_since    = None
-        return had
-
-    def drop(self, student: str) -> bool:
-        """Explicitly drop the held scaffold (horizon expired externally)."""
-        return self.supersede(student)
-
-    def pending(self, student: str) -> bool:
-        """True if a scaffold is currently held for this learner."""
-        return self._states[student].pending_decision is not None
-
-
-# ── Juncture detection (post-hoc, for evaluation) ──────────────────────────
-
-def detect_junctures(
-        events: list[Event],
-        decisions: list[dict],
-        gate_seconds: float = GATE_SECONDS,
-        pause_horizon: float = PAUSE_HORIZON,
-        burst_threshold: float = BURST_THRESHOLD,
-) -> list[dict]:
-    """
-    Map each non-wait decision to a juncture record describing its fate.
-
-    Returns a list of dicts with keys:
-        student, triggered_at, phase, delivered_at,
-        outcome ('released' | 'superseded' | 'dropped'),
-        pause_gap, interrupted
-    """
-    # Build a per-student time-ordered event list
-    by_student: dict[str, list[Event]] = defaultdict(list)
-    for e in events:
-        by_student[e.student].append(e)
-    for lst in by_student.values():
-        lst.sort(key=lambda e: (e.time, e.source_row))
-
-    # Build decision lookup by (student, source_row)
-    dec_lookup: dict[tuple, dict] = {}
-    for d in decisions:
-        ev = d.get('evidence', {})
-        key = (str(ev.get('student', '')), int(ev.get('source_row', 0)))
-        dec_lookup[key] = d
-
-    junctures = []
-    for student, evts in by_student.items():
-        # Walk events; for each triggered scaffold apply gate logic
-        pending: Optional[tuple[float, dict]] = None   # (triggered_at, decision)
-        last_time: Optional[float] = None
-
-        for i, evt in enumerate(evts):
-            gap = (evt.time - last_time) if last_time is not None else 0.0
-            key = (student, evt.source_row)
-
-            # Does this event carry a triggered scaffold?
-            if key in dec_lookup and dec_lookup[key]['phase'] != 'wait':
-                dec = dec_lookup[key]
-                if pending is not None:
-                    # Previous scaffold superseded by this one
-                    junctures.append({
-                        'student'      : student,
-                        'triggered_at' : pending[0],
-                        'phase'        : pending[1]['phase'],
-                        'delivered_at' : None,
-                        'outcome'      : 'superseded',
-                        'pause_gap'    : None,
-                        'interrupted'  : None,
-                    })
-                pending = (evt.time, dec)
-
-            # Gate tick
-            if pending is not None:
-                trig_at, dec = pending
-                age = evt.time - trig_at
-
-                if age > pause_horizon:
-                    junctures.append({
-                        'student'      : student,
-                        'triggered_at' : trig_at,
-                        'phase'        : dec['phase'],
-                        'delivered_at' : None,
-                        'outcome'      : 'dropped',
-                        'pause_gap'    : None,
-                        'interrupted'  : None,
-                    })
-                    pending = None
-                elif gap >= gate_seconds:
-                    interrupted = gap < burst_threshold   # always False here, but kept for clarity
-                    junctures.append({
-                        'student'      : student,
-                        'triggered_at' : trig_at,
-                        'phase'        : dec['phase'],
-                        'delivered_at' : evt.time,
-                        'outcome'      : 'released',
-                        'pause_gap'    : gap,
-                        'interrupted'  : gap < burst_threshold,
-                    })
-                    pending = None
-
-            last_time = evt.time
-
-        # Remaining pending at end-of-stream → dropped
-        if pending is not None:
-            trig_at, dec = pending
-            junctures.append({
-                'student'      : student,
-                'triggered_at' : trig_at,
-                'phase'        : dec['phase'],
-                'delivered_at' : None,
-                'outcome'      : 'dropped',
-                'pause_gap'    : None,
-                'interrupted'  : None,
-            })
-
-    return junctures
-
-
-# ── Metric computation ──────────────────────────────────────────────────────
-
-def compute_metrics(junctures: list[dict]) -> dict:
-    """
-    Compute primary timing metrics from a list of juncture records.
-
-    Returns:
-        scaffolds_delivered  : int
-        total_junctures      : int
-        interruption_rate    : float  fraction of delivered where interrupted == True
-        pause_aligned_rate   : float  fraction where outcome == 'released'
-        coverage             : float  delivered / total_junctures
-        deliberation_delta   : float  mean pause_gap at released − mean gap at non-released
-    """
-    total     = len(junctures)
-    delivered = [j for j in junctures if j['outcome'] == 'released']
-    n_del     = len(delivered)
-
-    if total == 0:
+    def score_one(self, student, at):
+        gap = self._next_gap(student, at)
+        before = self._deliberation(student, at - WINDOW, at)
+        after = self._deliberation(student, at, at + WINDOW)
         return {
-            'scaffolds_delivered' : 0,
-            'total_junctures'     : 0,
-            'interruption_rate'   : 0.0,
-            'pause_aligned_rate'  : 0.0,
-            'coverage'            : 0.0,
-            'deliberation_delta'  : 0.0,
+            'interrupting': (self._edit_within(student, at, True)
+                             and self._edit_within(student, at, False)),
+            'pause_aligned': gap is not None and gap >= PAUSE,
+            'response_gap': gap,
+            'deliberation_delta': (after - before) if (before is not None and after is not None) else None,
         }
 
-    interrupted = [j for j in delivered if j.get('interrupted')]
-    interruption_rate  = len(interrupted) / n_del if n_del else 0.0
-    pause_aligned_rate = n_del / total
-    coverage           = n_del / total   # same denominator for comparability
 
-    # Deliberation delta: mean pause_gap at delivered vs at non-delivered (dropped/superseded)
-    del_gaps     = [j['pause_gap'] for j in delivered if j['pause_gap'] is not None]
-    non_del_gaps = [j['pause_gap'] for j in junctures
-                    if j['outcome'] != 'released' and j['pause_gap'] is not None]
-    mean_del     = sum(del_gaps)     / len(del_gaps)     if del_gaps     else 0.0
-    mean_non_del = sum(non_del_gaps) / len(non_del_gaps) if non_del_gaps else 0.0
-    deliberation_delta = mean_del - mean_non_del
+def junctures(events, window_seconds=300, run_threshold=3):
+    """Every observable decision point in the stream, as (student, time).
 
+    This is exactly the candidate set the uncapped rule policy fires on, so it
+    is the denominator for coverage.
+    """
+    out, state = [], {}
+    for e in events:
+        s = state.setdefault(e.student, {'win': [], 'runs': 0, 'edits': 0,
+                                         'first': True, 'task': None, 'last': None})
+        if s['task'] != (e.part, e.exercise) or (s['last'] is not None and e.time - s['last'] > 1800):
+            s.update(win=[], runs=0, edits=0, first=True, task=(e.part, e.exercise))
+        s['win'].append(e)
+        if e.event == 'run':
+            s['runs'] += 1
+        elif e.event in EDIT:
+            s['edits'] += 1
+        while s['win'] and e.time - s['win'][0].time > window_seconds:
+            old = s['win'].pop(0)
+            if old.event == 'run':
+                s['runs'] -= 1
+            elif old.event in EDIT:
+                s['edits'] -= 1
+        if e.event == 'submit':
+            out.append((e.student, e.time))
+        elif s['first'] and e.event in EDIT:
+            out.append((e.student, e.time))
+        elif e.event == 'run' and s['runs'] >= run_threshold and s['edits']:
+            out.append((e.student, e.time))
+        if e.event in EDIT:
+            s['first'] = False
+        s['last'] = e.time
+    return out
+
+
+def _cluster_bootstrap(per_learner, reps=1000, seed=0):
+    """Resample learners, not prompts, because prompts cluster within learners."""
+    keys = sorted(per_learner)
+    pooled = [v for k in keys for v in per_learner[k]]
+    if not pooled:
+        return None, None, None
+    point = statistics.fmean(pooled)
+    rng, draws = random.Random(seed), []
+    for _ in range(reps):
+        sample = []
+        for _ in keys:
+            sample.extend(per_learner[keys[rng.randrange(len(keys))]])
+        if sample:
+            draws.append(statistics.fmean(sample))
+    draws.sort()
+    lo = draws[int(0.025 * len(draws))]
+    hi = draws[int(0.975 * len(draws)) - 1]
+    return point, lo, hi
+
+
+def evaluate(decisions, index, all_junctures, seed=0):
+    """Score a policy's delivered prompts against the G1 measures."""
+    by_learner_int, by_learner_pause, by_learner_delta = {}, {}, {}
+    gaps, hit = [], set()
+    jset = {}
+    for s, t in all_junctures:
+        jset.setdefault(s, []).append(t)
+    for s in jset:
+        jset[s].sort()
+    precise = 0
+    for d in decisions:
+        s, at = d.evidence['student'], d.evidence['time']
+        m = index.score_one(s, at)
+        by_learner_int.setdefault(s, []).append(1.0 if m['interrupting'] else 0.0)
+        by_learner_pause.setdefault(s, []).append(1.0 if m['pause_aligned'] else 0.0)
+        if m['deliberation_delta'] is not None:
+            by_learner_delta.setdefault(s, []).append(m['deliberation_delta'])
+        if m['response_gap'] is not None:
+            gaps.append(m['response_gap'])
+        times = jset.get(s, [])
+        i = bisect.bisect_left(times, at - COVER)
+        if i < len(times) and times[i] <= at + COVER:
+            precise += 1
+            hit.add((s, times[i]))
+    n = len(decisions)
+    ip, ilo, ihi = _cluster_bootstrap(by_learner_int, seed=seed)
+    pp, plo, phi = _cluster_bootstrap(by_learner_pause, seed=seed)
+    dp, dlo, dhi = _cluster_bootstrap(by_learner_delta, seed=seed)
     return {
-        'scaffolds_delivered' : n_del,
-        'total_junctures'     : total,
-        'interruption_rate'   : round(interruption_rate,  4),
-        'pause_aligned_rate'  : round(pause_aligned_rate, 4),
-        'coverage'            : round(coverage,            4),
-        'deliberation_delta'  : round(deliberation_delta, 4),
+        'prompts': n,
+        'interruption_rate': ip, 'interruption_ci': [ilo, ihi],
+        'pause_aligned': pp, 'pause_aligned_ci': [plo, phi],
+        'juncture_precision': (precise / n) if n else None,
+        'juncture_coverage': (len(hit) / len(all_junctures)) if all_junctures else None,
+        'median_response_gap': statistics.median(gaps) if gaps else None,
+        'deliberation_delta': dp, 'deliberation_delta_ci': [dlo, dhi],
+        'learners_prompted': len(by_learner_int),
     }
-
-
-# ── Cluster bootstrap (by learner) ─────────────────────────────────────────
-
-def cluster_bootstrap(
-        junctures: list[dict],
-        n_boot: int = 1000,
-        seed: int   = 0,
-        alpha: float = 0.05,
-) -> dict:
-    """
-    Bootstrap confidence intervals by resampling LEARNERS (not scaffolds).
-    Scaffolds cluster within learners, so resampling scaffolds would
-    understate the sampling variance.
-
-    Returns {metric: [lower, upper]} for each numeric metric in compute_metrics.
-    """
-    rng = random.Random(seed)
-    students = list({j['student'] for j in junctures})
-    if not students:
-        return {}
-
-    by_student: dict[str, list[dict]] = defaultdict(list)
-    for j in junctures:
-        by_student[j['student']].append(j)
-
-    boot_metrics: dict[str, list[float]] = defaultdict(list)
-    for _ in range(n_boot):
-        sample_students = rng.choices(students, k=len(students))
-        sample_junctures = [j for s in sample_students for j in by_student[s]]
-        m = compute_metrics(sample_junctures)
-        for k, v in m.items():
-            if isinstance(v, float):
-                boot_metrics[k].append(v)
-
-    lo_idx = int(math.floor(alpha / 2 * n_boot))
-    hi_idx = int(math.ceil((1 - alpha / 2) * n_boot)) - 1
-    ci = {}
-    for k, vals in boot_metrics.items():
-        vals.sort()
-        ci[k] = [
-            round(vals[max(0, lo_idx)], 4),
-            round(vals[min(len(vals)-1, hi_idx)], 4),
-        ]
-    return ci
-

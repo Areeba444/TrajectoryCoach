@@ -1,5 +1,6 @@
 {
-  "rule": "index % 3 == 2",
+  "rule": "learners sorted by integer id; every third learner (index % 3 == 2) is test",
+  "source": "zenodo_24_students.csv.gz",
   "dev": [
     "0",
     "1",
@@ -27,5 +28,35 @@
     "17",
     "20",
     "23"
-  ]
+  ],
+  "dev_events": 1871292,
+  "test_events": 726897,
+  "total_events": 2598189,
+  "events_per_learner": {
+    "0": 165487,
+    "1": 124449,
+    "2": 148792,
+    "3": 117252,
+    "4": 70521,
+    "5": 98589,
+    "6": 27207,
+    "7": 72181,
+    "8": 15599,
+    "9": 14178,
+    "10": 70307,
+    "11": 180271,
+    "12": 350348,
+    "13": 68920,
+    "14": 115805,
+    "15": 160406,
+    "16": 131346,
+    "17": 2657,
+    "18": 88433,
+    "19": 54839,
+    "20": 96265,
+    "21": 240811,
+    "22": 114607,
+    "23": 68919
+  },
+  "note": "Phase 1 reported replay over all 24 learners. Phase 2 reports headline numbers on the test learners only. The dev learners are used for every design decision, threshold and prompt."
 }

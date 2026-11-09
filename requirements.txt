@@ -1,13 +1,8 @@
-# TrajectoryCoach — Phase 2 dependencies
-#
-# Core runtime: Python 3.10+ standard library only.
-# No third-party packages are required to run the agent, replay experiments,
-# or execute the full test suite (python -m unittest discover -s tests).
-#
-# Optional — only needed for figure generation (make_figures.py):
-# matplotlib>=3.7
+# The system, the offline experiments and the tests use the Python 3.10+
+# standard library only. Nothing below is needed to reproduce the main results.
 
-# No required packages — stdlib only.
-# If you want to generate matplotlib figures, install:
-#   pip install matplotlib
+# Figures only (scripts/make_figures.py):
+matplotlib>=3.7
 
+# Live-model experiments reach the Groq OpenAI-compatible endpoint with
+# urllib from the standard library, so no HTTP client is required.

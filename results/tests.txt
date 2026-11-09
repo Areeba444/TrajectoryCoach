@@ -17,10 +17,36 @@ test_window_expiry (test_coach.CoachTests.test_window_expiry) ... ok
 test_incomplete_download_cannot_claim_complete_subset (test_extraction.ExtractionTests.test_incomplete_download_cannot_claim_complete_subset) ... ok
 test_noncontiguous_learner_order_is_rejected (test_extraction.ExtractionTests.test_noncontiguous_learner_order_is_rejected) ... ok
 test_sort_preserves_ties_source_rows_and_complete_boundary (test_extraction.ExtractionTests.test_sort_preserves_ties_source_rows_and_complete_boundary) ... ok
+test_pause_model_requests_land_in_pauses (test_phase2_components.BaselineTests.test_pause_model_requests_land_in_pauses) ... ok
+test_poisson_mean_is_close_to_the_rate (test_phase2_components.BaselineTests.test_poisson_mean_is_close_to_the_rate) ... ok
+test_rate_matches_the_base_paper (test_phase2_components.BaselineTests.test_rate_matches_the_base_paper) ... ok
+test_same_seed_gives_the_same_requests (test_phase2_components.BaselineTests.test_same_seed_gives_the_same_requests) ... ok
+test_unknown_request_model_is_rejected (test_phase2_components.BaselineTests.test_unknown_request_model_is_rejected) ... ok
+test_a_grounded_prompt_is_clean (test_phase2_components.GroundingTests.test_a_grounded_prompt_is_clean) ... ok
+test_code_is_caught (test_phase2_components.GroundingTests.test_code_is_caught) ... ok
+test_counts_present_in_the_evidence_are_allowed (test_phase2_components.GroundingTests.test_counts_present_in_the_evidence_are_allowed) ... ok
+test_invented_counts_are_caught (test_phase2_components.GroundingTests.test_invented_counts_are_caught) ... ok
+test_outcome_and_affect_claims_are_caught (test_phase2_components.GroundingTests.test_outcome_and_affect_claims_are_caught) ... ok
+test_score_aggregates_over_prompts (test_phase2_components.GroundingTests.test_score_aggregates_over_prompts) ... ok
+test_reproducible_for_a_seed (test_phase2_components.SimulatorTests.test_reproducible_for_a_seed) ... ok
+test_scores_stay_inside_the_rubric_range (test_phase2_components.SimulatorTests.test_scores_stay_inside_the_rubric_range) ... ok
+test_unassisted_learners_gain_nothing (test_phase2_components.SimulatorTests.test_unassisted_learners_gain_nothing) ... ok
+test_dev_and_test_are_disjoint_and_complete (test_phase2_components.SplitTests.test_dev_and_test_are_disjoint_and_complete) ... ok
+test_constant_input_has_no_correlation (test_phase2_components.StatsTests.test_constant_input_has_no_correlation) ... ok
+test_perfect_monotone_relation (test_phase2_components.StatsTests.test_perfect_monotone_relation) ... ok
+test_ties_share_a_rank (test_phase2_components.StatsTests.test_ties_share_a_rank) ... ok
 test_missing_credentials_fail_before_network (test_tasks_and_provider.ContractTests.test_missing_credentials_fail_before_network) ... ok
 test_refusal_is_rejected (test_tasks_and_provider.ContractTests.test_refusal_is_rejected) ... ok
 test_responses_transport_contract (test_tasks_and_provider.ContractTests.test_responses_transport_contract) ... ok
 test_task_boundaries (test_tasks_and_provider.ContractTests.test_task_boundaries) ... ok
+test_evidence_floor_allows_a_full_window (test_timing_gate.TimingGateTests.test_evidence_floor_allows_a_full_window) ... ok
+test_evidence_floor_blocks_a_thin_window (test_timing_gate.TimingGateTests.test_evidence_floor_blocks_a_thin_window) ... ok
+test_gate_off_reproduces_phase1 (test_timing_gate.TimingGateTests.test_gate_off_reproduces_phase1) ... ok
+test_held_scaffold_expires_after_the_horizon (test_timing_gate.TimingGateTests.test_held_scaffold_expires_after_the_horizon) ... ok
+test_invalid_gate_configuration_is_rejected (test_timing_gate.TimingGateTests.test_invalid_gate_configuration_is_rejected) ... ok
+test_release_time_sits_inside_the_pause (test_timing_gate.TimingGateTests.test_release_time_sits_inside_the_pause) ... ok
+test_scaffold_is_held_until_the_learner_pauses (test_timing_gate.TimingGateTests.test_scaffold_is_held_until_the_learner_pauses) ... ok
+test_superseded_scaffolds_are_counted (test_timing_gate.TimingGateTests.test_superseded_scaffolds_are_counted) ... ok
 test_call_budget (test_tools.ToolTests.test_call_budget) ... ok
 test_evidence_row_check (test_tools.ToolTests.test_evidence_row_check) ... ok
 test_prior_interventions_and_limit_validation (test_tools.ToolTests.test_prior_interventions_and_limit_validation) ... ok
@@ -31,6 +57,6 @@ test_tools_do_not_change_engine_state (test_tools.ToolTests.test_tools_do_not_ch
 test_unknown_tool_learner_and_arguments_are_rejected (test_tools.ToolTests.test_unknown_tool_learner_and_arguments_are_rejected) ... ok
 
 ----------------------------------------------------------------------
-Ran 31 tests in 0.019s
+Ran 57 tests in 0.016s
 
 OK

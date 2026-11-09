@@ -1,17 +1,18 @@
 \begin{table}[t]
-\caption{Failure-mode analysis across 1328 junctures on the test split.}
-\label{tab:failures}
 \centering
-\begin{tabular}{clrr}
+\caption{Failure categories over the 2038 scaffolds the full system delivered on the test
+split. Categories are not exclusive; 190 scaffolds (0.093) carry at least one flag.}
+\label{tab:failures}
+\begin{tabular}{lrr}
 \toprule
-\# & Failure type & Count & Share \\
+Category & Cases & Share of delivered \\
 \midrule
-1 & Superseded while held & 0 & 0.0000 \\
-2 & Suppressed submission \textit{(no evaluate scaffold at submit)} & 1,202 & 0.9051 \\
-3 & Held then dropped \textit{(no pause arrived)} & 0 & 0.0000 \\
-4 & Late delivery \textit{(>120s after triggering juncture)} & 503 & 0.3788 \\
-5 & Abandoned after \textit{(no learner event within 30 min)} & 541 & 0.4074 \\
-6 & Interrupted a burst & 0 & 0.0000 \\
+superseded & 1060 & 0.520 \\
+suppressed submission & 466 & 0.229 \\
+held then dropped & 171 & 0.084 \\
+late delivery & 92 & 0.045 \\
+abandoned after & 59 & 0.029 \\
+interrupted burst & 42 & 0.021 \\
 \bottomrule
 \end{tabular}
 \end{table}

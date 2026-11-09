@@ -1,236 +1,180 @@
-# TrajectoryCoach: Evidence-Grounded Metacognitive Scaffolding for Collaborative Programming
+# TrajectoryCoach: Evidence-Grounded Metacognitive Scaffolding for Programming
 
-**AI4015 Agentic Artificial Intelligence, Fall 2026 — Phase 2.** Project G3-11.
+**AI4015 Agentic Artificial Intelligence, Fall 2026 — Phase 2.** Project code **G3-11**.
 
 | | |
 |---|---|
 | Group members | Minahil Kashif (23i-0554, group head), Areeba Javed (23i-0570) |
 | Supervisor | Naeem Tareen |
-| Base paper | Phung et al., *Plan More, Debug Less*, AIED 2025 |
-| Repository | https://github.com/Areeba444/TrajectoryCoach |
+| Seed | G3, *Implementing Trajectory-Informed Collaborative Agents for Gaining Metacognitive Skills in Programming* |
+| Base paper | T. Phung, H. Choi, M. Wu, A. Singla, C. Brooks, *Plan More, Debug Less*, AIED 2025, [doi:10.1007/978-3-031-98414-3_1](https://doi.org/10.1007/978-3-031-98414-3_1) |
+
+TrajectoryCoach watches a learner's IDE activity — edits, runs, focus changes,
+submissions — and decides whether this is a good moment to ask one short
+metacognitive question, or whether to stay quiet. It never sees the learner's
+source code, never learns whether the code was correct, and never writes code.
+
+**What this system is not.** Every result in this repository comes from
+replaying logs recorded in 2016, or from simulated learners. No student ever
+saw a scaffold produced by this system. Nothing here is a learning outcome,
+and no measure below is an effect of prompting.
 
 ---
 
-## Phase 2 — Quick start
+## Architecture
 
-```powershell
-# Install nothing — Python 3.10+ stdlib only
-python -m unittest discover -s tests -v          # 49 tests
-python scripts/make_splits.py                     # writes data/splits.json
-python -m scripts.run_experiments --split test    # E1, E2, E3, E5, E6
-python -m scripts.run_transfer_study              # E4 / G3
-python -m scripts.run_failure_analysis            # 6 failure categories
-python -m scripts.make_tables                     # writes paper/tables/*.tex and prints to stdout
-python -m scripts.make_figures                    # writes figures/*.txt (and PNGs if matplotlib installed)
-```
+![architecture](figures/fig1_architecture.png)
 
-Live CLI (file-watch mode):
-```powershell
-python -m coach.cli --input data/demo.csv --replay
-python -m coach.cli --input data/demo.csv --replay --groq   # requires GROQ_API_KEY
-```
+| Stage | What it does |
+|---|---|
+| Environment | A real file on disk. Saves and runs become trajectory events. Source code never leaves the machine. |
+| Trajectory state | A 300 s sliding window with counts, session and episode tracking, and a memory of recent interventions. |
+| Policy | Chooses `plan`, `monitor`, `evaluate` or `wait`, under an episode budget, a response wait and a cooldown. |
+| **Timing gate (G1)** | Holds a scaffold that would land inside a typing burst; releases it after 20 s of inactivity; drops it after the horizon. |
+| **Evidence floor + validator (G2)** | Refuses to speak from a window below five events. A JSON schema, a validator and read-only tools keep generated wording inside the observed evidence. |
+| Read-only tools | `get_trajectory_summary`, `get_prior_interventions`, `get_learner_reflection`, `check_evidence_row`, under a call budget. |
+| Scaffold out | One question, the reason for it, and the evidence row it rests on. Falls back to deterministic wording if the model fails. |
 
-LLM grounding experiment (requires GROQ_API_KEY):
-```powershell
-$env:GROQ_API_KEY = 'gsk_...'
-python -m scripts.run_llm_experiments --smoke     # 1 prefix smoke test
-python -m scripts.run_llm_experiments --prefixes 100
-```
+**G3** is the delayed, no-AI transfer task and rubric. It sits outside the
+runtime loop and is validated separately on simulated learners.
 
 ---
 
-## Gap-Resolution Table
+## Install and run
 
-| Gap | Method / component | Metric | Base paper result | Our result | Addressed? |
-|---|---|---|---|---|---|
-| **G1** Intervention timing | Timing gate (`coach/timing.py`): hold scaffold until 45s inactivity pause; cluster-bootstrapped CI by learner | Interruption rate ↓ / Pause-aligned rate ↑ | On-demand pause: 0.1273 interruption, 0.3554 pause-aligned | **0.0206** interruption, **0.4485** pause-aligned | **Fully** |
-| **G2** Grounding with incomplete observations | Evidence floor (`coach/grounding.py`): suppress scaffold if < 5 events in window; forbidden-pattern screen | Unsupported-claim rate ≤ 5% | Unconstrained LLM: not measured | Thin-evidence category eliminated; pattern violations tracked | **Partially** (LLM run needs GROQ_API_KEY) |
-| **G3** Transfer after assistance removed | Simulated learner study (`coach/simulator.py`): 120 learners × 3 conditions × 5 seeds | Spearman r (transfer ~ latent skill) | No transfer measure in base paper | transfer r = 0.974 all conditions; sensitivity: n_tasks ≥ 4 needed | **Partially** (simulated, not real learners) |
+Python 3.10 or newer. The system, the offline experiments and the tests need
+**no third-party packages**. `matplotlib` is needed only to redraw figures.
+
+```bash
+git clone https://github.com/Areeba444/TrajectoryCoach
+cd TrajectoryCoach
+python -m unittest discover -s tests -v        # 57 tests
+```
+
+### Use it on your own code
+
+```bash
+python -m coach.cli --file solution.py
+```
+
+The coach watches `solution.py`. Edit it in any editor; inside the session use
+`run`, `submit`, `reflect <text>`, `state`, `quit`. The full trace is written
+to `logs/session_<timestamp>.jsonl`.
+
+To let a model word the scaffolds:
+
+```bash
+cp .env.example .env          # add your Groq key
+python -m coach.cli --file solution.py --live
+```
+
+### Configuration
+
+| Variable | Needed for | Default |
+|---|---|---|
+| `GROQ_API_KEY` | live model only | none; offline runs never read it |
+| `GROQ_MODEL` | live model only | `llama-3.3-70b-versatile` |
+
+Keys are read from the environment only. `.env` is git-ignored and no key is
+written to any file in this repository.
+
+---
+
+## Reproducing every experiment
+
+```bash
+python scripts/make_splits.py                  # data/splits.json
+python -m scripts.run_experiments --split test # E1, E2, E3, E5, E6 offline
+python -m scripts.run_transfer_study           # E4 / G3
+python -m scripts.run_failure_analysis         # failure categories
+python -m scripts.make_figures                 # figures/
+python -m scripts.make_tables                  # paper/tables/
+```
+
+Live-model runs, which need network and a key:
+
+```bash
+python -m scripts.run_llm_experiments --smoke          # one call, checks the key
+python -m scripts.run_llm_experiments --prefixes 100   # E4 / G2 and live E6
+python -m scripts.make_tables                          # refresh the tables
+```
+
+| Experiment | What it shows | Script | Output |
+|---|---|---|---|
+| E1 | Uncapped rule baseline | `run_experiments` | `results/phase2/experiments_test.json` |
+| E2 | Base paper's on-demand policy on our data, 3 seeds | `run_experiments` | same file |
+| E3 | Full proposed system | `run_experiments` | same file |
+| E4 | One experiment per gap | `run_experiments`, `run_transfer_study`, `run_llm_experiments` | `experiments_test.json`, `e4_g3_transfer.json`, `e4_g2_grounding.json` |
+| E5 | Ablation, one component removed at a time | `run_experiments` | `experiments_test.json` |
+| E6 | Runtime, memory, tokens, latency, rejection rate | `run_experiments`, `run_llm_experiments` | both files |
+| — | Failure categories and cases | `run_failure_analysis` | `results/phase2/failure_analysis.json` |
+| — | Human rating, 30 scaffolds, two raters | `score_ratings` | `results/phase2/human_ratings.json` |
+
+**Data split.** `data/splits.json` fixes it: learners sorted by identifier,
+every third learner to test. Dev is 16 learners and 1,871,292 events; test is
+8 learners and 726,897 events. The test learners were not used for any
+threshold, prompt or design decision. The rule uses no outcome and was fixed
+before any Phase 2 measurement.
+
+**Human rating.** Both authors rated 30 scaffolds from the full system
+independently. Linearly weighted kappa is 0.328 for timing and 0.343 for
+relevance, which is fair rather than strong agreement. The sheet showed raters
+the phase and the prompt text but not when the scaffold was delivered, so the
+timing column is reported for completeness and no claim rests on it.
+
+**Agent traces.** `logs/*.jsonl` holds the delivered scaffolds for each
+reported run (first 200 per condition), the flagged failure cases, and the
+full tool-call traces from the live runs.
+
+---
+
+## Gap-resolution table
+
+| Gap | Method / component | Metric | Base paper result | Our result | Addressed? | Caveat |
+|---|---|---|---|---|---|---|
+| Gap 1: timing | Timing gate: hold a scaffold until a 20 s pause | Interruption rate on held-out prefixes | 0.127 ± 0.014 (on-demand at pauses) | 0.021 | Partially | Ablating the gate raises interruption to 0.269; coverage falls against the uncapped baseline |
+| Gap 2: grounding | Evidence floor, JSON schema, validator, read-only tools | Share of scaffolds containing an unsupported claim | _not run_ (unconstrained, same model) | _not run_ | Not | Deterministic screen, not a semantic verifier |
+| Gap 3: transfer | Delayed no-AI transfer task and four-point rubric | Spearman r with latent skill, simulated learners | 0.724 (assisted completion) | 0.793 ± 0.036 | Partially | Instrument validation only; no human learners |
 
 ---
 
 ## Changes since Phase 1
 
-| Phase 1 promise | What happened instead | Where recorded |
-|---|---|---|
-| VS Code extension as end product | CLI session watching a real file; event schema unchanged, editor front end is a drop-in | README, devlog iter 1 |
-| Two educator raters, 0–4 timing scale | Log-derived timing measures + 30-item author rating (single condition) | devlog iter 6 |
-| Blind cross-condition human rating | Abandoned — delivery offset visible in timestamp; noted in devlog | devlog iter 6 |
-| Seven-day human transfer study | Instrument validation on simulated learners only | README, devlog iter 5 |
-| OpenAI provider | Groq adapter (`coach/groq_provider.py`); OpenAI path kept in `coach/provider.py` | README |
-| Held-out learners 24+ from Zenodo | Split within existing 24 learners, rule fixed in advance | `data/splits.json`, devlog iter 1 |
+| Change | Why |
+|---|---|
+| Fixed dev/test learner split | Phase 1 reported numbers on the same learners the thresholds were chosen on. Phase 1 and Phase 2 numbers are therefore not comparable. |
+| Added the timing gate (G1 component) | Measurement showed the Phase 1 policy interrupted *more* per scaffold (0.657) than its own uncapped baseline (0.274). |
+| Added the evidence floor (G2 component) | Failure analysis found 37.2% of scaffolds came from windows holding fewer than five events. |
+| Base-paper comparator added | Phase 1 described an AIMS-inspired on-demand comparator but never implemented one. Three request models are now implemented; the pause model is the headline comparator because it is the strongest. |
+| Educator raters replaced by log-derived timing measures | Two educator raters could not be recruited inside Phase 2. A small blind rating by the two authors is the only human check. |
+| G3 scoped to instrument validation | The seven-day human study in Phase 1 is out of scope. The rubric is validated on simulated learners instead, which is a measurement claim only. |
+| Groq instead of OpenAI | The group has a Groq key. The adapter targets the OpenAI-compatible endpoint; `coach/provider.py` keeps the original OpenAI path. |
+| CLI instead of a VS Code extension | Phase 1 named a VS Code extension as the end product. The delivered interface is a session that watches a real file on disk. The event schema is unchanged, so an editor front end remains a drop-in. |
+
+No written Phase 1 feedback was received from the supervisor, so none is
+addressed here.
 
 ---
 
-**AI4015 Agentic Artificial Intelligence, Fall 2026, Phase 1 baseline.** Project seed G3-11 (project code G3-11).
+## Repository layout
 
-| | |
-|---|---|
-| Group members | Minahil Kashif (23i-0554, group head), Areeba Javed (23i-0570) |
-| Supervisor | Naeem Tareen |
-| Base paper | Phung et al., *Plan More, Debug Less*, AIED 2025 |
-
-This is the **Phase 1 project implementation**. It contains a working, inspectable trajectory baseline and an evaluation design.
-It is not a completed educational experiment or a reproduction of the base paper's results.
-
-## Start here
-
-Requires Python 3.10 or newer. No third-party packages are required for the application.
-Open a terminal in this folder:
-
-```powershell
-python demo.py
-python -m unittest discover -s tests -v
-python -m coach --input data/demo.csv --mode adaptive --out results/local/demo
+```
+coach/        agent, state, policy, gate, tools, provider, CLI
+data/         Zenodo subset, provenance manifest, fixed split
+docs/         evidence register, task specs, research gaps, development log
+experiments/  experiment configuration
+scripts/      split, experiments, transfer study, failure analysis, figures, tables
+results/      saved results used in the paper
+logs/         agent traces and failure cases
+tests/        57 tests
+paper/        LaTeX source and generated tables
+figures/      generated figures
 ```
 
-For a step-by-step presentation with learner reflection input:
+## Data and licence
 
-```powershell
-python demo.py --interactive
-```
-
-Replay the included authentic-data subset and regenerate all four comparisons:
-
-```powershell
-python scripts/benchmark.py
-```
-
-This processes approximately 2.6 million records four times and can take several minutes.
-The included `results/benchmark.json` contains measured results from the recorded run.
-The large per-decision audit files (`results/<mode>/decisions.jsonl`, about 38 MB in total) are not
-stored in the repository; running `python scripts/benchmark.py` regenerates them, and the
-`summary.json` file for each mode is included.
-Each mode writes a summary and a JSONL audit trail of delivered prompts.
-Only non-wait decisions are written; every event still contributes to summary counts.
-
-## What is implemented
-
-- Strict CSV event contract; unknown event types and backwards timestamps fail visibly.
-- A causal five-minute trajectory window, separated by learner and task.
-- A transparent rule baseline and a policy with response wait, cooldown, and prompt limits.
-- Learner reflection state, bounded recent-decision memory, and explicit abstention.
-- Optional OpenAI Responses integration with JSON schema and conservative validation.
-- Provider-error fallback to a deterministic scaffold; a ten-call default API budget.
-- An external Python runtime-weaving demonstration that preserves source and exceptions.
-- Read-only agent tool interface (`coach/tools.py`): trajectory summary, prior interventions, learner reflection and evidence-row check, with argument validation and a call budget. The agent loop that uses these tools is Phase 2 work.
-- Real log replay, ablations, provenance, engineering tests, and project documentation.
-
-The offline policies are deterministic. They do not demonstrate LLM reasoning or prove
-the need for an agent. The optional provider adds a bounded decision to rephrase or
-withhold a permitted scaffold. Richer tool selection and classroom adaptation remain
-part of the proposed semester system. No artificial collection of separate LLM personas
-is presented as a research contribution.
-
-## Data and reproducibility
-
-Source: Juho Leinonen and Arto Hellas, *IDE Action Log Dataset from a CS1 MOOC*,
-2022, https://doi.org/10.5281/zenodo.6903968, CC BY 4.0.
-
-`data/zenodo_24_students.csv.gz` contains all records for original student identifiers
-0 through 23 encountered before identifier 24 in the downloaded source prefix.
-This convenience subset is for engineering validation, **not population estimation**.
-`data/manifest.json` records counts, source attribution, hashes and transformations.
-The complete original 1.36 GB file was not downloaded or checksum-verified.
-The complete README and outcome-label file were downloaded and checksum-verified;
-the latter is excluded from policy inputs to avoid hindsight leakage.
-
-The raw prefix contained 133 adjacent timestamp inversions. Extraction applies a stable
-timestamp sort within learner and retains `sourceRow`. Equal-time events keep original
-order. Duplicate-looking keystrokes are retained; they may be legitimate events.
-
-To regenerate from an independently downloaded original file:
-
-```powershell
-python scripts/extract_subset.py PATH_TO_IDE_logs.csv --out data
-python scripts/benchmark.py
-```
-
-Gzip container bytes can vary because the compressor records a creation time. Compare
-the **decompressed content SHA-256** for semantic reproducibility. The bundled archive's
-compressed hash is recorded for transfer-integrity checking.
-
-## Policies and ablations
-
-`rule`: first observed edit -> plan; third and subsequent runs within five minutes
-with edits present -> monitor; submission -> evaluate. No rate limits.
-
-`adaptive`: same triggers, plus a three-prompt limit per contiguous task episode/session,
-120-second response wait, and 180-second cooldown. A learner reflection clears the
-response wait, but never bypasses cooldown. A gap greater than 30 minutes starts a
-new session. Switching exercises starts a new task episode and resets its budget.
-Returning to a prior exercise also creates a new episode; this is a documented limitation.
-
-`no_memory`: removes intervention budget and response-wait state, while retaining
-the trajectory window and cooldown. It does **not** remove observational history.
-
-`no_cooldown`: removes cooldown but retains response waiting and prompt budget.
-
-Thresholds are engineering defaults. They have not been calibrated as cognitive diagnoses.
-All feedback acknowledges observations rather than claiming a bug, failed test, or mastery.
-Active time is only an estimate: inter-event gaps are capped at 60 seconds, intervals
-after focus loss are excluded, and gaps over 30 minutes start a new session.
-
-## Optional live model
-
-Set environment variables locally; do not commit secrets:
-
-```powershell
-$env:OPENAI_API_KEY = 'YOUR_LOCAL_KEY'
-$env:OPENAI_MODEL = 'YOUR_SUPPORTED_STRUCTURED_OUTPUT_MODEL'
-python -m coach --input data/demo.csv --live --out results/local/live
-```
-
-The recorded run made **zero live API calls**. Account access, model availability,
-latency, cost and semantic output quality have not been verified. The configured model
-must support the Responses API and strict JSON-schema output. The adapter sends only
-the event summary, recent decisions, and the learner's reflection. It sets `store=false`;
-that flag is not a claim about all provider retention rules. Keep real student text out
-of the API until the educational deployment has appropriate consent and data handling.
-
-Response validation checks structure, source-row reference, permitted phase, lengths,
-and a limited phrase screen. It is **not a complete factuality or code-leakage detector**.
-
-Official interface reference:
-https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses
-
-## Non-invasive monitoring demonstration
-
-```powershell
-python examples/weave_demo.py
-```
-
-The harness temporarily wraps a function in `student_program.py`, records duration and
-exception type, and restores the original function. It does not change the student's
-file or swallow their exception. This illustrates the separation of concerns in AOP.
-It is **not a Spring AOP/AspectJ implementation or an IDE extension**. Those are deferred
-in the explicitly narrowed Phase 1 scope. Runtime probe events are not merged into the
-historical Zenodo data or misrepresented as fields present in that dataset.
-
-## Research boundary
-
-Base paper: Phung et al., *Plan More, Debug Less*, AIED 2025,
-https://doi.org/10.1007/978-3-031-98414-3_1.
-
-The included replay does not reproduce AIMS. The metadata lacks code, correctness,
-and help-request events. A fair AIMS-inspired comparison requires the new task environment
-specified in the report. Prompt-count reductions are an engineered operational effect,
-not proof of learning improvement. No participants were recruited for this project.
-
-## Repository use
-
-Phase 1 repository for group G3-11. Both group members commit to this repository.
-Consent, ethics clearance, human ratings and educational results are not part of Phase 1:
-no participants were recruited and no learning outcomes have been measured.
-
-## Contents
-
-- `coach/`: event engine, policies, provider adapter, agent tools, CLI
-- `data/`: synthetic demo; attributed authentic-data subset and manifest
-- `results/`: measured replay outputs, ablations, test and demo transcripts
-- `tests/`: deterministic correctness and boundary tests
-- `examples/`: source-separated runtime monitoring illustration
-- `scripts/`: extraction and benchmark commands
-- `docs/`: research evidence register, evaluation protocol and demonstration guide
-
-Code is supplied under the MIT license. Dataset-derived files remain CC BY 4.0.
+IDE action logs from a CS1 MOOC, Juho Leinonen and Arto Hellas, Zenodo,
+[doi:10.5281/zenodo.6903968](https://doi.org/10.5281/zenodo.6903968), CC BY
+4.0. `data/manifest.json` records the subset, its hashes and its provenance.
+The full source archive is about 1.36 GB; only the declared 24-learner prefix
+is included. Code in this repository is MIT licensed; see `LICENSE`.

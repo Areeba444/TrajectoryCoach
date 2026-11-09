@@ -1,16 +1,16 @@
-\begin{table}[t]
-\caption{Phase~1 gap-resolution table: identified deficiencies and Phase~2 fixes.}
-\label{tab:gaps}
+\begin{table*}[t]
 \centering
-\begin{tabular}{p{3.5cm}p{3cm}p{4cm}}
+\caption{Gap-resolution table. ``Base paper result'' is our adaptation of the base
+paper's interaction policy run on our data, not a number reproduced from the published
+paper, which reports neither of these measures.}
+\label{tab:gaps}
+\begin{tabular}{p{1.6cm}p{3.5cm}p{3.1cm}p{2.9cm}p{2.2cm}l}
 \toprule
-Gap & Phase~1 symptom & Phase~2 fix \\
+Gap & Method / component & Metric & Base paper result & Our result & Addressed? \\
 \midrule
-Interrupt risk & Scaffolds fire mid-burst & G1 timing gate: hold until pause $\geq 45$\,s \\
-Thin evidence  & Advice on 1--4 events & G2 evidence floor: require $\geq 5$ window events \\
-No baseline    & Nothing to compare against & E2 three on-demand models \\
-No transfer    & Single-domain evaluation & G3 simulated transfer study \\
-No efficiency  & Runtime not measured & E6 events/s and peak memory \\
+Gap 1: timing & Timing gate: hold a scaffold until a 20\,s pause & Interruption rate on held-out prefixes & 0.127 $\pm$ 0.014 (on-demand at pauses) & 0.021 & Partially \\
+Gap 2: grounding & Evidence floor, JSON schema, validator, read-only tools & Share of scaffolds containing an unsupported claim & \textit{not run} (unconstrained, same model) & \textit{not run} & Not \\
+Gap 3: transfer & Delayed no-AI transfer task and four-point rubric & Spearman $r$ with latent skill, simulated learners & 0.724 (assisted completion) & 0.793 $\pm$ 0.036 & Partially \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}

@@ -1,0 +1,6 @@
+{
+  "source_condition": "E3_proposed_full",
+  "items": 30,
+  "seed": 20261108,
+  "design": "single condition; see module docstring for why a blind cross-condition sheet was abandoned"
+}

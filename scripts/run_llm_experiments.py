@@ -1,120 +1,148 @@
-#!/usr/bin/env python
-"""Groq-based G2 experiment: test constrained vs unconstrained generation.
+"""E3/E4-G2/E6 with a live model. Run this on a machine that can reach Groq.
 
-Usage:
-    python -m scripts.run_llm_experiments --smoke          # 1 prefix
-    python -m scripts.run_llm_experiments --prefixes 10    # N prefixes
-    python -m scripts.run_llm_experiments                  # 100 prefixes (default)
+    set GROQ_API_KEY=...            (Windows:  setx / $env:GROQ_API_KEY)
+    python -m scripts.run_llm_experiments --smoke
+    python -m scripts.run_llm_experiments --prefixes 100
 
-Requires GROQ_API_KEY environment variable.
+--smoke makes a single call and prints the result, so the key and model are
+checked before the full run. The full run samples held-out trajectory prefixes
+from the test split, generates a scaffold for each under the constrained and
+the unconstrained condition, scores both with the grounding checker, and
+records tokens, latency and tool use.
 """
-import argparse
-import json
-import os
-import pathlib
-import sys
-import time
+import argparse, json, pathlib, random, time
 
-_ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(_ROOT))
+from coach.core import TrajectoryCoach, decision_dict
+from coach.dataset import iter_events
+from coach import grounding
 
-OUTPUT_DIR = _ROOT / 'results' / 'phase2'
-OUTPUT = OUTPUT_DIR / 'e_llm_grounding.json'
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RESULTS = ROOT / 'results' / 'phase2'
+LOGS = ROOT / 'logs'
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--smoke', action='store_true', help='Run with 1 prefix')
-    parser.add_argument('--prefixes', type=int, default=100, help='Number of prefixes to test')
-    args = parser.parse_args()
-
-    if not os.environ.get('GROQ_API_KEY'):
-        print('Error: GROQ_API_KEY environment variable not set.', file=sys.stderr)
-        sys.exit(1)
-
-    n_prefixes = 1 if args.smoke else args.prefixes
-
-    from coach.dataset import load_split
-    from coach.core import TrajectoryCoach
+def smoke(model, temperature, seed):
     from coach.groq_provider import GroqProvider
-    from coach.grounding import validate_scaffold, check_unsupported_claims
+    from coach.core import Decision
+    p = GroqProvider(model=model, temperature=temperature, seed=seed, max_calls=4)
+    baseline = Decision('monitor', 'Repeated executions within the observation window',
+                        'placeholder', {'student': '2', 'part': '1', 'exercise': '3',
+                                        'source_row': 1234, 'time': 0, 'runs': 4, 'edits': 51,
+                                        'submissions': 0, 'window_events': 60,
+                                        'window_seconds': 300, 'outcomes_observed': False})
+    d = p.generate(baseline, {'observation': baseline.evidence, 'allowed_phase': 'monitor',
+                              'reflection': '', 'recent_decisions': []})
+    print(json.dumps({'phase': d.phase, 'prompt': d.prompt, 'reason': d.reason,
+                      'provider': d.provider}, indent=2))
+    print(json.dumps(p.efficiency(), indent=2))
+    print('\nunsupported claims found:', grounding.check(d.prompt, baseline.evidence))
 
-    print(f'Loading test split events ...')
-    events = load_split(split='test')
-    print(f'  {len(events)} events loaded. Using {n_prefixes} prefixes.')
 
-    # Build prefixes: take the first N non-wait trigger points
-    prefixes = []
-    coach = TrajectoryCoach(mode='adaptive', cooldown=180, max_prompts=999,
-                            use_timing_gate=False, use_evidence_floor=False)
-    for event in events:
-        d = coach.observe(event)
+def main(prefixes=100, model=None, temperature=0.0, seed=0, sleep=1.0,
+         split='test', gate_seconds=20, price_in=None, price_out=None):
+    from coach.groq_provider import GroqProvider
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    LOGS.mkdir(parents=True, exist_ok=True)
+
+    print('pass 1: finding candidate prefixes ...', flush=True)
+    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds)
+    candidates = []
+    for e in iter_events(split):
+        d = engine.observe(e)
         if d.phase != 'wait':
-            prefixes.append((d, event))
-        if len(prefixes) >= n_prefixes:
-            break
+            candidates.append(len(candidates))
+    total = len(candidates)
+    if total < prefixes:
+        prefixes = total
+    step = max(1, total // prefixes)
+    chosen = set(range(0, total, step))
+    while len(chosen) > prefixes:
+        chosen.discard(max(chosen))
+    print(f'{total} delivered scaffolds on {split}; sampling {len(chosen)} '
+          f'every {step}th for the model runs', flush=True)
 
-    print(f'  {len(prefixes)} non-wait decisions collected.')
+    con = GroqProvider(model=model, temperature=temperature, seed=seed,
+                       max_calls=10 * len(chosen) + 50, constrained=True, use_tools=True)
+    unc = GroqProvider(model=model, temperature=temperature, seed=seed,
+                       max_calls=2 * len(chosen) + 10, constrained=False, use_tools=False)
+    con.key = unc.key = con.key  # same credential, separate budgets
 
-    # Test constrained (with evidence floor) vs unconstrained
-    results = {
-        'n_prefixes': len(prefixes),
-        'constrained': [],
-        'unconstrained': [],
-    }
-
-    provider = GroqProvider()
-
-    for i, (baseline, event) in enumerate(prefixes):
-        print(f'  Prefix {i+1}/{len(prefixes)} ...')
-        context = {
-            'observation': baseline.evidence,
-            'allowed_phase': baseline.phase,
-            'reflection': '',
-            'recent_decisions': [],
-        }
+    print('pass 2: generating ...', flush=True)
+    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds)
+    con_records, unc_records, index = [], [], 0
+    errors = []
+    for e in iter_events(split):
+        d = engine.observe(e)
+        if d.phase == 'wait':
+            continue
+        here, index = index in chosen, index + 1
+        if not here:
+            continue
+        context = {'observation': d.evidence, 'allowed_phase': d.phase,
+                   'reflection': engine.states[e.student].reflection,
+                   'recent_decisions': list(engine.states[e.student].recent_decisions)}
         try:
-            d = provider.generate(baseline, context)
-            # Constrained: apply evidence floor check
-            ok, violations = validate_scaffold(d.prompt, baseline.evidence)
-            results['constrained'].append({
-                'phase': d.phase,
-                'prompt': d.prompt,
-                'ok': ok,
-                'violations': violations,
-            })
-            # Unconstrained: check raw output violations
-            raw_violations = check_unsupported_claims(d.prompt, baseline.evidence)
-            results['unconstrained'].append({
-                'phase': d.phase,
-                'prompt': d.prompt,
-                'violations': raw_violations,
-            })
-        except Exception as e:
-            print(f'    Error: {e}')
-            results['constrained'].append({'error': str(e)})
-            results['unconstrained'].append({'error': str(e)})
+            cd = con.generate(dict_to_decision(d), dict(context, _coach=engine))
+            con_records.append({'prompt': cd.prompt, 'evidence': d.evidence,
+                                'phase': cd.phase, 'reason': cd.reason})
+        except Exception as exc:
+            errors.append(f'constrained: {type(exc).__name__}: {exc}')
+            con_records.append({'prompt': d.prompt, 'evidence': d.evidence,
+                                'phase': d.phase, 'reason': 'deterministic fallback'})
+        time.sleep(sleep)
+        try:
+            ud = unc.generate_unconstrained(dict_to_decision(d), context)
+            unc_records.append({'prompt': ud.prompt, 'evidence': d.evidence, 'phase': ud.phase})
+        except Exception as exc:
+            errors.append(f'unconstrained: {type(exc).__name__}: {exc}')
+        time.sleep(sleep)
+        if len(con_records) % 10 == 0:
+            print(f'  {len(con_records)}/{len(chosen)} done', flush=True)
 
-    # Summary stats
-    n = len(prefixes)
-    n_constrained_ok = sum(1 for r in results['constrained']
-                          if r.get('ok') is True)
-    n_unconstrained_ok = sum(1 for r in results['unconstrained']
-                            if not r.get('violations'))
-    results['summary'] = {
-        'n_prefixes': n,
-        'constrained_pass_rate': round(n_constrained_ok / n, 4) if n > 0 else 0,
-        'unconstrained_pass_rate': round(n_unconstrained_ok / n, 4) if n > 0 else 0,
-        'groq_stats': provider.stats(),
+    out = {
+        'split': split, 'sampled_prefixes': len(chosen), 'model': con.model,
+        'temperature': temperature, 'seed': seed, 'gate_seconds': gate_seconds,
+        'constrained': grounding.score(con_records),
+        'unconstrained': grounding.score(unc_records),
+        'efficiency_constrained': con.efficiency(price_in, price_out),
+        'efficiency_unconstrained': unc.efficiency(price_in, price_out),
+        'errors': errors[:50], 'error_count': len(errors),
     }
+    (RESULTS / 'e4_g2_grounding.json').write_text(json.dumps(out, indent=2), encoding='utf-8')
+    for name, recs in (('g2_constrained', con_records), ('g2_unconstrained', unc_records)):
+        with (LOGS / f'{name}.jsonl').open('w', encoding='utf-8') as w:
+            for r in recs:
+                w.write(json.dumps(r) + '\n')
+    with (LOGS / 'g2_agent_traces.jsonl').open('w', encoding='utf-8') as w:
+        for t in con.traces:
+            w.write(json.dumps(t) + '\n')
+    print('\n--- G2 grounding ---')
+    print(f"constrained   unsupported rate {out['constrained']['unsupported_rate']} "
+          f"({out['constrained']['prompts_with_unsupported_claim']}/{out['constrained']['prompts']})")
+    print(f"unconstrained unsupported rate {out['unconstrained']['unsupported_rate']} "
+          f"({out['unconstrained']['prompts_with_unsupported_claim']}/{out['unconstrained']['prompts']})")
+    print(json.dumps(out['efficiency_constrained'], indent=2))
+    print(f"\nwrote {RESULTS / 'e4_g2_grounding.json'}")
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(results, indent=2), encoding='utf-8')
-    print(f'\nResults saved to {OUTPUT}')
-    print(f'  Constrained pass rate: {results["summary"]["constrained_pass_rate"]}')
-    print(f'  Unconstrained pass rate: {results["summary"]["unconstrained_pass_rate"]}')
+
+def dict_to_decision(d):
+    return d
 
 
 if __name__ == '__main__':
-    main()
-
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--smoke', action='store_true')
+    ap.add_argument('--prefixes', type=int, default=100)
+    ap.add_argument('--model')
+    ap.add_argument('--temperature', type=float, default=0.0)
+    ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--sleep', type=float, default=1.0)
+    ap.add_argument('--split', default='test', choices=['test', 'dev'])
+    ap.add_argument('--gate-seconds', type=int, default=20, dest='gate_seconds')
+    ap.add_argument('--price-in', type=float, dest='price_in')
+    ap.add_argument('--price-out', type=float, dest='price_out')
+    a = vars(ap.parse_args())
+    if a.pop('smoke'):
+        smoke(a['model'], a['temperature'], a['seed'])
+    else:
+        main(**a)

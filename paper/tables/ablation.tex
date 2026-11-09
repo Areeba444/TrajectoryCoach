@@ -1,19 +1,21 @@
 \begin{table}[t]
-\caption{Ablation study (E5): effect of removing individual components on the test split.
-Full system is repeated for reference.}
-\label{tab:ablation}
 \centering
+\caption{Ablation on the test split. Each row removes one component from the full
+system. The timing gate accounts for almost all of the reduction in interruption;
+removing the response wait and removing the episode budget give identical results,
+so the response wait never binds once the cooldown and the gate are active.}
+\label{tab:ablation}
 \begin{tabular}{lrrrr}
 \toprule
-Variant & Scaffolds & Pause-aligned & Interrupted & $\Delta_{\text{delib}}$ (s) \\
+Configuration & Scaffolds & Interruption & Pause-aligned & Coverage \\
 \midrule
-Full system (E3) & 1,328 & 1.0000 & 0.0000 & 89.2 \\
-No cooldown & 1,360 & 1.0000 & 0.0000 & 88.6 \\
-No episode budget & 1,649 & 1.0000 & 0.0000 & 88.6 \\
-No response wait & 1,649 & 1.0000 & 0.0000 & 88.6 \\
-No evidence floor (G2 disabled) & 1,655 & 1.0000 & 0.0000 & 1912.7 \\
-No timing gate (G1 disabled) & 2,364 & 0.5427 & 0.0000 & 86.7 \\
-Phase 1 policy (original defaults) & 3,828 & 0.4572 & 0.0000 & 3118.6 \\
+Full system & 2038 & 0.021 & 0.448 & 0.137 \\
+$-$ cooldown & 2129 & 0.020 & 0.449 & 0.144 \\
+$-$ episode budget & 2955 & 0.021 & 0.444 & 0.206 \\
+$-$ response wait & 2955 & 0.021 & 0.444 & 0.206 \\
+$-$ evidence floor (G2) & 2804 & 0.026 & 0.424 & 0.146 \\
+$-$ timing gate (G1) & 2364 & 0.269 & 0.310 & 0.221 \\
+Phase 1 policy, no components & 3828 & 0.657 & 0.168 & 0.341 \\
 \bottomrule
 \end{tabular}
 \end{table}

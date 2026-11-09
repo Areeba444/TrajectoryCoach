@@ -1,164 +1,116 @@
-#!/usr/bin/env python
-"""Analyze full system junctures and categorize into 6 failure types.
+"""Failure analysis on the test split: categories, frequencies, and cases.
 
-Failure types:
-  1. Superseded while held
-  2. Suppressed submission (no evaluate scaffold at a submit)
-  3. Held then dropped (no pause arrived)
-  4. Late delivery (> 120s after triggering juncture)
-  5. Abandoned after (no learner event within 30 min)
-  6. Interrupted a burst
-
-Saves results to results/phase2/failure_analysis.json.
+A failure here is a case where the system did not do the thing it is for:
+it stayed silent at a moment that warranted a scaffold, spoke at a moment it
+should not have, or produced a scaffold the learner had no chance to use.
+Categories are counted over the whole test split, then two representative
+successes and two representative failures are written out with their traces.
 """
-import json
-import pathlib
-import sys
-from collections import defaultdict
+import json, pathlib
+from collections import Counter
 
-_ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(_ROOT))
+from coach.core import TrajectoryCoach, EDIT, decision_dict
+from coach.dataset import iter_events
+from coach import timing
 
-from coach.core import TrajectoryCoach
-from coach.dataset import load_split
-from coach.timing import detect_junctures, BURST_THRESHOLD
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+RESULTS = ROOT / 'results' / 'phase2'
+LOGS = ROOT / 'logs'
+THIN_WINDOW = 5          # a window with fewer events than this is thin evidence
+ABANDONED = 1800.0       # no further activity within 30 min of the scaffold
 
-OUTPUT_DIR = _ROOT / 'results' / 'phase2'
-OUTPUT = OUTPUT_DIR / 'failure_analysis.json'
-
-LATE_THRESHOLD = 120.0   # seconds: delivery > 120s after juncture = late
-ABANDON_THRESHOLD = 1800  # 30 minutes
-
-FAILURE_TYPES = {
-    1: 'Superseded while held',
-    2: 'Suppressed submission (no evaluate scaffold at submit)',
-    3: 'Held then dropped (no pause arrived)',
-    4: 'Late delivery (>120s after triggering juncture)',
-    5: 'Abandoned after (no learner event within 30 min)',
-    6: 'Interrupted a burst',
+CATEGORIES = {
+    'held_then_dropped': 'Scaffold held for a pause that never came inside the horizon.',
+    'superseded': 'A newer juncture replaced a scaffold that was still waiting.',
+    'suppressed_submission': 'A submission produced no evaluate scaffold because the '
+                             'episode budget or cooldown was active. This is the most '
+                             'costly silence, since a submission is the clearest moment '
+                             'to ask for a self-check.',
+    'thin_evidence': 'Scaffold delivered from a window holding very few events, so the '
+                     'stated reason rests on almost no observation.',
+    'abandoned_after': 'Learner produced no further event within 30 minutes, so the '
+                       'scaffold could not be acted on in that session.',
+    'late_delivery': 'The gate delayed the scaffold by more than 120 s past the juncture '
+                     'that triggered it, so it may no longer match what the learner is doing.',
 }
 
 
-def main():
-    print('Loading test split events ...')
-    events = load_split(split='test')
-    print(f'  {len(events)} events loaded.')
+def main(split='test', gate_seconds=20, min_evidence=5):
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    LOGS.mkdir(parents=True, exist_ok=True)
+    events = list(iter_events(split))
+    index = timing.TimingIndex(events)
 
-    # Run full system
-    print('Running full system ...')
-    coach = TrajectoryCoach(
-        mode='adaptive', cooldown=180, max_prompts=3,
-        use_timing_gate=True, use_evidence_floor=True,
-    )
-    decisions = []
-    for event in events:
-        d = coach.observe(event)
-        decisions.append(d)
+    engine = TrajectoryCoach(mode='adaptive', gate_seconds=gate_seconds,
+                             min_evidence=min_evidence)
+    counts = Counter()
+    delivered, failures, successes = [], [], []
+    submissions = 0
 
-    dec_dicts = [
-        {'phase': d.phase, 'reason': d.reason, 'prompt': d.prompt, 'evidence': d.evidence}
-        for d in decisions
-    ]
-    junctures = detect_junctures(events, dec_dicts)
-    print(f'  {len(junctures)} junctures detected.')
+    for e in events:
+        d = engine.observe(e)
+        if e.event == 'submit':
+            submissions += 1
+        if d.phase == 'wait':
+            if e.event == 'submit' and d.reason in (
+                    'Task/session prompt budget exhausted', 'Cooldown active',
+                    'Waiting for learner response',
+                    'Observation window below the evidence floor'):
+                counts['suppressed_submission'] += 1
+            continue
+        delivered.append(d)
+        at = d.evidence['time']
+        m = index.score_one(d.evidence['student'], at)
+        flags = []
+        if d.evidence.get('window_events', 99) < THIN_WINDOW:
+            flags.append('thin_evidence')
+        gap = m['response_gap']
+        if gap is None or gap > ABANDONED:
+            flags.append('abandoned_after')
+        if d.evidence.get('delivery_delay', 0) > 120:
+            flags.append('late_delivery')
+        if m['interrupting']:
+            flags.append('interrupted_burst')
+        for f in flags:
+            counts[f] += 1
+        record = {'student': d.evidence['student'], 'phase': d.phase,
+                  'reason': d.reason, 'prompt': d.prompt,
+                  'source_row': d.evidence['source_row'],
+                  'window_events': d.evidence.get('window_events'),
+                  'runs': d.evidence.get('runs'), 'edits': d.evidence.get('edits'),
+                  'delivery_delay': d.evidence.get('delivery_delay'),
+                  'response_gap': gap, 'flags': flags}
+        if flags:
+            failures.append(record)
+        elif gap is not None and gap < 300 and len(successes) < 400:
+            successes.append(record)
 
-    # Build student event index for failure analysis
-    student_events = defaultdict(list)
-    for ev in events:
-        student_events[ev.student].append(ev)
+    counts['held_then_dropped'] = engine.gate_stats.get('dropped', 0)
+    counts['superseded'] = engine.gate_stats.get('superseded', 0)
 
-    # Identify submits with no evaluate scaffold
-    submit_events = [(ev, dec) for ev, dec in zip(events, decisions)
-                     if ev.event == 'submit']
-    suppressed_submissions = [
-        (ev, dec) for ev, dec in submit_events if dec.phase == 'wait'
-    ]
-
-    # Categorize failures
-    counts = {i: 0 for i in range(1, 7)}
-    failure_examples = {i: [] for i in range(1, 7)}
-    success_examples = []
-
-    for j in junctures:
-        outcome = j['outcome']
-        pause_gap = j.get('pause_gap')
-        delivered_at = j.get('delivered_at')
-        triggered_at = j.get('triggered_at', j.get('time', 0))
-        interrupted = j.get('interrupted', False)
-
-        if outcome == 'superseded':
-            counts[1] += 1
-            if len(failure_examples[1]) < 2:
-                failure_examples[1].append(j)
-        elif outcome == 'dropped':
-            counts[3] += 1
-            if len(failure_examples[3]) < 2:
-                failure_examples[3].append(j)
-        elif outcome == 'released':
-            if interrupted:
-                counts[6] += 1
-                if len(failure_examples[6]) < 2:
-                    failure_examples[6].append(j)
-            elif delivered_at is not None and delivered_at - triggered_at > LATE_THRESHOLD:
-                counts[4] += 1
-                if len(failure_examples[4]) < 2:
-                    failure_examples[4].append(j)
-            else:
-                # Success
-                if len(success_examples) < 2:
-                    success_examples.append(j)
-
-    # Type 2: suppressed submissions
-    counts[2] = len(suppressed_submissions)
-    for ev, dec in suppressed_submissions[:2]:
-        failure_examples[2].append({
-            'student': ev.student,
-            'time': ev.time,
-            'phase': dec.phase,
-            'reason': dec.reason,
-        })
-
-    # Type 5: check for abandoned sessions (last event in student stream far in time)
-    for student, s_events in student_events.items():
-        sorted_events = sorted(s_events, key=lambda e: e.time)
-        for i in range(len(sorted_events) - 1):
-            gap = sorted_events[i + 1].time - sorted_events[i].time
-            if gap > ABANDON_THRESHOLD:
-                counts[5] += 1
-                if len(failure_examples[5]) < 2:
-                    failure_examples[5].append({
-                        'student': student,
-                        'time': sorted_events[i].time,
-                        'gap': gap,
-                        'type': 'abandoned',
-                    })
-
-    total_junctures = len(junctures)
-    result = {
-        'total_junctures': total_junctures,
-        'failure_types': {},
-        'success_examples': success_examples,
-        'failure_examples': {},
+    n = len(delivered)
+    out = {
+        'split': split, 'delivered_scaffolds': n, 'submissions_in_split': submissions,
+        'category_definitions': CATEGORIES,
+        'counts': dict(counts),
+        'rates_over_delivered': {k: round(v / n, 4) for k, v in counts.items() if n},
+        'failure_scaffolds': len(failures),
+        'failure_rate': round(len(failures) / n, 4) if n else None,
+        'representative_failures': failures[:2] + failures[len(failures) // 2:
+                                                           len(failures) // 2 + 2],
+        'representative_successes': successes[:2] + successes[len(successes) // 2:
+                                                              len(successes) // 2 + 2],
     }
-
-    for ftype, label in FAILURE_TYPES.items():
-        count = counts[ftype]
-        share = round(count / max(total_junctures, 1), 4)
-        result['failure_types'][str(ftype)] = {
-            'label': label,
-            'count': count,
-            'share': share,
-        }
-        result['failure_examples'][str(ftype)] = failure_examples[ftype]
-
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(result, indent=2), encoding='utf-8')
-    print(f'\nFailure analysis saved to {OUTPUT}')
-    print('Failure type counts:')
-    for ftype, label in FAILURE_TYPES.items():
-        print(f'  [{ftype}] {label}: {counts[ftype]}')
+    (RESULTS / 'failure_analysis.json').write_text(json.dumps(out, indent=2), encoding='utf-8')
+    with (LOGS / 'failure_cases.jsonl').open('w', encoding='utf-8') as w:
+        for r in failures[:500]:
+            w.write(json.dumps(r) + '\n')
+    print(f'delivered {n} scaffolds; {len(failures)} carry at least one failure flag '
+          f'({out["failure_rate"]})')
+    for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
+        print(f'  {k:24s} {v:6d}   {round(v / n, 4) if n else 0}')
+    print(f'\nwrote {RESULTS / "failure_analysis.json"}')
 
 
 if __name__ == '__main__':
     main()
-

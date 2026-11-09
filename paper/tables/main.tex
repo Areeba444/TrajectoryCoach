@@ -1,17 +1,20 @@
-\begin{table}[t]
-\caption{Main system results on the test split (8 learners, 726\,897 events).
-$\Delta_{\text{delib}}$ = mean seconds of deliberation time before scaffold delivery;
-lower is better for E3 (gate holds until pause).
-Bootstrap 95\,\% CI for E3 shown in parentheses.}
-\label{tab:main}
+\begin{table*}[t]
 \centering
-\begin{tabular}{lrrrr}
+\caption{Main results on the held-out test split (726897 events, 966 learner--question units,
+10687 observable decision points). On-demand rows are the mean and standard deviation over
+three seeds; the other rows are deterministic. Lower is better for interruption.
+No learner in the logs saw a scaffold, so the deliberation column describes the moments a
+policy selects, not an effect of prompting.}
+\label{tab:main}
+\begin{tabular}{llrrrrr}
 \toprule
-System & Scaffolds & Pause-aligned & Interrupted & $\Delta_{\text{delib}}$ (s) \\
+ & Condition & Scaffolds & Interruption & Pause-aligned & Coverage & Deliberation $\Delta$ \\
 \midrule
-E1 Rule baseline & 10,687 & 0.2591 & 0.0000 & 2004.0 \\
-E2 On-demand (pause) & 821 & 1.0000 & 0.0000 & 12602.7 \\
-E3 Full system & 1,328 & 1.0000 & 0.0000 & 89.2 (85.2--95.4) \\
+E1 & Rule baseline (uncapped) & 10687 & 0.274 & 0.230 & 0.793 & -0.0138 \\
+E2 & Base paper, on-demand at pauses & 461 $\pm$ 11 & 0.127 $\pm$ 0.014 & 0.355 $\pm$ 0.039 & 0.019 $\pm$ 0.001 & -0.0068 $\pm$ 0.0025 \\
+E2 & Base paper, on-demand when stuck & 488 $\pm$ 13 & 0.837 $\pm$ 0.026 & 0.070 $\pm$ 0.003 & 0.019 $\pm$ 0.000 & -0.0070 $\pm$ 0.0020 \\
+E2 & Base paper, on-demand uniform & 484 $\pm$ 11 & 0.829 $\pm$ 0.030 & 0.072 $\pm$ 0.009 & 0.019 $\pm$ 0.001 & -0.0104 $\pm$ 0.0042 \\
+E3 & \textbf{Proposed system} & 2038 & 0.021 & 0.448 & 0.137 & 0.0079 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
