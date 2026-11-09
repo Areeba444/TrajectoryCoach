@@ -132,46 +132,197 @@
 }
 
 % ============================================================================
-% SLOTS STILL TO FILL -- the brief requires 25--30 references, so about
-% fifteen more are needed. Each slot below names a claim in the paper that
-% currently has no citation, with a search phrase.
-%
-% HOW TO FILL ONE: find the paper, open its publisher page, copy the real
-% DOI, then on Google Scholar use Cite -> BibTeX and paste the entry here.
-% DO NOT copy a DOI from this file or from any chat -- look it up yourself.
-% An invented or mismatched DOI is worse than a missing reference.
-%
-%  1. Interruption at task boundaries costs less than mid-task interruption.
-%     search: Iqbal Bailey "task boundaries" interruption notification CHI
-%  2. Cost of interruption to resumption time in programming work.
-%     search: interruption resumption lag developers programming study
-%  3. Attention and flow in software development; when to defer a notification.
-%     search: deferring notifications breakpoints knowledge work
-%  4. Metacognition and self-regulated learning: the theoretical frame.
-%     search: Flavell metacognition  /  Zimmerman self-regulated learning cycle
-%  5. Scaffolding and fading in instruction.
-%     search: Wood Bruner Ross scaffolding tutoring  /  contingent scaffolding
-%  6. Help-seeking behaviour and help avoidance in learning systems.
-%     search: Aleven help seeking intelligent tutoring systems model
-%  7. Productive failure / desirable difficulties, for the coverage trade-off.
-%     search: Kapur productive failure  /  Bjork desirable difficulties
-%  8. Novice programmer debugging behaviour and trial-and-error.
-%     search: novice programmers debugging strategies empirical study
-%  9. Educational data mining from compilation or keystroke logs.
-%     search: Watson Li error quotient compilation behaviour  /  keystroke CS1
-% 10. LLM hallucination and factual grounding, general.
-%     search: survey hallucination large language models faithfulness
-% 11. Constrained decoding / structured output for reliability.
-%     search: JSON schema constrained decoding structured output LLM
-% 12. Tool use and function calling in LLM agents.
-%     search: ReAct reasoning acting language models  /  Toolformer
-% 13. Agent architectures, memory and planning.
-%     search: survey LLM-based autonomous agents memory planning
-% 14. LLM-as-judge reliability, if you use a model judge for relevance.
-%     search: LLM as a judge agreement human evaluation
-% 15. Aspect-oriented programming and separation of cross-cutting concerns,
-%     for the seed's objective 1 and the weaving demonstration.
-%     search: Kiczales aspect-oriented programming  /  AspectJ
-% 16. Learning analytics ethics, consent and instructor oversight.
-%     search: learning analytics ethics student data consent framework
+% BACKGROUND REFERENCES -- added 2026-11-09. Each DOI below was read off a
+% publisher, index or arXiv record page (not typed from memory). The comment
+% above each entry says which paper claim it can support; WRITE THE CLAIM IN
+% YOUR OWN WORDS and cite the key. Every key must be cited at least once or
+% it will not appear in the compiled reference list (the brief wants 25-30).
 % ============================================================================
+
+% Interruption cost at task boundaries (G1 timing gate)
+@inproceedings{iqbal2006interruption,
+  author    = {Iqbal, Shamsi T. and Bailey, Brian P.},
+  title     = {Leveraging Characteristics of Task Structure to Predict the Cost
+               of Interruption},
+  booktitle = {Proceedings of the SIGCHI Conference on Human Factors in
+               Computing Systems (CHI 2006)},
+  pages     = {741--750},
+  year      = {2006},
+  doi       = {10.1145/1124772.1124882}
+}
+
+% Resumption lag after interruption in programming work (G1)
+@article{parnin2011resumption,
+  author  = {Parnin, Chris and Rugaber, Spencer},
+  title   = {Resumption Strategies for Interrupted Programming Tasks},
+  journal = {Software Quality Journal},
+  volume  = {19},
+  number  = {1},
+  pages   = {5--34},
+  year    = {2011},
+  doi     = {10.1007/s11219-010-9104-9}
+}
+
+% Interrupted work costs speed and stress (G1)
+@inproceedings{mark2008cost,
+  author    = {Mark, Gloria and Gudith, Daniela and Klocke, Ulrich},
+  title     = {The Cost of Interrupted Work: More Speed and Stress},
+  booktitle = {Proceedings of the SIGCHI Conference on Human Factors in
+               Computing Systems (CHI 2008)},
+  pages     = {107--110},
+  year      = {2008},
+  doi       = {10.1145/1357054.1357072}
+}
+
+% Self-regulated learning, the theoretical frame
+@article{zimmerman2002becoming,
+  author  = {Zimmerman, Barry J.},
+  title   = {Becoming a Self-Regulated Learner: An Overview},
+  journal = {Theory Into Practice},
+  volume  = {41},
+  number  = {2},
+  pages   = {64--70},
+  year    = {2002},
+  doi     = {10.1207/s15430421tip4102_2}
+}
+
+% Scaffolding
+@article{wood1976tutoring,
+  author  = {Wood, David and Bruner, Jerome S. and Ross, Gail},
+  title   = {The Role of Tutoring in Problem Solving},
+  journal = {Journal of Child Psychology and Psychiatry},
+  volume  = {17},
+  number  = {2},
+  pages   = {89--100},
+  year    = {1976},
+  doi     = {10.1111/j.1469-7610.1976.tb00381.x}
+}
+
+% Help seeking in interactive learning environments (proactive vs requested help)
+@article{aleven2003help,
+  author  = {Aleven, Vincent and Stahl, Elmar and Schworm, Silke and
+             Fischer, Frank and Wallace, Raven},
+  title   = {Help Seeking and Help Design in Interactive Learning Environments},
+  journal = {Review of Educational Research},
+  volume  = {73},
+  number  = {3},
+  pages   = {277--320},
+  year    = {2003},
+  doi     = {10.3102/00346543073003277}
+}
+
+% Productive failure (coverage vs. intervention trade-off)
+@article{sinha2021problem,
+  author  = {Sinha, Tanmay and Kapur, Manu},
+  title   = {When Problem Solving Followed by Instruction Works: Evidence for
+             Productive Failure},
+  journal = {Review of Educational Research},
+  volume  = {91},
+  number  = {5},
+  pages   = {761--798},
+  year    = {2021},
+  doi     = {10.3102/00346543211019105}
+}
+
+% Novice debugging
+@article{mccauley2008debugging,
+  author  = {McCauley, Renee and Fitzgerald, Sue and Lewandowski, Gary and
+             Murphy, Laurie and Simon, Beth and Thomas, Lynda and Zander, Carol},
+  title   = {Debugging: A Review of the Literature from an Educational
+             Perspective},
+  journal = {Computer Science Education},
+  volume  = {18},
+  number  = {2},
+  pages   = {67--92},
+  year    = {2008},
+  doi     = {10.1080/08993400802114581}
+}
+
+% Novice compilation-log analysis (educational data mining from IDE logs)
+@phdthesis{jadud2006exploration,
+  author = {Jadud, Matthew C.},
+  title  = {An Exploration of Novice Compilation Behaviour in {BlueJ}},
+  school = {University of Kent},
+  year   = {2006},
+  doi    = {10.22024/UniKent/01.02.86458}
+}
+
+% Hallucination in generated text (G2 grounding)
+@article{ji2023hallucination,
+  author  = {Ji, Ziwei and Lee, Nayeon and Frieske, Rita and Yu, Tiezheng and
+             Su, Dan and Xu, Yan and Ishii, Etsuko and Bang, Ye Jin and
+             Madotto, Andrea and Fung, Pascale},
+  title   = {Survey of Hallucination in Natural Language Generation},
+  journal = {ACM Computing Surveys},
+  year    = {2023},
+  doi     = {10.1145/3571730}
+}
+
+% Constrained / guided generation (schema-validated LLM output)
+@misc{willard2023guided,
+  author = {Willard, Brandon T. and Louf, R{\'e}mi},
+  title  = {Efficient Guided Generation for Large Language Models},
+  year   = {2023},
+  note   = {arXiv:2307.09702},
+  doi    = {10.48550/arXiv.2307.09702}
+}
+
+% Tool use by LLM agents
+@misc{yao2023react,
+  author = {Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and
+            Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan},
+  title  = {{ReAct}: Synergizing Reasoning and Acting in Language Models},
+  year   = {2023},
+  note   = {arXiv:2210.03629; ICLR 2023 camera-ready version},
+  doi    = {10.48550/arXiv.2210.03629}
+}
+
+% LLM agent architectures, memory, planning
+@article{wang2024agents,
+  author  = {Wang, Lei and Ma, Chen and Feng, Xueyang and Zhang, Zeyu and
+             Yang, Hao and Zhang, Jingsen and Chen, Zhiyuan and Tang, Jiakai
+             and Chen, Xu and Lin, Yankai and Zhao, Wayne Xin and Wei, Zhewei
+             and Wen, Ji-Rong},
+  title   = {A Survey on Large Language Model Based Autonomous Agents},
+  journal = {Frontiers of Computer Science},
+  year    = {2024},
+  doi     = {10.1007/s11704-024-40231-1}
+}
+
+% LLM-as-judge reliability (only cite if a model judge is discussed)
+@misc{zheng2023judge,
+  author = {Zheng, Lianmin and Chiang, Wei-Lin and Sheng, Ying and
+            Zhuang, Siyuan and Wu, Zhanghao and Zhuang, Yonghao and Lin, Zi
+            and Li, Zhuohan and Li, Dacheng and Xing, Eric P. and Zhang, Hao
+            and Gonzalez, Joseph E. and Stoica, Ion},
+  title  = {Judging {LLM}-as-a-Judge with {MT-Bench} and Chatbot Arena},
+  year   = {2023},
+  note   = {arXiv:2306.05685; NeurIPS 2023 Datasets and Benchmarks Track},
+  doi    = {10.48550/arXiv.2306.05685}
+}
+
+% Aspect-oriented programming (seed objective 1, weaving demonstration)
+@inproceedings{kiczales1997aop,
+  author    = {Kiczales, Gregor and Lamping, John and Mendhekar, Anurag and
+               Maeda, Chris and Lopes, Cristina and Loingtier, Jean-Marc and
+               Irwin, John},
+  title     = {Aspect-Oriented Programming},
+  booktitle = {ECOOP'97 -- Object-Oriented Programming},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1241},
+  publisher = {Springer},
+  year      = {1997},
+  doi       = {10.1007/BFb0053381}
+}
+
+% Learning-analytics ethics (consent, oversight)
+@article{slade2013ethics,
+  author  = {Slade, Sharon and Prinsloo, Paul},
+  title   = {Learning Analytics: Ethical Issues and Dilemmas},
+  journal = {American Behavioral Scientist},
+  volume  = {57},
+  number  = {10},
+  pages   = {1509--1528},
+  year    = {2013},
+  doi     = {10.1177/0002764213479366}
+}
