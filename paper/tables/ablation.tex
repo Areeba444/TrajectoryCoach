@@ -2,8 +2,9 @@
 \centering
 \caption{Ablation on the test split. Each row removes one component from the full
 system. The timing gate accounts for almost all of the reduction in interruption;
-removing the response wait and removing the episode budget give identical results,
-so the response wait never binds once the cooldown and the gate are active.}
+removing the response wait as well as the episode budget gives the same result as removing
+the budget alone, so the response wait adds nothing once the cooldown is active (the cooldown
+is 180\,s and covers the 120\,s wait).}
 \label{tab:ablation}
 \begin{tabular}{lrrrr}
 \toprule
@@ -12,7 +13,7 @@ Configuration & Scaffolds & Interruption & Pause-aligned & Coverage \\
 Full system & 2038 & 0.021 & 0.448 & 0.137 \\
 $-$ cooldown & 2129 & 0.020 & 0.449 & 0.144 \\
 $-$ episode budget & 2955 & 0.021 & 0.444 & 0.206 \\
-$-$ response wait & 2955 & 0.021 & 0.444 & 0.206 \\
+$-$ budget and response wait & 2955 & 0.021 & 0.444 & 0.206 \\
 $-$ evidence floor (G2) & 2804 & 0.026 & 0.424 & 0.146 \\
 $-$ timing gate (G1) & 2364 & 0.269 & 0.310 & 0.221 \\
 Phase 1 policy, no components & 3828 & 0.657 & 0.168 & 0.341 \\

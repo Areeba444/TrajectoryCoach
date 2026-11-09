@@ -21,7 +21,8 @@ from .provider import SCHEMA, validate_output
 from .tools import ToolBox, ToolError, tool_specs
 
 ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
-DEFAULT_MODEL = 'llama-3.3-70b-versatile'
+MAX_RETRIES = 6
+DEFAULT_MODEL = 'openai/gpt-oss-20b'   # Llama 3.x left the Groq free tier in Aug 2026
 
 SYSTEM = (
     'You are a programming reflection coach embedded in an IDE. You see only an event '
@@ -55,29 +56,65 @@ class GroqProvider:
         self.constrained, self.use_tools, self.timeout = constrained, use_tools, timeout
         self.calls = 0
         self._tool_support = None
+        self._reasoning_param = None
+        self.retries = 0       # rate-limit (429) retries, not counted as extra calls
         self.usage = []        # one record per API call
         self.traces = []       # one record per decision, for the logs/ directory
         self.failures = []
 
     # ---- transport -------------------------------------------------------
+    def _prepare(self, body):
+        """Model-specific request tweaks. The gpt-oss models are reasoning models:
+        reasoning tokens count against max_tokens, so a small cap can leave the
+        visible answer empty. Keep the reasoning short and the cap generous."""
+        if self.model.startswith('openai/gpt-oss'):
+            if self._reasoning_param is not False:
+                body.setdefault('reasoning_effort', 'low')
+            body['max_tokens'] = max(body.get('max_tokens', 0), 1024)
+        return body
+
     def _post(self, body):
         if self.calls >= self.max_calls:
             raise RuntimeError('API call budget exhausted')
         self.calls += 1
-        req = urllib.request.Request(
-            ENDPOINT, data=json.dumps(body).encode(),
-            headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json',
-                     # Cloudflare in front of the API rejects urllib's default
-                     # User-Agent with HTTP 403 / error code 1010.
-                     'User-Agent': 'TrajectoryCoach/1.0',
-                     'Accept': 'application/json'})
-        started = time.perf_counter()
-        try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as r:
-                payload = json.load(r)
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode('utf-8', 'replace')[:400]
-            raise RuntimeError(f'HTTP {exc.code}: {detail}') from None
+        body = self._prepare(body)
+        data = json.dumps(body).encode()
+        payload = None
+        for attempt in range(MAX_RETRIES + 1):
+            req = urllib.request.Request(
+                ENDPOINT, data=data,
+                headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json',
+                         # Cloudflare in front of the API rejects urllib's default
+                         # User-Agent with HTTP 403 / error code 1010.
+                         'User-Agent': 'TrajectoryCoach/1.0',
+                         'Accept': 'application/json'})
+            started = time.perf_counter()
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as r:
+                    payload = json.load(r)
+                break
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode('utf-8', 'replace')[:400]
+                if exc.code == 429 and attempt < MAX_RETRIES and 'per day' not in detail.lower():
+                    # Per-minute limit: wait as long as the server asks, then retry.
+                    try:
+                        wait = float(exc.headers.get('retry-after') or 0)
+                    except (TypeError, ValueError):
+                        wait = 0.0
+                    wait = min(max(wait, 2.0 * (attempt + 1)), 65.0)
+                    self.retries += 1
+                    time.sleep(wait)
+                    continue
+                if (exc.code == 400 and 'reasoning_effort' in body
+                        and 'reasoning' in detail.lower() and self._reasoning_param is not False):
+                    # This model does not accept the reasoning parameter; drop it once.
+                    self._reasoning_param = False
+                    body.pop('reasoning_effort', None)
+                    data = json.dumps(body).encode()
+                    continue
+                raise RuntimeError(f'HTTP {exc.code}: {detail}') from None
+        else:
+            raise RuntimeError('Rate limit retries exhausted')
         latency = time.perf_counter() - started
         usage = payload.get('usage', {}) or {}
         self.usage.append({'latency_seconds': round(latency, 3),
@@ -172,7 +209,7 @@ class GroqProvider:
         pin = sum(u['prompt_tokens'] or 0 for u in self.usage)
         pout = sum(u['completion_tokens'] or 0 for u in self.usage)
         lat_sorted = sorted(lat)
-        out = {'api_calls': self.calls, 'model': self.model, 'temperature': self.temperature,
+        out = {'api_calls': self.calls, 'rate_limit_retries': self.retries, 'model': self.model, 'temperature': self.temperature,
                'seed': self.seed, 'prompt_tokens': pin, 'completion_tokens': pout,
                'total_tokens': pin + pout,
                'mean_latency_seconds': round(sum(lat) / len(lat), 3) if lat else None,

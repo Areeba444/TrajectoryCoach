@@ -77,7 +77,7 @@ def table_ablation(exp):
     order = [('Full system', 'E3_proposed_full'),
              ('$-$ cooldown', 'E5_ablation_no_cooldown'),
              ('$-$ episode budget', 'E5_ablation_no_budget'),
-             ('$-$ response wait', 'E5_ablation_no_memory'),
+             ('$-$ budget and response wait', 'E5_ablation_no_memory'),
              ('$-$ evidence floor (G2)', 'E5_ablation_no_evidence_floor'),
              ('$-$ timing gate (G1)', 'E5_ablation_no_timing_gate'),
              ('Phase 1 policy, no components', 'E5_ablation_none_phase1')]
@@ -90,8 +90,9 @@ def table_ablation(exp):
 \centering
 \caption{Ablation on the test split. Each row removes one component from the full
 system. The timing gate accounts for almost all of the reduction in interruption;
-removing the response wait and removing the episode budget give identical results,
-so the response wait never binds once the cooldown and the gate are active.}
+removing the response wait as well as the episode budget gives the same result as removing
+the budget alone, so the response wait adds nothing once the cooldown is active (the cooldown
+is 180\,s and covers the 120\,s wait).}
 \label{tab:ablation}
 \begin{tabular}{lrrrr}
 \toprule

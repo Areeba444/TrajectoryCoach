@@ -126,4 +126,4 @@ Unchanged and still correct: 726,897 test events, 8 test learners, 10,687 decisi
 
 ## One claim to add
 
-The timing gate is the component that does the work: removing it takes interruption from 0.0206 to 0.2690, and removing both gap components takes it to 0.6567. Removing the episode budget and removing the response wait give **identical** results, so one Phase 1 component never binds. A redundant component found by ablation is a real finding and B3 rewards it.
+The timing gate is the component that does the work: removing it takes interruption from 0.0206 to 0.2690, and removing both gap components takes it to 0.6567. Removing the response wait on top of the episode budget changes nothing (the 180 s cooldown covers the 120 s wait), so that Phase 1 component adds nothing. A redundant component found by ablation is a real finding and B3 rewards it.

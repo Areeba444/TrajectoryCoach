@@ -15,7 +15,7 @@ metacognitive question, or whether to stay quiet. It never sees the learner's
 source code, never learns whether the code was correct, and never writes code.
 
 **What this system is not.** Every result in this repository comes from
-replaying logs recorded in 2016, or from simulated learners. No student ever
+replaying logs recorded before this system existed, or from simulated learners. No student ever
 saw a scaffold produced by this system. Nothing here is a learning outcome,
 and no measure below is an effect of prompting.
 
@@ -73,7 +73,7 @@ python -m coach.cli --file solution.py --live
 | Variable | Needed for | Default |
 |---|---|---|
 | `GROQ_API_KEY` | live model only | none; offline runs never read it |
-| `GROQ_MODEL` | live model only | `llama-3.3-70b-versatile` |
+| `GROQ_MODEL` | live model only | `openai/gpt-oss-20b` |
 
 Keys are read from the environment only. `.env` is git-ignored and no key is
 written to any file in this repository.

@@ -213,8 +213,8 @@ should say so rather than lead with the mean.
 
 These were observed and deliberately left, with reasons.
 
-- **No learner ever saw a scaffold.** This is a replay of logs recorded in
-  2016. Every measure describes which moments a policy selects and what the
+- **No learner ever saw a scaffold.** This is a replay of logs recorded before
+  this system existed. Every measure describes which moments a policy selects and what the
   learner did anyway. None of it is an effect of prompting, and none of it is
   a learning outcome.
 - **Educator raters were not available.** Phase 1 specified two educators

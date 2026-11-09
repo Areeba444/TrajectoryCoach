@@ -455,7 +455,7 @@ These are the things most likely to cost marks, and a marker will look for them.
 
 ### Must appear in the paper
 
-1. **No learner ever saw a scaffold.** This is a replay of logs recorded in 2016, plus simulated learners. No number in the paper is an effect of prompting, and none is a learning outcome. The deliberation delta describes **which moments a policy selects** and what the learner did there anyway. State this in § 7, not just § 11.
+1. **No learner ever saw a scaffold.** This is a replay of logs recorded before this system existed, plus simulated learners. No number in the paper is an effect of prompting, and none is a learning outcome. The deliberation delta describes **which moments a policy selects** and what the learner did there anyway. State this in § 7, not just § 11.
 2. **E2 is your reconstruction.** The base paper reports neither of your measures. The on-demand columns are its *interaction policy* re-implemented on *your* data at its reported request rate (725 hints / 102 students / 14 questions = 0.5077 per student-question). Never present them as numbers from the published paper.
 3. **Juncture precision is circular.** The proposed policy fires at junctures by construction. Report the column; rest no claim on it.
 4. **The grounding checker is a pattern screen, not a verifier.** A fluent, plausible, wrong statement that avoids the pattern list passes.

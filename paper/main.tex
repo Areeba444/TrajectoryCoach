@@ -163,11 +163,11 @@ reported as such.}
 pause alignment, juncture precision, juncture coverage, deliberation delta,
 unsupported-claim rate, Spearman $r$. Say that confidence intervals come from
 a cluster bootstrap over learners, because scaffolds cluster within learners.
-State that juncture precision is true by construction for the proposed policy
-and that no claim rests on it.}
+State that juncture precision is 1.0 by construction for the ungated policies,
+and 0.717 for the full system because the gate delays delivery; no claim rests on it.}
 
 \todo{State the central limitation here, not only in Section~\ref{sec:limits}:
-this is a replay of logs recorded in 2016, no learner ever saw a scaffold, and
+this is a replay of logs recorded before the system existed (the collection period is not stated on the dataset page, so give no year), no learner ever saw a scaffold, and
 therefore no measure in this paper is an effect of prompting. The deliberation
 delta describes which moments a policy selects and what the learner did there
 anyway.}
@@ -241,8 +241,9 @@ not addressed, and be willing to write ``partially''.}
 \end{figure}
 
 \todo{Two findings worth the space: the timing gate carries almost all of the
-effect, and removing the response wait gives results identical to removing the
-episode budget, so one of the Phase 1 components never binds. Say so; a
+effect, and removing the response wait as well as the episode budget gives the same
+result as removing the budget alone, because the 180\,s cooldown already covers the
+120\,s wait, so one Phase 1 component adds nothing. Say so; a
 redundant component found by ablation is a real result.}
 
 \input{tables/efficiency}
@@ -277,7 +278,7 @@ the stated reason and the evidence row. This is required by the brief.}
 \label{sec:limits}
 \todo{Be specific and do not hedge. At minimum: no learner saw a scaffold, so
 nothing here is a treatment effect; eight test learners is a small sample and
-one of them contributes only 2{,}657 events; the logs predate current tooling;
+one of them contributes only 2{,}657 events; the logs were collected without any scaffolding and the collection period is not stated on the dataset page;
 the grounding checker is a pattern screen that a fluent wrong statement can
 pass; the transfer study is simulated and its parameters were chosen by us;
 no educator raters, and the authors rated their own system, which is a

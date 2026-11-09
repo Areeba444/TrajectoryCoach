@@ -5,7 +5,7 @@ raters were not available inside Phase 2, so timing is measured from the logs
 instead, with a small blind human rating kept as a validation sample. The
 log-derived measures below are fixed before any comparison is run.
 
-IMPORTANT. This is a replay of logs recorded in 2016. No learner in the data
+IMPORTANT. This is a replay of logs recorded before this system existed. No learner in the data
 ever saw a scaffold from this system. Nothing measured here can be an effect
 of prompting. Every measure below describes *which moments a policy selects*
 and what the learner did at those moments anyway. deliberation_delta in
@@ -19,8 +19,8 @@ pause_aligned       prompt is followed by a natural pause of at least PAUSE
                     seconds, so the learner can read it without losing flow.
 juncture_precision  prompt lands on an observable decision point (first edit
                     of a task, a repeated-execution window, or a submission).
-                    True by construction for the proposed policy; reported for
-                    completeness, not as evidence.
+                    1.0 by construction for ungated policies; below 1.0 when the
+                    timing gate delays delivery. Not evidence of benefit.
 juncture_coverage   share of all observable decision points that received a
                     prompt within COVER seconds.
 median_response_gap seconds from the prompt to the learner's next event.
