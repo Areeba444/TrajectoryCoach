@@ -66,7 +66,11 @@ class GroqProvider:
         self.calls += 1
         req = urllib.request.Request(
             ENDPOINT, data=json.dumps(body).encode(),
-            headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json'})
+            headers={'Authorization': 'Bearer ' + self.key, 'Content-Type': 'application/json',
+                     # Cloudflare in front of the API rejects urllib's default
+                     # User-Agent with HTTP 403 / error code 1010.
+                     'User-Agent': 'TrajectoryCoach/1.0',
+                     'Accept': 'application/json'})
         started = time.perf_counter()
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as r:
