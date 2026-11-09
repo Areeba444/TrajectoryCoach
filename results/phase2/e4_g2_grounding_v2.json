@@ -1,0 +1,443 @@
+{
+  "split": "test",
+  "sampled_prefixes": 100,
+  "model": "openai/gpt-oss-20b",
+  "temperature": 0.0,
+  "seed": 0,
+  "gate_seconds": 20,
+  "min_evidence": 5,
+  "prompt_version": "v2",
+  "delivered_scaffolds_in_split": 2038,
+  "constrained": {
+    "prompts": 100,
+    "prompts_with_unsupported_claim": 0,
+    "unsupported_rate": 0.0,
+    "unsupported_claims_total": 0,
+    "claims_per_prompt": 0.0,
+    "by_kind": {},
+    "examples": []
+  },
+  "unconstrained": {
+    "prompts": 100,
+    "prompts_with_unsupported_claim": 55,
+    "unsupported_rate": 0.55,
+    "unsupported_claims_total": 110,
+    "claims_per_prompt": 1.1,
+    "by_kind": {
+      "outcome": 78,
+      "quantity": 23,
+      "affect": 6,
+      "solution": 3
+    },
+    "examples": [
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89\n\nYou\u2019ve already put in a solid amount of work\u201427 edits and 2 runs\u2014so you\u2019re clearly exploring the problem. The next step is to check whether your solution actually passes the hidden tests. If it doesn\u2019t, try to think about edge cases you might have missed or whether your algorithm could be optimized.\n\nHere are a few quick tips:\n\n1. **Run the tests locally** \u2013 If you can, run the provided test suite or add a few custom cases that cover the extremes of the input range.\n2. **Check the constraints** \u2013 Make sure your solution handles the largest possible inputs within the time limit.\n3. **Review your logic** \u2013 Sometimes a small off\u2011by\u2011one or a missing condition can cause a failure. Walk through the code with a sample input to spot any gaps.\n\nGive it another go, and let me know how it turns out!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "work"
+          },
+          {
+            "kind": "outcome",
+            "span": "failure"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in the last few minutes\u2014great to see you experimenting. Since you haven\u2019t submitted yet, try stepping back for a moment: run the program, then pause and review the output. Look for any patterns or errors that pop up. Once you spot something interesting, tweak a single line and run again. This \u201crun\u2011inspect\u2011modify\u201d loop is a powerful way to debug and learn. Keep it up, and you\u2019ll get the hang of it in no time! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f7. That\u2019s a great first step\u2014every edit counts. Take a moment to outline what you want to achieve before diving in. A quick plan (e.g., \u201cI\u2019ll write a function to reverse a string, then test it with a few cases\u201d) can keep you focused and help you spot any gaps early. Once you\u2019ve sketched it out, go ahead and code\u2014then we\u2019ll review together. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "7"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in the last few minutes\u2014great to see you experimenting. Since you haven\u2019t submitted yet, try stepping back for a moment: run the program, then pause and review the output. Look for any patterns or errors that pop up. Once you spot something interesting, tweak a small part of the code and run again. This \u201crun\u2011inspect\u2011modify\u201d loop is a powerful way to debug and learn. Keep it up, and you\u2019ll get the hang of it in no time! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great start! You\u2019ve just made your first edit on this exercise. Take a moment to review the problem statement and think about how you\u2019ll structure your solution. A quick plan\u2014list the steps you\u2019ll need and any functions you might write\u2014can save time and reduce errors later. When you\u2019re ready, go ahead and write the code, and feel free to ask if you hit a snag. Happy coding!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times in a short span. That\u2019s a great way to test different inputs and see how the program behaves. If you\u2019re still stuck on the exercise, try adding a few print statements to trace the flow or break the problem into smaller parts. Keep experimenting\u2014each run brings you closer to the solution! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "affect",
+            "span": "stuck"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times in the last 5 minutes. That\u2019s a great way to test your logic, but let\u2019s try to focus on the core issue first. Take a quick look at the error messages or the output you\u2019re getting\u2014those clues can point you straight to the bug. Once you spot the problem, tweak the code, run it again, and you\u2019ll see the difference. Keep it up, and you\u2019ll have that exercise solved in no time! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "bug"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f5 in Part\u202f3. That first edit is a great sign\u2014you're already engaging with the problem. Take a moment to outline a quick plan:  \n\n1. **Identify the goal** \u2013 What should the code output or achieve?  \n2. **Break it down** \u2013 List the main steps or functions you\u2019ll need.  \n3. **Sketch a rough structure** \u2013 Even a few lines of pseudocode can help.  \n\nOnce you have that plan, dive in and let me know if you hit any snags. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times in a short span. That\u2019s a great way to test different inputs and see how your program behaves. If you\u2019re still stuck on exercise\u202f19, try adding a few print statements to trace the values of your variables. It can help you spot where things go off track. Keep experimenting\u2014every run brings you closer to the solution! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "affect",
+            "span": "stuck"
+          },
+          {
+            "kind": "quantity",
+            "span": "19"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times but haven\u2019t submitted yet. That\u2019s totally fine\u2014experimenting is a great way to learn. When you feel confident that your solution works, go ahead and submit it. If you hit any roadblocks, just let me know what\u2019s tripping you up and we\u2019ll tackle it together! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "works"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times in a short span. That\u2019s a great way to test different inputs and see how the program behaves. If you\u2019re still stuck on the exercise, try adding a few print statements to trace the flow or break the problem into smaller parts. Keep experimenting\u2014each run brings you closer to the solution! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "affect",
+            "span": "stuck"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b\n\nIt looks like you just started working on Exercise\u202f9 in Part\u202f7. You\u2019ve made your first edit, which is a great first step. Here are a few quick tips to keep the momentum going:\n\n1. **Plan before you code** \u2013 Sketch out what you want to achieve in a few lines of pseudocode or a diagram. This helps you spot potential pitfalls early.\n2. **Break it down** \u2013 Identify the smallest piece you can implement and test. Small, incremental changes make debugging easier.\n3. **Check the requirements** \u2013 Make sure you understand the input/output format and any constraints. A quick reread of the problem statement can save time later.\n4. **Test as you go** \u2013 Run a simple test case right after you write a new function or block. If it fails, you\u2019ll know exactly where to look.\n\nGive it a try, and feel free to share your next edit or any questions you run into. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "fails"
+          },
+          {
+            "kind": "quantity",
+            "span": "9"
+          },
+          {
+            "kind": "quantity",
+            "span": "7"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great job getting your first submission in! \ud83c\udf89  \nNow that you\u2019ve made it to the evaluation phase, take a moment to review the feedback (if any) and double\u2011check your code against the problem requirements. If the solution isn\u2019t correct, try breaking the problem into smaller parts or adding print statements to trace the logic. Keep experimenting\u2014every edit brings you closer to mastery!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "correct"
+          }
+        ],
+        "student": "5"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve just started working on Exercise\u202f11 in Part\u202f4. That\u2019s a great first step\u2014every edit you make is a chance to learn. Here\u2019s a quick plan to keep the momentum going:\n\n1. **Set a tiny goal** \u2013 decide what you want to accomplish in the next 5\u201310 minutes (e.g., write a single function, add a comment, or run a test).\n2. **Take a short break** \u2013 after each edit, pause for a minute or two. A quick stretch or a glass of water can reset your focus.\n3. **Check the prompt** \u2013 make sure you understand the requirements. If anything is unclear, jot it down or ask for clarification.\n4. **Run the code** \u2013 even if it\u2019s incomplete, running it can reveal syntax errors early and give you instant feedback.\n5. **Reflect briefly** \u2013 after you finish a small chunk, write a one\u2011sentence note: \u201cI added X, and it worked because Y.\u201d This helps cement what you did.\n\nGive it a try, and let me know how it goes! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "syntax"
+          },
+          {
+            "kind": "outcome",
+            "span": "errors"
+          },
+          {
+            "kind": "quantity",
+            "span": "11"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "5"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nYou\u2019ve made 27 edits in just under 19 minutes\u2014showing you\u2019re actively experimenting. The next step is to run the code and see if it passes the test cases. If it doesn\u2019t, try narrowing down the issue by adding a few `print` statements or simplifying the logic. Remember, debugging is just a series of small, focused checks. Keep iterating, and you\u2019ll get there!",
+        "issues": [
+          {
+            "kind": "quantity",
+            "span": "19"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nYou\u2019ve made 18 edits and spent about 1.5\u202fminutes on this problem\u2014solid effort.  \nNow that your solution is in, take a moment to review the feedback (if any).  \nIf the result was incorrect, try to pinpoint where the logic diverges from the expected output.  \nIf it passed, consider what you could do to make the code even cleaner or faster.  \n\nKeep up the momentum\u2014each iteration brings you closer to mastery! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "incorrect"
+          },
+          {
+            "kind": "outcome",
+            "span": "passed"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nYou\u2019ve spent a good amount of time working on this problem\u2014over 18 minutes of active coding and 51 edits show you\u2019re really digging into the details.  \n\n**Next steps:**\n1. **Check the feedback** \u2013 see if the system flagged any errors or if the test cases passed.  \n2. **If it failed**, look at the error messages or the failing test cases. They\u2019ll give you clues about what\u2019s missing or wrong.  \n3. **If it passed**, consider a quick refactor: can you make the code cleaner or more efficient?  \n4. **Reflect** \u2013 jot down one thing you learned and one thing you\u2019d do differently next time.\n\nKeep up the momentum\u2014you\u2019re making solid progress! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "errors"
+          },
+          {
+            "kind": "outcome",
+            "span": "passed"
+          },
+          {
+            "kind": "outcome",
+            "span": "failed"
+          },
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "failing"
+          },
+          {
+            "kind": "outcome",
+            "span": "wrong"
+          },
+          {
+            "kind": "outcome",
+            "span": "passed"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting your code submitted! \ud83c\udf89  \nYou\u2019ve spent a good amount of time working on this exercise\u2014over an hour of focused effort. That\u2019s a solid foundation.  \n\n**Next steps:**\n1. **Check the feedback** \u2013 see if the system flagged any errors or if the test suite passed.  \n2. **If it didn\u2019t pass**, look at the specific error messages or failing test cases. Those clues will guide you to the exact part that needs fixing.  \n3. **If it passed**, consider adding a couple of edge\u2011case tests of your own to deepen your understanding and catch any hidden bugs.\n\nRemember, debugging is a learning opportunity. Take a short break, then revisit the problematic lines with fresh eyes. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "errors"
+          },
+          {
+            "kind": "outcome",
+            "span": "passed"
+          },
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "failing"
+          },
+          {
+            "kind": "outcome",
+            "span": "passed"
+          },
+          {
+            "kind": "outcome",
+            "span": "bugs"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running your code a lot\u2014great to see you experimenting. Since you haven\u2019t submitted yet, try stepping back for a moment: run your program, check the output, and then pause to review what\u2019s happening. If something isn\u2019t working, jot down a quick question or a hypothesis about why, and then test it. This will help you build a clearer debugging loop and make your next run even more productive. Keep it up! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Great job getting to the submission point! \ud83c\udf89  \nYou\u2019ve already spent a good amount of time experimenting\u2014207 edits and 2 runs\u2014so you\u2019re clearly exploring the problem. Now that you\u2019ve submitted, take a moment to review the feedback (if any) and see what worked and what didn\u2019t. If the solution isn\u2019t correct, try to pinpoint the missing piece: was it a logic error, a boundary case, or a syntax issue?  \n\nRemember, debugging is just another form of coding. Break the problem into smaller parts, add print statements, and test each piece. Once you\u2019ve identified the issue, tweak your code and submit again. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "correct"
+          },
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "syntax"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in the last few minutes\u2014great to see you experimenting. Since you haven\u2019t submitted anything yet, try adding a small change that will produce a different output or trigger a new error. That\u2019ll give you a fresh test case to debug. Keep it up, and let me know if you hit a snag!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Great start! You\u2019ve just made your first edit on this exercise. Take a moment to review the problem statement and think about how you\u2019ll structure your solution. A quick plan\u2014list the steps you\u2019ll need and any functions you might write\u2014can save time and reduce errors later. When you\u2019re ready, try writing a small snippet that tackles one part of the problem, then test it before moving on. Keep up the momentum!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times and making a lot of edits\u2014great effort! Since you haven\u2019t submitted yet, let\u2019s take a quick pause to review what you\u2019re trying to achieve:\n\n1. **Clarify the goal** \u2013 What should the final output look like? Write a one\u2011sentence description of the expected result.\n2. **Check the logic** \u2013 With so many edits, it\u2019s easy to lose track of the core algorithm. Try adding a few `print()` statements (or use a debugger) to confirm each step is doing what you expect.\n3. **Test edge cases** \u2013 Run the program with a few different inputs to see if it behaves consistently.\n\nOnce you feel confident that the logic is solid, go ahead and submit. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "solution",
+            "span": "print("
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nNow that your code is in the system, take a moment to review the feedback (if any) and see what the grader says. If it didn\u2019t pass, think about what might be missing or wrong\u2014maybe a boundary case or a small logic tweak. If it did pass, try tweaking the solution a bit (e.g., make it more efficient or add a comment) to deepen your understanding. Keep experimenting and you\u2019ll master this exercise in no time!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "wrong"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in the last few minutes\u2014great to see you experimenting! Since you haven\u2019t submitted anything yet, let\u2019s take a quick step back:\n\n1. **Check the output** \u2013 Does the program produce the expected result? If not, try adding a few `print` statements to see where it\u2019s going off track.\n2. **Simplify** \u2013 Break the problem into smaller parts. Run a tiny snippet that only does one thing, then build up.\n3. **Ask for help** \u2013 If you\u2019re stuck on a specific line or error message, just let me know. I\u2019m here to help you debug.\n\nGive it a shot, and when you\u2019re ready, submit your solution. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "affect",
+            "span": "stuck"
+          }
+        ],
+        "student": "11"
+      }
+    ]
+  },
+  "efficiency_constrained": {
+    "api_calls": 100,
+    "rate_limit_retries": 0,
+    "model": "openai/gpt-oss-20b",
+    "temperature": 0.0,
+    "seed": 0,
+    "prompt_tokens": 68532,
+    "completion_tokens": 9095,
+    "total_tokens": 77627,
+    "mean_latency_seconds": 0.675,
+    "p95_latency_seconds": 1.27,
+    "tool_calls": 0,
+    "tool_calling_supported": true,
+    "validator_rejections": 0,
+    "rejection_rate": 0.0
+  },
+  "efficiency_unconstrained": {
+    "api_calls": 100,
+    "rate_limit_retries": 0,
+    "model": "openai/gpt-oss-20b",
+    "temperature": 0.0,
+    "seed": 0,
+    "prompt_tokens": 27082,
+    "completion_tokens": 11768,
+    "total_tokens": 38850,
+    "mean_latency_seconds": 0.749,
+    "p95_latency_seconds": 1.401,
+    "tool_calls": 0,
+    "tool_calling_supported": true,
+    "validator_rejections": 0,
+    "rejection_rate": null
+  },
+  "errors": [],
+  "error_count": 0
+}
