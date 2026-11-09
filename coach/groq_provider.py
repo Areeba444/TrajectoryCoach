@@ -180,7 +180,8 @@ class GroqProvider:
             except RuntimeError as exc:
                 # Not every model accepts tool calling together with JSON mode.
                 # Drop the tools once and carry on rather than losing the run.
-                if 'tools' in body and self._tool_support is not False:
+                if ('tools' in body and self._tool_support is not False
+                        and str(exc).startswith('HTTP 400')):
                     self._tool_support = False
                     body.pop('tools', None)
                     body['response_format'] = {'type': 'json_object'}
