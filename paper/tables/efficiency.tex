@@ -11,7 +11,10 @@ Condition & \multicolumn{4}{c}{measures} \\
 Rule baseline & 24.7 & 29\,392 & 7.7 & 14.70 \\
 Proposed system & 24.8 & 29\,366 & 1.5 & 2.80 \\
 \midrule
-\multicolumn{5}{l}{\textit{Live model runs: \textit{not run}}} \\
+\multicolumn{5}{l}{\textit{Live model: openai/gpt-oss-20b, temperature 0.0, seed 0}} \\
+Constrained generation & 101 & 56\,546 & 0.74 & 0.000 \\
+Unconstrained generation & 100 & 38\,673 & 0.75 & -- \\
+\multicolumn{5}{l}{\footnotesize Columns for the live rows are: API calls, total tokens, mean latency (s), validator rejection rate.} \\
 \bottomrule
 \end{tabular}
 \end{table}

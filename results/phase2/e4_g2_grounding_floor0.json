@@ -1,0 +1,689 @@
+{
+  "split": "test",
+  "sampled_prefixes": 100,
+  "model": "openai/gpt-oss-20b",
+  "temperature": 0.0,
+  "seed": 0,
+  "gate_seconds": 20,
+  "constrained": {
+    "prompts": 100,
+    "prompts_with_unsupported_claim": 39,
+    "unsupported_rate": 0.39,
+    "unsupported_claims_total": 39,
+    "claims_per_prompt": 0.39,
+    "by_kind": {
+      "outcome": 39
+    },
+    "examples": [
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What did you try to verify after submitting, and what would you check next to confirm your solution works?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "works"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might bring you closer to a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might move you closer to a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "What did you try to verify after submitting, and what would you check next to confirm your solution works?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "works"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you could try to move closer to a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "11"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      },
+      {
+        "prompt": "What is the next small change you think might help you move toward a working solution?",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          }
+        ],
+        "student": "14"
+      }
+    ]
+  },
+  "unconstrained": {
+    "prompts": 100,
+    "prompts_with_unsupported_claim": 72,
+    "unsupported_rate": 0.72,
+    "unsupported_claims_total": 152,
+    "claims_per_prompt": 1.52,
+    "by_kind": {
+      "outcome": 102,
+      "affect": 5,
+      "quantity": 40,
+      "solution": 5
+    },
+    "examples": [
+      {
+        "prompt": "Great start! You\u2019ve just made your first edit\u2014keep that momentum going. Take a moment to review the problem statement and outline a quick plan before diving into code. Remember, a clear plan often saves time and reduces bugs. Good luck!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "bugs"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great job getting to the point of submitting! \ud83c\udf89\n\nHere are a few quick pointers to help you move forward:\n\n1. **Check the Feedback** \u2013 Once the system evaluates your submission, review any error messages or hints. They\u2019ll tell you exactly what needs fixing.\n\n2. **Break It Down** \u2013 If the solution isn\u2019t correct, try isolating the part that\u2019s failing. Write a small test case that reproduces the issue, then debug that snippet before re\u2011integrating it.\n\n3. **Keep It Simple** \u2013 With 47 edits, it\u2019s easy to over\u2011complicate things. Aim for the simplest logic that satisfies the requirements; this reduces bugs and makes your code easier to read.\n\n4. **Run Incrementally** \u2013 After each small change, run the program to confirm it still works. This way you\u2019ll catch errors early and avoid a big pile\u2011up of bugs.\n\n5. **Ask for Help** \u2013 If you\u2019re stuck, feel free to ask a question or request a hint. I\u2019m here to guide you through the next steps.\n\nGive it another go\u2014your persistence is already paying off! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "correct"
+          },
+          {
+            "kind": "outcome",
+            "span": "failing"
+          },
+          {
+            "kind": "outcome",
+            "span": "bugs"
+          },
+          {
+            "kind": "outcome",
+            "span": "works"
+          },
+          {
+            "kind": "outcome",
+            "span": "errors"
+          },
+          {
+            "kind": "outcome",
+            "span": "bugs"
+          },
+          {
+            "kind": "affect",
+            "span": "stuck"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great start! You\u2019ve just made your first edit on this exercise. Take a moment to review the problem statement and think about the approach you\u2019ll take before you write more code. A quick plan\u2014list the steps you\u2019ll need and any edge cases you anticipate\u2014can save time and reduce errors later. Once you\u2019re ready, go ahead and implement the first part of your solution. Happy coding!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great job getting to the submission point! \ud83c\udf89  \nNow that you\u2019ve finished the code, take a moment to review the output and any test results. If the program passes all tests, consider adding a comment or a brief explanation of your approach\u2014this helps solidify your understanding and makes your code easier to read later. If something didn\u2019t work, look at the error messages or failing tests, then tweak your logic or edge\u2011case handling. Keep up the momentum!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "work"
+          },
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "failing"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f17. That\u2019s a great first step\u2014every edit is a chance to shape your solution. Take a moment to outline what you want to achieve before diving in. A quick plan (e.g., \u201cI\u2019ll write a function to compute the factorial, then test it with a few values\u201d) can save time and keep you focused. Once you have a clear goal, start coding and feel free to ask if you hit a snag. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "17"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b  \nYou\u2019ve just started working on Exercise\u202f19 in Part\u202f3 of Session\u202f48. That first edit is a great sign\u2014you\u2019re already engaging with the problem. Here are a couple of quick tips to keep the momentum going:\n\n1. **Break the problem into smaller steps**  \n   Write down the main goal in one sentence, then list the sub\u2011tasks you need to accomplish. This makes the code easier to write and debug.\n\n2. **Use descriptive variable names**  \n   Even a short snippet becomes clearer when the names reflect their purpose. It also helps when you revisit the code later.\n\n3. **Test as you go**  \n   After adding a small piece of logic, run a quick test to confirm it behaves as expected. Catching issues early saves time.\n\n4. **Keep the window open**  \n   You have a 5\u2011minute window to work on this. If you hit a roadblock, pause, take a breath, and then return with fresh eyes.\n\nFeel free to paste your current code or describe what you\u2019re trying to achieve, and I\u2019ll help you fine\u2011tune it. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "work"
+          },
+          {
+            "kind": "solution",
+            "span": "return w"
+          },
+          {
+            "kind": "quantity",
+            "span": "19"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nNow that your code has been sent in, take a moment to review the feedback (if any). If the result isn\u2019t what you expected, try breaking the problem into smaller parts\u2014run a few test cases manually, and check the logic around the edge cases. Keep experimenting, and don\u2019t hesitate to ask for hints if you\u2019re stuck. You\u2019ve got this!",
+        "issues": [
+          {
+            "kind": "affect",
+            "span": "stuck"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f5 in Part\u202f4. That first edit is a great sign\u2014you\u2019re already engaging with the problem. Take a moment to outline a quick plan:  \n\n1. **Identify the goal** \u2013 What should the code output or achieve?  \n2. **Break it down** \u2013 List the main steps or functions you\u2019ll need.  \n3. **Sketch a rough structure** \u2013 Even a few lines of pseudocode can help.  \n\nOnce you have that plan, you can start coding confidently. If you hit a snag, feel free to ask for hints or clarification. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times now\u2014great persistence! Since you haven\u2019t submitted yet, try stepping back and reviewing the output of each run. Look for any patterns or errors that keep popping up. A quick sanity check on the input values or a small tweak to the logic can often reveal the root cause. Once you spot the issue, feel free to submit and we\u2019ll celebrate the fix together! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in this session\u2014great to see you experimenting. Since you haven\u2019t submitted yet, try to focus on what each run is telling you. Look for patterns in the output or any errors that keep popping up. Once you spot a consistent issue, tweak your code a bit and run again. When you feel confident, submit and let me know how it goes! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          },
+          {
+            "kind": "solution",
+            "span": "for patterns in"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a lot in this session\u2014great to see you experimenting. Since you haven\u2019t submitted yet, try taking a quick pause to review the output of your last run. Look for any patterns or errors that might hint at what\u2019s still missing. Once you spot a clue, tweak your code and run again. Keep it up\u2014each run brings you closer to the solution! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times and making a lot of edits\u2014great effort! Since you haven\u2019t submitted yet, let\u2019s make sure the logic is solid before you hit \u201cSubmit.\u201d \n\n**Quick tips:**\n1. **Check edge cases** \u2013 try inputs that might break the algorithm (e.g., empty strings, very large numbers).  \n2. **Add a comment** \u2013 a one\u2011sentence explanation of what the main loop does can help you spot mistakes.  \n3. **Run a final test** \u2013 use the sample test cases from the problem statement to confirm everything works.\n\nGive it a go, and let me know if you hit any snags! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "mistakes"
+          },
+          {
+            "kind": "outcome",
+            "span": "works"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f12. That\u2019s a great first step\u2014every edit you make is a chance to learn. Try to think about what you want to achieve with this change: are you fixing a bug, adding a feature, or refactoring? Write a quick plan (even a one\u2011sentence goal) before you dive in. If you hit a snag, pause, read the error message carefully, and consider what the code is actually doing. Keep it steady, and you\u2019ll build confidence fast! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "outcome",
+            "span": "bug"
+          },
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "quantity",
+            "span": "12"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f14. That\u2019s a great first step\u2014every edit you make is a chance to learn. Try breaking the problem into smaller parts: write a quick plan, then tackle one piece at a time. If you hit a snag, pause, think about what the code should do, and then write a small test or a comment to clarify your intent. Keep it steady, and you\u2019ll build confidence fast! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "14"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019ve been running the code a few times in this session\u2014great job staying active! Since you haven\u2019t submitted yet, try reviewing the output of each run to spot any patterns or errors. A quick tweak or a new test case can often reveal the missing piece. Keep experimenting, and when you feel confident, go ahead and submit. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f5 in Part\u202f7. That first edit is a great way to kick things off\u2014now you\u2019re ready to dive deeper. Try sketching a quick plan: list the steps you think are needed, then write a small snippet for each step. If you hit a snag, pause, think about what the code should do, and then tweak. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "7"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f6 in Part\u202f7. That first edit is a great sign\u2014you're already engaging with the problem. Take a moment to outline a quick plan:  \n\n1. **Identify the goal** \u2013 What should the code output or achieve?  \n2. **Break it down** \u2013 List the main steps or functions you\u2019ll need.  \n3. **Sketch a rough structure** \u2013 Even a few lines of pseudocode can help.  \n\nOnce you have that plan, dive in and let me know if you hit any snags. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "6"
+          },
+          {
+            "kind": "quantity",
+            "span": "7"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on Exercise\u202f10. That\u2019s a great first step\u2014every edit is a chance to shape your solution. Take a moment to outline what you want to achieve before diving in:  \n\n1. **Define the goal** \u2013 What should the final program do?  \n2. **Sketch the steps** \u2013 List the main actions the code needs to perform.  \n3. **Plan the structure** \u2013 Decide on functions, variables, or classes you\u2019ll use.  \n\nOnce you have a quick plan, you can start coding with confidence. If you hit a snag, feel free to ask for hints or clarification. Happy coding! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "10"
+          }
+        ],
+        "student": "2"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on exercise\u202f29. That\u2019s a great first step\u2014pasting in your code shows you\u2019re ready to dive in. Take a moment to outline what you want to achieve before you hit \u201crun.\u201d A quick plan (e.g., \u201cI\u2019ll write a function to calculate the sum, then test it with a few cases\u201d) can help keep your edits focused and reduce back\u2011and\u2011forth. Once you\u2019ve got a clear goal, go ahead and make your first edit. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "29"
+          }
+        ],
+        "student": "5"
+      },
+      {
+        "prompt": "Great job getting to the submission point! \ud83c\udf89  \nYou\u2019ve already made 308 edits in just under 2.7\u202fhours\u2014showing real persistence. Now it\u2019s time to reflect on what worked and what didn\u2019t:\n\n1. **Review the feedback** (if any) from the system or instructor.  \n2. **Identify patterns**: Did certain types of edits (e.g., variable renaming, logic changes) lead to progress?  \n3. **Plan a focused next step**: Pick one small change that could improve the solution or clarify the logic.  \n4. **Test incrementally**: After each tweak, run the test suite to catch issues early.\n\nKeep up the momentum\u2014each edit is a learning opportunity. Good luck! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "quantity",
+            "span": "7"
+          },
+          {
+            "kind": "quantity",
+            "span": "4"
+          }
+        ],
+        "student": "5"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you\u2019re just getting started on Exercise\u202f7. That\u2019s great\u2014every new edit is a step forward. Take a moment to think about what you want to achieve in this task. A quick plan can help you stay focused and make the most of your time. If you\u2019re unsure where to begin, try outlining the main steps or writing a short comment about what you\u2019re aiming to build. Once you have a clear idea, dive in and let me know if you hit any snags! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "quantity",
+            "span": "7"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nNow that your code has been sent in, take a moment to review the feedback (if any). If the result isn\u2019t what you expected, try stepping through the logic again\u2014look for off\u2011by\u2011one errors or missing edge cases. If it passes, consider adding a quick test or a comment to explain your approach; that helps solidify the solution in your mind. Keep up the momentum!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "errors"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nYou\u2019ve already put in a lot of edits\u201420 of them\u2014so you\u2019re clearly exploring different approaches. The next step is to run the code and see if it passes the test cases. If it doesn\u2019t, look at the error messages and think about what might be missing or wrong in your logic. Remember, debugging is just a systematic way of narrowing down the problem. Keep iterating, and you\u2019ll get there!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "outcome",
+            "span": "wrong"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Great job getting to the submit button! \ud83c\udf89  \nNow that your code has been sent in, take a moment to review the feedback (if any). If the result isn\u2019t what you expected, try:\n\n1. **Checking the output** \u2013 run the program locally and compare the results line\u2011by\u2011line.  \n2. **Tracing the logic** \u2013 add a few `print` statements or use the debugger to see where the values diverge.  \n3. **Re\u2011examining the problem statement** \u2013 sometimes a subtle requirement (e.g., off\u2011by\u2011one, edge case) is the culprit.\n\nIf you\u2019re still stuck, feel free to ask for hints or share the error message. Keep up the momentum\u2014you\u2019re making great progress!",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "error"
+          },
+          {
+            "kind": "affect",
+            "span": "stuck"
+          }
+        ],
+        "student": "8"
+      },
+      {
+        "prompt": "Hey there! \ud83d\udc4b I see you just started working on exercise\u202f3 of part\u202f7. That first edit is a great start\u2014now let\u2019s keep the momentum going. Try to break the problem into smaller steps: write a quick plan, then tackle one piece at a time. If you hit a snag, pause, think about what the code should do, and then write a small test or a comment to clarify your intent. You\u2019ve got this! \ud83d\ude80",
+        "issues": [
+          {
+            "kind": "outcome",
+            "span": "working"
+          },
+          {
+            "kind": "quantity",
+            "span": "7"
+          }
+        ],
+        "student": "8"
+      }
+    ]
+  },
+  "efficiency_constrained": {
+    "api_calls": 101,
+    "rate_limit_retries": 78,
+    "model": "openai/gpt-oss-20b",
+    "temperature": 0.0,
+    "seed": 0,
+    "prompt_tokens": 46709,
+    "completion_tokens": 9394,
+    "total_tokens": 56103,
+    "mean_latency_seconds": 0.55,
+    "p95_latency_seconds": 0.82,
+    "tool_calls": 0,
+    "tool_calling_supported": false,
+    "validator_rejections": 0,
+    "rejection_rate": 0.0
+  },
+  "efficiency_unconstrained": {
+    "api_calls": 100,
+    "rate_limit_retries": 43,
+    "model": "openai/gpt-oss-20b",
+    "temperature": 0.0,
+    "seed": 0,
+    "prompt_tokens": 26960,
+    "completion_tokens": 12261,
+    "total_tokens": 39221,
+    "mean_latency_seconds": 0.643,
+    "p95_latency_seconds": 0.907,
+    "tool_calls": 0,
+    "tool_calling_supported": true,
+    "validator_rejections": 0,
+    "rejection_rate": null
+  },
+  "errors": [],
+  "error_count": 0
+}
