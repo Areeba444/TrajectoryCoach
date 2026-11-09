@@ -30,8 +30,13 @@ def smoke(model, temperature, seed):
                                         'source_row': 1234, 'time': 0, 'runs': 4, 'edits': 51,
                                         'submissions': 0, 'window_events': 60,
                                         'window_seconds': 300, 'outcomes_observed': False})
-    d = p.generate(baseline, {'observation': baseline.evidence, 'allowed_phase': 'monitor',
-                              'reflection': '', 'recent_decisions': []})
+    try:
+        d = p.generate(baseline, {'observation': baseline.evidence, 'allowed_phase': 'monitor',
+                                  'reflection': '', 'recent_decisions': []})
+    except ValueError as exc:
+        print('The validator rejected the model reply:', exc)
+        print('Raw reply:', p.traces[-1].get('raw_reply') if p.traces else None)
+        raise SystemExit(1)
     print(json.dumps({'phase': d.phase, 'prompt': d.prompt, 'reason': d.reason,
                       'provider': d.provider}, indent=2))
     print(json.dumps(p.efficiency(), indent=2))
