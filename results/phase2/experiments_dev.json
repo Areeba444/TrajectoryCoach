@@ -1,0 +1,788 @@
+{
+  "split": "dev",
+  "split_rule": "learners sorted by integer id; every third learner (index % 3 == 2) is test",
+  "events": 1871292,
+  "learner_question_units": 2053,
+  "decision_points": 21266,
+  "runs": {
+    "E1_baseline_rule": {
+      "mode": "rule",
+      "config": {},
+      "gate_stats": {},
+      "events": 1871292,
+      "phases": {
+        "wait": 1850026,
+        "plan": 5385,
+        "evaluate": 2586,
+        "monitor": 13295
+      },
+      "reasons": {
+        "No trigger": 1850026,
+        "First observed edit in this task/session": 5385,
+        "Submission observed; correctness unknown": 2586,
+        "Repeated executions within the observation window": 13295
+      },
+      "runtime_seconds": 112.228,
+      "events_per_second": 16674,
+      "peak_memory_mb": 15.2,
+      "prompts": 21266,
+      "prompts_per_1000_events": 11.364,
+      "timing": {
+        "prompts": 21266,
+        "interruption_rate": 0.29902191291263047,
+        "interruption_ci": [
+          0.25992797839351806,
+          0.3413186654121734
+        ],
+        "pause_aligned": 0.16467600865230886,
+        "pause_aligned_ci": [
+          0.12033794853673424,
+          0.21988795518207283
+        ],
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.7405718047587698,
+        "median_response_gap": 3,
+        "deliberation_delta": -0.013548570252679077,
+        "deliberation_delta_ci": [
+          -0.02078239668695835,
+          -0.009461620425450346
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E3_proposed_full": {
+      "mode": "adaptive",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 8113,
+        "released": 4162,
+        "superseded": 3606,
+        "dropped": 344
+      },
+      "events": 1871292,
+      "phases": {
+        "wait": 1867130,
+        "evaluate": 1446,
+        "monitor": 1866,
+        "plan": 850
+      },
+      "reasons": {
+        "No trigger": 1846061,
+        "Observation window below the evidence floor": 4217,
+        "Held for a natural pause": 8113,
+        "Submission observed; correctness unknown": 1446,
+        "Waiting for learner response": 2177,
+        "Cooldown active": 1017,
+        "Repeated executions within the observation window": 1866,
+        "First observed edit in this task/session": 850,
+        "Task/session prompt budget exhausted": 5545
+      },
+      "runtime_seconds": 106.008,
+      "events_per_second": 17652,
+      "peak_memory_mb": 3.1,
+      "prompts": 4162,
+      "prompts_per_1000_events": 2.224,
+      "timing": {
+        "prompts": 4162,
+        "interruption_rate": 0.012493993272465162,
+        "interruption_ci": [
+          0.008632265490120852,
+          0.01704810836057917
+        ],
+        "pause_aligned": 0.44762133589620373,
+        "pause_aligned_ci": [
+          0.41303852290859355,
+          0.49061522419186654
+        ],
+        "juncture_precision": 0.6962998558385392,
+        "juncture_coverage": 0.13627386438446346,
+        "median_response_gap": 16.0,
+        "deliberation_delta": 0.0008756247886688012,
+        "deliberation_delta_ci": [
+          -0.0014805743189915744,
+          0.0036771197490420952
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_no_timing_gate": {
+      "mode": "adaptive",
+      "config": {
+        "min_evidence": 5
+      },
+      "gate_stats": {},
+      "events": 1871292,
+      "phases": {
+        "wait": 1866456,
+        "evaluate": 1237,
+        "plan": 1241,
+        "monitor": 2358
+      },
+      "reasons": {
+        "No trigger": 1850026,
+        "Observation window below the evidence floor": 4217,
+        "Submission observed; correctness unknown": 1237,
+        "First observed edit in this task/session": 1241,
+        "Waiting for learner response": 3828,
+        "Repeated executions within the observation window": 2358,
+        "Cooldown active": 1303,
+        "Task/session prompt budget exhausted": 7082
+      },
+      "runtime_seconds": 107.634,
+      "events_per_second": 17386,
+      "peak_memory_mb": 3.5,
+      "prompts": 4836,
+      "prompts_per_1000_events": 2.584,
+      "timing": {
+        "prompts": 4836,
+        "interruption_rate": 0.28453267162944584,
+        "interruption_ci": [
+          0.25960658737419945,
+          0.30803103375969804
+        ],
+        "pause_aligned": 0.24069478908188585,
+        "pause_aligned_ci": [
+          0.18246869409660108,
+          0.30988197176579496
+        ],
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.22726417756042508,
+        "median_response_gap": 4,
+        "deliberation_delta": -0.014193807635876634,
+        "deliberation_delta_ci": [
+          -0.019510572525691654,
+          -0.008646083748492635
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_no_evidence_floor": {
+      "mode": "adaptive",
+      "config": {
+        "gate_seconds": 20
+      },
+      "gate_stats": {
+        "held": 11331,
+        "superseded": 3836,
+        "released": 5605,
+        "dropped": 1889
+      },
+      "events": 1871292,
+      "phases": {
+        "wait": 1865687,
+        "evaluate": 1233,
+        "plan": 2782,
+        "monitor": 1590
+      },
+      "reasons": {
+        "No trigger": 1844625,
+        "Held for a natural pause": 11331,
+        "Submission observed; correctness unknown": 1233,
+        "Waiting for learner response": 2318,
+        "Cooldown active": 1147,
+        "First observed edit in this task/session": 2782,
+        "Repeated executions within the observation window": 1590,
+        "Task/session prompt budget exhausted": 6266
+      },
+      "runtime_seconds": 107.738,
+      "events_per_second": 17369,
+      "peak_memory_mb": 4.0,
+      "prompts": 5605,
+      "prompts_per_1000_events": 2.995,
+      "timing": {
+        "prompts": 5605,
+        "interruption_rate": 0.020338983050847456,
+        "interruption_ci": [
+          0.01594014313597918,
+          0.025078952257105703
+        ],
+        "pause_aligned": 0.4130240856378234,
+        "pause_aligned_ci": [
+          0.38461538461538464,
+          0.4471491228070175
+        ],
+        "juncture_precision": 0.5429081177520071,
+        "juncture_coverage": 0.14285714285714285,
+        "median_response_gap": 14,
+        "deliberation_delta": -0.0019137301684616396,
+        "deliberation_delta_ci": [
+          -0.003693104631762298,
+          -0.0004427968763342243
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_no_memory": {
+      "mode": "no_memory",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 10809,
+        "released": 5254,
+        "superseded": 5203,
+        "dropped": 351
+      },
+      "events": 1871292,
+      "phases": {
+        "wait": 1866038,
+        "evaluate": 1590,
+        "monitor": 2815,
+        "plan": 849
+      },
+      "reasons": {
+        "No trigger": 1845028,
+        "Observation window below the evidence floor": 4217,
+        "Held for a natural pause": 10809,
+        "Submission observed; correctness unknown": 1590,
+        "Cooldown active": 5984,
+        "Repeated executions within the observation window": 2815,
+        "First observed edit in this task/session": 849
+      },
+      "runtime_seconds": 104.911,
+      "events_per_second": 17837,
+      "peak_memory_mb": 4.0,
+      "prompts": 5254,
+      "prompts_per_1000_events": 2.808,
+      "timing": {
+        "prompts": 5254,
+        "interruption_rate": 0.013703844689760183,
+        "interruption_ci": [
+          0.009593178184402203,
+          0.01810184401962443
+        ],
+        "pause_aligned": 0.44518462124095926,
+        "pause_aligned_ci": [
+          0.41473059812160157,
+          0.48702101359703337
+        ],
+        "juncture_precision": 0.7080319756376094,
+        "juncture_coverage": 0.1749271137026239,
+        "median_response_gap": 16.0,
+        "deliberation_delta": 0.0028100850032279187,
+        "deliberation_delta_ci": [
+          0.0011197592763428086,
+          0.004584638451359782
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_no_cooldown": {
+      "mode": "no_cooldown",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 8467,
+        "released": 4350,
+        "superseded": 3754,
+        "dropped": 362
+      },
+      "events": 1871292,
+      "phases": {
+        "wait": 1866942,
+        "evaluate": 1514,
+        "monitor": 1983,
+        "plan": 853
+      },
+      "reasons": {
+        "No trigger": 1845885,
+        "Observation window below the evidence floor": 4217,
+        "Held for a natural pause": 8467,
+        "Submission observed; correctness unknown": 1514,
+        "Waiting for learner response": 2255,
+        "Repeated executions within the observation window": 1983,
+        "First observed edit in this task/session": 853,
+        "Task/session prompt budget exhausted": 6118
+      },
+      "runtime_seconds": 125.902,
+      "events_per_second": 14863,
+      "peak_memory_mb": 3.3,
+      "prompts": 4350,
+      "prompts_per_1000_events": 2.325,
+      "timing": {
+        "prompts": 4350,
+        "interruption_rate": 0.013333333333333334,
+        "interruption_ci": [
+          0.009282009282009281,
+          0.01821078989301161
+        ],
+        "pause_aligned": 0.447816091954023,
+        "pause_aligned_ci": [
+          0.41435442101368847,
+          0.4895541004053633
+        ],
+        "juncture_precision": 0.7020689655172414,
+        "juncture_coverage": 0.14360951753973478,
+        "median_response_gap": 16.0,
+        "deliberation_delta": 0.00308358773761811,
+        "deliberation_delta_ci": [
+          0.0007405717353905819,
+          0.005946798373124258
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_no_budget": {
+      "mode": "no_budget",
+      "config": {
+        "gate_seconds": 20,
+        "min_evidence": 5
+      },
+      "gate_stats": {
+        "held": 10809,
+        "released": 5254,
+        "superseded": 5203,
+        "dropped": 351
+      },
+      "events": 1871292,
+      "phases": {
+        "wait": 1866038,
+        "evaluate": 1590,
+        "monitor": 2815,
+        "plan": 849
+      },
+      "reasons": {
+        "No trigger": 1845028,
+        "Observation window below the evidence floor": 4217,
+        "Held for a natural pause": 10809,
+        "Submission observed; correctness unknown": 1590,
+        "Waiting for learner response": 4086,
+        "Cooldown active": 1898,
+        "Repeated executions within the observation window": 2815,
+        "First observed edit in this task/session": 849
+      },
+      "runtime_seconds": 115.612,
+      "events_per_second": 16186,
+      "peak_memory_mb": 4.0,
+      "prompts": 5254,
+      "prompts_per_1000_events": 2.808,
+      "timing": {
+        "prompts": 5254,
+        "interruption_rate": 0.013703844689760183,
+        "interruption_ci": [
+          0.009593178184402203,
+          0.01810184401962443
+        ],
+        "pause_aligned": 0.44518462124095926,
+        "pause_aligned_ci": [
+          0.41473059812160157,
+          0.48702101359703337
+        ],
+        "juncture_precision": 0.7080319756376094,
+        "juncture_coverage": 0.1749271137026239,
+        "median_response_gap": 16.0,
+        "deliberation_delta": 0.0028100850032279187,
+        "deliberation_delta_ci": [
+          0.0011197592763428086,
+          0.004584638451359782
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E5_ablation_none_phase1": {
+      "mode": "adaptive",
+      "config": {},
+      "gate_stats": {},
+      "events": 1871292,
+      "phases": {
+        "wait": 1863180,
+        "plan": 5375,
+        "evaluate": 814,
+        "monitor": 1923
+      },
+      "reasons": {
+        "No trigger": 1850026,
+        "First observed edit in this task/session": 5375,
+        "Waiting for learner response": 3468,
+        "Submission observed; correctness unknown": 814,
+        "Cooldown active": 1514,
+        "Repeated executions within the observation window": 1923,
+        "Task/session prompt budget exhausted": 8172
+      },
+      "runtime_seconds": 110.331,
+      "events_per_second": 16961,
+      "peak_memory_mb": 5.4,
+      "prompts": 8112,
+      "prompts_per_1000_events": 4.335,
+      "timing": {
+        "prompts": 8112,
+        "interruption_rate": 0.6749260355029586,
+        "interruption_ci": [
+          0.6262392597488433,
+          0.7079472058410559
+        ],
+        "pause_aligned": 0.10798816568047337,
+        "pause_aligned_ci": [
+          0.07685873605947956,
+          0.14992272024729522
+        ],
+        "juncture_precision": 1.0,
+        "juncture_coverage": 0.3534280071475595,
+        "median_response_gap": 2,
+        "deliberation_delta": -0.004039138524634419,
+        "deliberation_delta_ci": [
+          -0.006914094002721954,
+          -0.0017515125272790377
+        ],
+        "learners_prompted": 16
+      }
+    },
+    "E2_base_paper_pause": {
+      "mode": "on_demand_pause",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_pause",
+          "seed": 0,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.521,
+          "prompts": 1007,
+          "prompts_per_1000_events": 0.538,
+          "timing": {
+            "prompts": 1007,
+            "interruption_rate": 0.07348560079443893,
+            "interruption_ci": [
+              0.048707753479125246,
+              0.10119595216191353
+            ],
+            "pause_aligned": 0.44091360476663355,
+            "pause_aligned_ci": [
+              0.39261418853255586,
+              0.4831050228310502
+            ],
+            "juncture_precision": 0.44190665342601787,
+            "juncture_coverage": 0.020502210100630115,
+            "median_response_gap": 16.0,
+            "deliberation_delta": -0.003485689910260502,
+            "deliberation_delta_ci": [
+              -0.009416490762818596,
+              0.0020950468351956706
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_pause",
+          "seed": 1,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.362,
+          "prompts": 1002,
+          "prompts_per_1000_events": 0.535,
+          "timing": {
+            "prompts": 1002,
+            "interruption_rate": 0.06986027944111776,
+            "interruption_ci": [
+              0.048268625393494226,
+              0.09407337723424271
+            ],
+            "pause_aligned": 0.468063872255489,
+            "pause_aligned_ci": [
+              0.4197396963123644,
+              0.5169082125603864
+            ],
+            "juncture_precision": 0.4471057884231537,
+            "juncture_coverage": 0.020596256935954106,
+            "median_response_gap": 17.0,
+            "deliberation_delta": 0.003166891105856642,
+            "deliberation_delta_ci": [
+              -0.004168444633323379,
+              0.009991951323129966
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_pause",
+          "seed": 2,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.43,
+          "prompts": 978,
+          "prompts_per_1000_events": 0.523,
+          "timing": {
+            "prompts": 978,
+            "interruption_rate": 0.06134969325153374,
+            "interruption_ci": [
+              0.036556603773584904,
+              0.08324768756423433
+            ],
+            "pause_aligned": 0.44683026584867075,
+            "pause_aligned_ci": [
+              0.4054982817869416,
+              0.48615090735434574
+            ],
+            "juncture_precision": 0.4376278118609407,
+            "juncture_coverage": 0.0195617417473902,
+            "median_response_gap": 15.0,
+            "deliberation_delta": -0.0053392684240893586,
+            "deliberation_delta_ci": [
+              -0.009739267645702657,
+              -0.0012906311811245765
+            ],
+            "learners_prompted": 16
+          }
+        }
+      ],
+      "prompts_mean": 995.6667,
+      "prompts_sd": 15.5027,
+      "prompts_per_1000_events_mean": 0.532,
+      "prompts_per_1000_events_sd": 0.0079,
+      "interruption_rate_mean": 0.0682,
+      "interruption_rate_sd": 0.0062,
+      "pause_aligned_mean": 0.4519,
+      "pause_aligned_sd": 0.0143,
+      "juncture_precision_mean": 0.4422,
+      "juncture_precision_sd": 0.0047,
+      "juncture_coverage_mean": 0.0202,
+      "juncture_coverage_sd": 0.0006,
+      "deliberation_delta_mean": -0.0019,
+      "deliberation_delta_sd": 0.0045
+    },
+    "E2_base_paper_stuck": {
+      "mode": "on_demand_stuck",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_stuck",
+          "seed": 0,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.901,
+          "prompts": 1055,
+          "prompts_per_1000_events": 0.564,
+          "timing": {
+            "prompts": 1055,
+            "interruption_rate": 0.8180094786729858,
+            "interruption_ci": [
+              0.7870182555780934,
+              0.850415512465374
+            ],
+            "pause_aligned": 0.035071090047393366,
+            "pause_aligned_ci": [
+              0.02465986394557823,
+              0.04660194174757282
+            ],
+            "juncture_precision": 0.4872037914691943,
+            "juncture_coverage": 0.022477193642433932,
+            "median_response_gap": 1,
+            "deliberation_delta": -0.005521311009961544,
+            "deliberation_delta_ci": [
+              -0.009031352000203987,
+              -0.002002877975938541
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_stuck",
+          "seed": 1,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.722,
+          "prompts": 1070,
+          "prompts_per_1000_events": 0.572,
+          "timing": {
+            "prompts": 1070,
+            "interruption_rate": 0.8121495327102803,
+            "interruption_ci": [
+              0.78099173553719,
+              0.8421559191530318
+            ],
+            "pause_aligned": 0.05794392523364486,
+            "pause_aligned_ci": [
+              0.0419047619047619,
+              0.07716371220020855
+            ],
+            "juncture_precision": 0.46074766355140184,
+            "juncture_coverage": 0.021583748706856015,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.01387800260329347,
+            "deliberation_delta_ci": [
+              -0.01922153319494515,
+              -0.008570877726156226
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_stuck",
+          "seed": 2,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.652,
+          "prompts": 1029,
+          "prompts_per_1000_events": 0.55,
+          "timing": {
+            "prompts": 1029,
+            "interruption_rate": 0.8192419825072886,
+            "interruption_ci": [
+              0.798689138576779,
+              0.8402839396628217
+            ],
+            "pause_aligned": 0.04178814382896016,
+            "pause_aligned_ci": [
+              0.026200873362445413,
+              0.0586565752128666
+            ],
+            "juncture_precision": 0.4742468415937804,
+            "juncture_coverage": 0.021207561365560047,
+            "median_response_gap": 1,
+            "deliberation_delta": -0.008941103575654075,
+            "deliberation_delta_ci": [
+              -0.014184226526098404,
+              -0.004297006685157163
+            ],
+            "learners_prompted": 16
+          }
+        }
+      ],
+      "prompts_mean": 1051.3333,
+      "prompts_sd": 20.7445,
+      "prompts_per_1000_events_mean": 0.562,
+      "prompts_per_1000_events_sd": 0.0111,
+      "interruption_rate_mean": 0.8165,
+      "interruption_rate_sd": 0.0038,
+      "pause_aligned_mean": 0.0449,
+      "pause_aligned_sd": 0.0118,
+      "juncture_precision_mean": 0.4741,
+      "juncture_precision_sd": 0.0132,
+      "juncture_coverage_mean": 0.0218,
+      "juncture_coverage_sd": 0.0007,
+      "deliberation_delta_mean": -0.0094,
+      "deliberation_delta_sd": 0.0042
+    },
+    "E2_base_paper_uniform": {
+      "mode": "on_demand_uniform",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "per_seed": [
+        {
+          "mode": "on_demand_uniform",
+          "seed": 0,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.388,
+          "prompts": 1064,
+          "prompts_per_1000_events": 0.569,
+          "timing": {
+            "prompts": 1064,
+            "interruption_rate": 0.8298872180451128,
+            "interruption_ci": [
+              0.8022813688212928,
+              0.8575788402848423
+            ],
+            "pause_aligned": 0.04887218045112782,
+            "pause_aligned_ci": [
+              0.03488372093023256,
+              0.06466302367941712
+            ],
+            "juncture_precision": 0.41541353383458646,
+            "juncture_coverage": 0.019655788582714193,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.012559906647084127,
+            "deliberation_delta_ci": [
+              -0.018474737312950282,
+              -0.007248299162993184
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_uniform",
+          "seed": 1,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.349,
+          "prompts": 1034,
+          "prompts_per_1000_events": 0.553,
+          "timing": {
+            "prompts": 1034,
+            "interruption_rate": 0.8452611218568665,
+            "interruption_ci": [
+              0.8168103448275862,
+              0.8717253839205059
+            ],
+            "pause_aligned": 0.02611218568665377,
+            "pause_aligned_ci": [
+              0.016831683168316833,
+              0.0364963503649635
+            ],
+            "juncture_precision": 0.4206963249516441,
+            "juncture_coverage": 0.018903413900122262,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.00728861645256249,
+            "deliberation_delta_ci": [
+              -0.009396979829208781,
+              -0.005190582213501583
+            ],
+            "learners_prompted": 16
+          }
+        },
+        {
+          "mode": "on_demand_uniform",
+          "seed": 2,
+          "events": 1871292,
+          "request_rate_per_student_question": 0.5077,
+          "runtime_seconds": 0.351,
+          "prompts": 1048,
+          "prompts_per_1000_events": 0.56,
+          "timing": {
+            "prompts": 1048,
+            "interruption_rate": 0.8444656488549618,
+            "interruption_ci": [
+              0.826431718061674,
+              0.8620689655172413
+            ],
+            "pause_aligned": 0.05057251908396947,
+            "pause_aligned_ci": [
+              0.03278688524590164,
+              0.07272727272727272
+            ],
+            "juncture_precision": 0.38740458015267176,
+            "juncture_coverage": 0.017774851876234364,
+            "median_response_gap": 1.0,
+            "deliberation_delta": -0.009655643053525141,
+            "deliberation_delta_ci": [
+              -0.013263976463739184,
+              -0.006465631287567088
+            ],
+            "learners_prompted": 16
+          }
+        }
+      ],
+      "prompts_mean": 1048.6667,
+      "prompts_sd": 15.0111,
+      "prompts_per_1000_events_mean": 0.5607,
+      "prompts_per_1000_events_sd": 0.008,
+      "interruption_rate_mean": 0.8399,
+      "interruption_rate_sd": 0.0087,
+      "pause_aligned_mean": 0.0419,
+      "pause_aligned_sd": 0.0137,
+      "juncture_precision_mean": 0.4078,
+      "juncture_precision_sd": 0.0179,
+      "juncture_coverage_mean": 0.0188,
+      "juncture_coverage_sd": 0.0009,
+      "deliberation_delta_mean": -0.0098,
+      "deliberation_delta_sd": 0.0026
+    }
+  }
+}

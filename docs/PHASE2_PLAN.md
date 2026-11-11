@@ -139,7 +139,7 @@ All figures below are from the files in `results/phase2/` and regenerate from th
 | Observable decision points in test | 10,687 |
 | Submissions in test | 1,205 |
 
-The rule uses no outcome, so it cannot be tuned. Test learners were used for no threshold, prompt or design decision.
+The rule uses no outcome, so it cannot be tuned. No threshold was tuned on the test learners, but the timing gate and the evidence floor were added after looking at test-split results; the dev-split replication (`results/phase2/experiments_dev.json`, devlog 2026-11-11) checks that the pattern holds on learners not inspected during design.
 
 ### Main results (test split)
 

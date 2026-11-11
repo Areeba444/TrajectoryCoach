@@ -114,9 +114,17 @@ python -m scripts.make_tables                          # refresh the tables
 
 **Data split.** `data/splits.json` fixes it: learners sorted by identifier,
 every third learner to test. Dev is 16 learners and 1,871,292 events; test is
-8 learners and 726,897 events. The test learners were not used for any
-threshold, prompt or design decision. The rule uses no outcome and was fixed
-before any Phase 2 measurement.
+8 learners and 726,897 events. The rule uses no outcome and was fixed
+before any Phase 2 measurement. No threshold was tuned on the test learners,
+but two design decisions were made after looking at test-split results: the
+timing gate (added after the Phase 1 policy was measured interrupting more than
+its own baseline) and the evidence floor (added after a failure analysis found
+thin-evidence scaffolds). The Phase 1 defaults (cooldown, budget, window) were
+also set while looking at all 24 learners. To check that this did not drive the
+results, every offline experiment was rerun on the 16 dev learners
+(`python -m scripts.run_experiments --split dev`, output
+`results/phase2/experiments_dev.json`); the pattern holds there (see the devlog,
+2026-11-11).
 
 **Human rating.** Both authors rated 30 scaffolds from the full system
 independently. Linearly weighted kappa is 0.328 for timing and 0.343 for
@@ -135,7 +143,7 @@ full tool-call traces from the live runs.
 | Gap | Method / component | Metric | Base paper result | Our result | Addressed? | Caveat |
 |---|---|---|---|---|---|---|
 | Gap 1: timing | Timing gate: hold a scaffold until a 20 s pause | Interruption rate on held-out prefixes | 0.127 ± 0.014 (on-demand at pauses) | 0.021 | Partially | Ablating the gate raises interruption to 0.269; coverage falls against the uncapped baseline |
-| Gap 2: grounding | Evidence floor, JSON schema, validator, read-only tools | Share of scaffolds containing an unsupported claim | _not run_ (unconstrained, same model) | _not run_ | Not | Deterministic screen, not a semantic verifier |
+| Gap 2: grounding | Evidence floor, JSON schema, validator, read-only tools | Share of scaffolds containing an unsupported claim | 0.550 (unconstrained, same model) | 0.000 (v2); 0.140 (v1) | Fully | Deterministic screen, not a semantic verifier; v2 prompt written after v1 flags |
 | Gap 3: transfer | Delayed no-AI transfer task and four-point rubric | Spearman r with latent skill, simulated learners | 0.724 (assisted completion) | 0.793 ± 0.036 | Partially | Instrument validation only; no human learners |
 
 ---

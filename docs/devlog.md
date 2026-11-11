@@ -324,3 +324,46 @@ The 95% upper bound for 0 of 100 is about 3.6%.
 **Read this with.** One model, one seed, one 100-prefix sample from one split; a
 word-list checker, so 0 flagged means none caught; v2 designed after inspecting
 v1's flags; low prompt diversity.
+
+---
+
+## 2026-11-11 — Correction about test-split use, and a dev-split replication
+
+**Observed.** The README and the plan said the test learners were used for no
+design decision. That is not accurate. No threshold was tuned on them, but the
+timing gate was added after the Phase 1 policy was measured on the test split
+(entry 2026-11-07, "Measured interruption for the first time"), and the
+evidence floor was added after a failure analysis on the test split (entry
+2026-11-07, "Failure analysis exposed scaffolds built on almost no evidence").
+The Phase 1 defaults (cooldown 180 s, budget 3, window 300 s) were set while
+looking at all 24 learners. The gate delay (20 s) equals the pause threshold
+fixed in the metrics, and the floor (5 events) equals the metrics' minimum
+window; neither was swept.
+
+**Change.** Reran every offline experiment, unchanged, on the 16 dev learners
+(`python -m scripts.run_experiments --split dev`, 1,871,292 events, 2,053
+learner-question units, 21,266 decision points). Corrected the README and the
+plan.
+
+**Result (dev, compared with test).**
+| Condition | Dev scaffolds | Dev interruption [95% CI] | Test interruption |
+|---|---|---|---|
+| Full system | 4,162 | 0.0125 [0.009, 0.017] | 0.0206 [0.013, 0.028] |
+| On-demand at pauses (3 seeds) | 996 ± 16 | 0.068 ± 0.006 | 0.127 ± 0.014 |
+| Phase 1 policy | 8,112 | 0.675 | 0.657 |
+| Uncapped rule | 21,266 | 0.299 | 0.274 |
+| − timing gate | 4,836 | 0.285 | 0.269 |
+| − evidence floor | 5,605 | 0.020 | 0.026 |
+
+Full system on dev: pause alignment 0.448, coverage 0.136 (rule 0.741,
+on-demand 0.020), juncture precision 0.696 (0.543 without the floor),
+deliberation +0.0009 [−0.0015, +0.0037]. Gate: 8,113 held, 4,162 released,
+3,606 superseded, 344 dropped.
+
+**Read this with.** The direction and size of every main effect hold on
+learners not inspected during design: the gate is still what lowers
+interruption, the full system still interrupts less than the on-demand
+comparator (about 5.5 times on dev, 6.2 times on test), and the floor still
+trades scaffolds for precision. The dev learners did inform Phase 1 defaults,
+so this is a replication on learners not used for the Phase 2 design
+decisions, not a fully independent sample.
