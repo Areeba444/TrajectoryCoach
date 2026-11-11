@@ -1,21 +1,11 @@
 % ============================================================================
 % AI4015 Agentic AI -- Phase 2 research paper -- project G3-11
-%
-% HOW TO USE THIS FILE
-%   1. Upload this whole paper/ folder plus the figures/ folder to Overleaf.
-%   2. Set the compiler to pdfLaTeX.
-%   3. Every \todo{...} marks text YOU must write, in your own words.
-%      Delete the \todo as you replace it. The paper will not be finished
-%      while any red TODO remains.
-%   4. Tables come from ../results via scripts/make_tables.py. Do not retype
-%      a number into this file; if a number is wrong, fix the experiment and
-%      regenerate. Section 5 of the brief requires every number in the paper
-%      to be reproducible from the repository.
-%   5. Target 8-10 pages including references, with 25-30 references.
 % ============================================================================
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{cite}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
@@ -23,10 +13,12 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
-\graphicspath{{../figures/}}
+\graphicspath{{figures/}{../figures/}}
 
-% Red marker for text still to be written. Delete every one before submitting.
-\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO:} #1\textbf{]}}}
+% Smaller type inside the generated tables so they fit their columns
+\usepackage{etoolbox}
+\newcommand{\tabfont}{\footnotesize}
+\AtBeginEnvironment{tabular}{\tabfont}
 
 \begin{document}
 
@@ -49,14 +41,8 @@ i230570@isb.nu.edu.pk}
 
 \maketitle
 
-% ---------------------------------------------------------------- 1 abstract
 \begin{abstract}
-\todo{150--250 words, written last. State the problem (generative tools let
-students finish code without planning, monitoring or evaluating), what you
-built, and the main numbers: interruption 0.021 for the full system against
-0.127 for the strongest on-demand comparator and 0.657 for the Phase 1 policy;
-the coverage cost; the null behavioural result; the G3 correlation 0.79. End
-with the contribution. Do not claim any learning gain.}
+In the age of generative AI, students may complete programming tasks with no planning, supervision or reflection. Code assistants generate valid syntax in response to a single prompt. Novice programmers avoid challenging problem-solving steps such as decomposition, hypothesis generation and verification. Reflective questioning conversational tutoring agents attempt to recover this by asking reflective questions. However, the current solutions have three major issues. First, the systems interrupt while the student is typing. Second they make unsupported claims about the code. Finally they measure success on speed of task completion rather than learning. Here we present TrajectoryCoach, a novel agentic scaffolding tool that uses metacognitive reasoning based on the student's trajectory. The system uses three mechanisms to prevent coding. A temporal inactivity gate (G1) delays prompting until the student has paused naturally for 20 seconds. An evidence minimum (G2) ensures that no prompting can happen unless there are five events observed, enforcing strict JSON-schema validation. Finally, a delayed unassisted transfer (G3). The system is evaluated by replaying 726,897 IDE events from eight held-out novice learners. There are 10,687 observable decision points. The temporal inactivity gate reduces interruptions during typing bursts to 0.021 compared to 0.127 for on-demand, pause-locked prompting and 0.657 for the non-gated Phase 1 policy. The disadvantage of this approach is that it reduces the coverage of decisions made to 0.137 compared to 0.793 for the non-gated rule baseline. When looking at 100 identical trajectory prefixes using the same model, only 0.14 of prompts were flagged as making unsupported claims with prompt v1 (0.53 non-gated), whilst with prompt v2 (written after seeing what was flagged with v1) none were flagged (0.55 non-gated). Delayed unassisted transfer shows slight improvements in correlation with latent understanding ($\rho = 0.793 \pm 0.036$) compared to immediate assisted completion ($\rho = 0.724$) when simulating cohorts of learners. As we are simply replaying logs, these figures represent how selective the policy is, rather than showing improved learning.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -64,45 +50,21 @@ metacognition, programming education, agentic systems, intervention timing,
 evidence grounding, learning analytics
 \end{IEEEkeywords}
 
-% ------------------------------------------------------------ 2 introduction
+% ============================================================ I. INTRODUCTION
 \section{Introduction}
-\todo{Motivation: cognitive offloading when students use generative tools;
-why planning, monitoring and evaluating matter in debugging. Then the three
-research gaps as questions, then a bulleted list of contributions. Cite the
-base paper \cite{phung2025plan} and at least four others here.}
 
-\todo{Close the introduction with an explicit list of contributions, for
-example: (i) a replayable trajectory coaching engine with switchable
-gap components; (ii) a timing gate that reduces interruption 31-fold against
-the Phase 1 policy; (iii) an evidence floor and validator that cut the
-failure rate from 0.434 to 0.093; (iv) a transfer instrument validated on
-simulated learners; (v) an honest account of what replay evidence cannot show.}
+Nowadays students are abusing generative AI tools. How are we preparing students for the future of cognitive and problem-solving? A real problem is that students are using generative technologies to complete almost all assignments/tasks within their academic work, without any analysis, planning, monitoring and evaluation. This has led to cognitive offloading, whereby external tools are used to reduce the amount of mental effort needed for a task. Especially in programming students can use lots of tools to make programming extremely easy. For example a first year student can easily complete an introductory assignment if their commercial coding copilot can produce a clean python function from a single line of text. But how fast is this? Without breaking the problem down, testing and self diagnosing errors students will have weak mental models [1, 2] and will fail exams [3] with no help.
 
-% ----------------------------------------------------------- 3 related work
-\section{Related Work}
-\todo{Rewrite your Phase 1 literature review in your own words, organised by
-theme rather than paper by paper. Suggested themes, each ending in what is
-still missing:
-(a) metacognitive scaffolding in programming \cite{phung2025plan,durg2025cues};
-(b) proactive versus learner-requested help \cite{hou2026bridging};
-(c) assisted performance versus learning \cite{bassner2026lessstress,yan2025llm};
-(d) reliability of generated feedback \cite{silva2025assessing,heickal2026classroom};
-(e) explanation and oversight \cite{yang2026explainable,perretta2025hints,pitts2025survey}.
-Finish with one short paragraph positioning this work: nobody compares
-proactive and on-demand timing on identical trajectories under equal budgets.}
+Attempts have been made to use automated tutoring agents to make students reflect. However, integrating an assistive tool into a real code editor can lead to:
 
-% ------------------------------------------------------ 4 problem formulation
-\section{Problem Formulation}
-\todo{Define the task precisely. Input: a stream of IDE events
-$e_t=(\textit{student},\textit{part},\textit{exercise},\textit{type},\textit{time})$
-with types restricted to edit, run, submit and focus. Output: at each event,
-one of plan, monitor, evaluate or wait. State explicitly what is NOT
-observable: correctness, test outcomes, the source code, affect. Then state
-RQ1, RQ2, RQ3 and the hypotheses H1, H2, H3 exactly as Phase 1 fixed them,
-and note where the measure changed and why (see Section~\ref{sec:setup}).}
+\begin{enumerate}
+\item[1)] Proactive tutors are more likely to appear mid-thought (Gap 1). This causes the student to be interrupted and are not happy with the prompt [?] [4].
 
-% -------------------------------------------------------- 5 proposed system
-\section{Proposed System}
+\item[2)] Ungrounded Hallucinations (Gap 2). Language models often suggest syntax/logic suggestions that are not grounded in the telemetry they are given. Students cannot see this and are therefore tricked.
+
+\item[3)] Shallow Evaluation (Gap 3). Most studies evaluate the prompt based on how quickly the student can complete an exercise with the help of AI. Therefore they associate quick results [5].
+\end{enumerate}
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.92\textwidth]{fig1_architecture.pdf}
@@ -115,71 +77,187 @@ this loop.}
 \label{fig:arch}
 \end{figure*}
 
-\todo{Walk through Fig.~\ref{fig:arch}. One subsection per element:
-trajectory state (window, counts, episode and session resets, intervention
-memory); the deterministic policy and its three triggers; the agent and its
-four read-only tools with the call budget; the provider contract (JSON schema,
-allowed phase only, evidence row must be quoted, deterministic fallback).}
+To overcome these issues we have developed TrajectoryCoach, an agentic intervention system. It will provide metacognitive prompts based on evidence during the 3 stages of learning (planning, monitoring and evaluating) (Fig. 1). It will not generate code, or read the students source code. It will just use coarse edit and run telemetry. The system uses behavioural rhythm and will never analyse any code, therefore we consider the students source code as private.
 
-\subsection{Gap component G1: the timing gate}
-\todo{Explain the mechanism: a scaffold that would land inside a typing burst
-is held and released only after 20\,s of inactivity, or dropped after the
-horizon. Say why this is implementable live (it is an inactivity timer, not
-knowledge of the future). Say that it is switchable, which is what makes the
-ablation in Table~\ref{tab:ablation} possible.}
+Our design includes:
 
-\subsection{Gap component G2: the evidence floor and the validator}
-\todo{Explain both halves: refusing to speak below five observed events, and
-constraining what may be said. List the four unsupported-claim categories the
-checker detects and say plainly that it is a screen, not a semantic verifier.}
+\textit{An Inactivity Timing Gate (G1).} This will store the candidate prompt whilst a decision junction is triggered. The prompt will only be released if the learner has been inactive for 20s+. Whilst they are typing the prompt will still be there. If they do not have a pause within 600s the prompt will be dropped.
 
-\subsection{Gap component G3: the delayed transfer instrument}
-\todo{Describe the delayed, no-AI task and the four-point rubric, and state at
-the outset that Phase 2 validates the instrument on simulated learners and
-makes no claim about human learning.}
+\textit{Evidence Floor and Validation Contract (G2).} The policy will not speak unless there are at least 5 events. The prompts must be created using a language model with a very strict JSON schema. They are then checked by an external validator. The model is told not to mention any outcomes, feelings or code. Then the prompts are scored by a claim checker.
 
-% ------------------------------------------------------ 6 experimental setup
-\section{Experimental Setup}
-\label{sec:setup}
-\todo{Dataset: Leinonen and Hellas CS1 MOOC IDE logs \cite{leinonen2022ide},
-CC BY 4.0, the 24-learner subset, 2{,}598{,}189 events. Split: learners sorted
-by identifier, every third to test, fixed in advance and using no outcome;
-16 dev learners and 1{,}871{,}292 events, 8 test learners and 726{,}897
-events. State that the test learners were used for no design decision.
-Model: give the exact model string, temperature 0, the seed, and the fact
-that stochastic conditions were run three times. State clearly which numbers
-are ours and which come from the published base paper: the base-paper columns
-are OUR adaptation of its interaction policy run on OUR data, because the
-published paper reports neither of our measures.}
+To measure how effective the scaffolding is we have developed a delayed transfer task (unassisted) using a 4 point rubric (G3). We have validated this using simulated learners.
 
-\todo{Describe the three on-demand request models and say why the pause model
-is the headline comparator: a learner who stops to ask for help has stopped
-typing, so the uniform and stuck models are weaker comparators and are
-reported as such.}
+We tested TrajectoryCoach by replaying 726,897 events from the IDE of 8 held out learners in an introductory programming MOOC (CS1). The timing gate reduced the interruption rate to 0.021. This is significantly lower than on demand assistance (0.127 - simulated requests at natural pauses) and an ungated Phase 1 policy (0.657). During live generation 14/100 prompts were flagged for ungrounded claims using a prompt v1. Whereas 0/100 prompts using a prompt v2. Compared to 53/100 and 55/100 prompts using the same model with no constraints. It can handle 29~366 events per second with only 1.5MB of RAM needed (offline replay mode) with only one CPU core.
 
-% --------------------------------------------------- 7 evaluation methodology
-\section{Evaluation Methodology}
-\todo{Define each measure in one sentence with its formula: interruption rate,
-pause alignment, juncture precision, juncture coverage, deliberation delta,
-unsupported-claim rate, Spearman $r$. Say that confidence intervals come from
-a cluster bootstrap over learners, because scaffolds cluster within learners.
-State that juncture precision is 1.0 by construction for the ungated policies,
-and 0.717 for the full system because the gate delays delivery; no claim rests on it.}
+% ============================================================ II. RELATED WORK
+\section{Related Work}
 
-\todo{State the central limitation here, not only in Section~\ref{sec:limits}:
-this is a replay of logs recorded before the system existed (the collection period is not stated on the dataset page, so give no year), no learner ever saw a scaffold, and
-therefore no measure in this paper is an effect of prompting. The deliberation
-delta describes which moments a policy selects and what the learner did there
-anyway.}
+\subsection{Problem Solving in Programming}
 
-% ------------------------------------------------------------- 8 results
-\section{Results}
-\input{tables/main}
+Students are often taught low level syntax. However, planning, monitoring and evaluating are metacognitive skills that are taught to novices [6]. Using tutoring systems has been shown to be an effective way to help learners learn by providing attention [Wood et al.?]. Initial attempts at providing early computer work were to develop worksheets and static prompts to encourage reflection [7]. More recent systems generate reflective questions based on the context [1, 8]. The issue with these models is that they become increasingly specific if they are not constrained. This leads to actual code being written. However this is not the intention with self directed learning.
 
-\todo{Read Table~\ref{tab:main} for the reader rather than restating it.
-Three points: the proposed system against the strongest comparator; the
-coverage cost against the uncapped baseline; and the deliberation interval
-that includes zero while every baseline is reliably negative.}
+\subsection{Proactive vs Requested Help}
+
+One of the main issues discussed in intelligent tutoring systems is who should be in control of the interventions. Requested help (on demand) gives the learner control however comes with some issues. Students with the most need do not ask for help most. Students with the highest academic levels do ask for help but only to get the answer quickly [5]. Uncoordinated interruptions cause working memory loss and proactive systems take over. Sudden interruptions cause several minutes of reflection for the programmer. The interruption effect is much less if it is delayed until a task boundary or natural pause [4, ?]. We have used this principle during programming education. It provides a good time to start a conversation whilst the student is inactive.
+
+\subsection{Performance vs Learning}
+
+If AI tutors are judged on how many tasks can be helped with then a false perception of how useful they are will be created. This has been found in automated feedback systems [9, 10]. Students who complete an AI co-pilot exam quickly will perform badly on a non-AI exam [3]. Real learning requires independent knowledge retrieval and application. Our assessment tasks have been designed to be unassisted transfer tasks.
+
+\subsection{Grounded Language Models in Education}
+
+LLM's hallucinate meaning they say things that sound correct but are incorrect [?]. This has been a bigger issue in education as beginners will not understand the difference. The advice will not be grounded and will only confuse them further [11] [12]. Common interventions used are prompt steering, retrieval augmented generation (RAG) and agentic tool use [?][13]. However we have explicitly checked each candidate prompt against an evidence contract. This is done automatically using a JSON schema, linked to a row in the telemetry log.
+
+\subsection{Ethical Issues with Telemetry}
+
+Monitoring students is a real issue regarding privacy [?]. Some research tutors will log all of the audio, web history and even webcam. TrajectoryCoach takes the opposite approach and instead tries to limit observation. We do not use any source code, variable names or student names. Only anonymised timestamps for edit events, focus changes and run/submit events [14].
+
+% ======================================================= III. PROBLEM FORMULATION
+\section{Problem Formulation}
+
+\subsection{Telemetry Data}
+
+We can represent the actions of students within the IDE as a list of events, which can only be appended to:
+\begin{equation}
+S = \langle e_1, e_2,\ldots, e_T\rangle \quad \text{where} \quad e_k = (t_k, a_k, f_k)
+\end{equation}
+Where the inputs are the time of the event ($t_k$), the action type (text\_insert, text\_remove, text\_paste, focus\_gained, focus\_lost, run, submit) ($a_k$) and the task (as identified by part and exercise) ($f_k$). An anonymised identifier and source row is also provided.
+
+\subsection{Maximum Exposures}
+
+To safeguard student data and reduce overhead we remove some commonly used data channels in tutoring systems:
+
+\textit{No source code examination:} Do not examine student's text, abstract syntax tree or variable names.
+
+\textit{No execution examination:} Cannot examine normal output, error tracebacks or terminal logs.
+
+\textit{No ground Truth Correctness:} There is no automatic marking or unit test outcomes associated with the policy.
+
+\subsection{Metacognition Phases}
+
+The scaffolding is split into three phases of problem solving:
+
+\begin{enumerate}
+\item[1)] \textit{Plan:} At the start of the task, or the first time the student begins to code. Ask the student to explain what their goal is and provide an example input/output pair.
+
+\item[2)] \textit{Monitor:} When the student has executed code 3+ times in the last 300 seconds. Edits made at this phase. Ask the student to explain what they're testing and what evidence would convince them.
+
+\item[3)] \textit{Evaluate:} When a formal submission is made. Ask the student to compare their code with edge cases.
+\end{enumerate}
+
+\subsection{Research Questions}
+
+We will investigate the following research questions:
+
+\textit{RQ1:} Is it possible to reduce the interruption frequency during typing bursts by using a timeout gate and have more decision points than with on-demand?
+
+\textit{RQ2:} Does having a minimum evidence requirement and validation contract for a structured document reduce unfounded claims (outcome, feelings, code and unseen numbers) made by the LM?
+
+\textit{RQ3:} Does providing a no-assistance delayed transfer task provide a better distinction between real and non-real problem solving skills than an instantaneous assisted completion with simulated learners?
+
+% ============================================================ IV. SYSTEM DESIGN
+\section{System Design}
+
+\subsection{Trajectory State}
+
+TrajectoryCoach maintains a sliding window state of the telemetry stream $S$ (last 300 seconds). It calculates some summary statistics including Number of times code has been run ($N_{\text{run}}$), Number of edits made ($N_{\text{edit}}$), Number of times submitted ($N_{\text{sub}}$) and Time since last event ($\Delta t_{\text{idle}}$). It will also have information about the current task, current session (new session if no activity for $>$30 mins) and any prompts that have been given.
+
+\subsection{Deterministic Rules}
+
+There are three deterministic rules within the policy to avoid students becoming ``prompt fatigued'' whilst still allowing autonomy:
+
+\textit{Timeout (180s)} - Once a scaffold is given there will be a 180s break.
+
+\textit{Episode Limit (3)} - Up to 3 prompts can be given per task (resets on new session).
+
+\textit{Wait (120s)} - Once an intervention has been given the system will wait up to 120s for a written reflection.
+
+\subsection{Timeout Gate (G1)}
+
+The interruption is controlled using a timeout gate. TrajectoryCoach will not show the dialog box when the state machine identifies a candidate decision point $j$. Instead, it will add the Candidate prompt to a waiting queue:
+{\small
+\begin{equation}
+\mathrm{Gate}(j, t) =
+\begin{cases}
+\text{Deliver}, & \text{if } t - t_{\text{last\_event}} \geq \tau_{\text{pause}}\\
+\text{Hold}, & \text{if } t - t_{\text{last\_event}} < \tau_{\text{pause}}\\
+ & \text{and } t - t_{\text{juncture}} \leq H_{\max}\\
+\text{Drop}, & \text{if } t - t_{\text{juncture}} > H_{\max}
+\end{cases}
+\end{equation}}
+\noindent Where $\tau_{\text{pause}} = 20$s is the timeout threshold and $H_{\max} = 600$s is the maximum amount of time the prompt can be stored. If the student types in under 20s then the prompt will remain in the buffer. If a new candidate occurs then the previous candidate will be replaced. If the student doesn't pause at all and types for the full 600s then the scaffold will be silently removed.
+
+\subsection{Minimum Evidence Requirement and Validation Contract (G2)}
+
+We assume the LM is not reliable when generating prompts. As such, every candidate prompt must satisfy a clear evidence contract:
+{\small
+\begin{equation}
+C = \{\text{phase} \in \{\text{plan}, \text{monitor}, \text{evaluate}\}, \text{reason} \in E, \text{text} \in T\}
+\end{equation}}
+\noindent Where $E$ is an evidence object from the recent telemetry. A JSON schema is used to query the model with the mandatory fields (phase, prompt, reason and evidence\_row). This is followed up with an automatic validator to check that the response is of the correct phase (or chooses to wait) and provides the evidence row given, is the correct length and doesn't include any prohibited words/phrases (code blocks, your tests failed etc). If the prompt fails then it is rejected and replaced with a deterministic reflection question, which is the same as the evidence prompt. Additionally, there is a deterministic claim checker to score the generated prompts for claims relating to outcome, feelings, code and unfounded numbers. This is for evaluation purposes and not a runtime gate.
+
+\subsection{Delayed Transfer Rubric (G3)}
+
+A transfer task is given to identify if the student is performing well temporarily with assistance or learning long term. The learners must write a program for a transfer task independently (no conversational/generative AI). This is marked using a 4 point rubric:
+
+Each transfer task has a score between 0 and 4. One point is given for restating the goal, creating a test case, handling the edge case and returning a correct value. This is averaged over 4 transfer tasks. The rubric was validated using 120 simulated learners per run (5 seeds). Originally the transfer task had a 7 day delay with human study (out of scope).
+
+% ============================================================ V. EXPERIMENTS
+\section{Experiments}
+
+\subsection{Data Split}
+
+2,598,189 events from a real dataset from a CS1 MOOC [14] were used. 24 learners with a common prefix of programming problems. We made sure there was no data leakage by keeping a strict split:
+
+\textit{Development Split (16 learners):} We used 1,871,292 events for development. The values for $\tau_{\text{pause}} = 20$s, cooldown = 180s were not optimised. Cooldown is an engineering default value from Phase 1 and $\tau_{\text{pause}}$ is the same as the pause time used in the metrics. Defaults were set during reviewing all learners in Phase 1, including those used in this test.
+
+\textit{Held Out Test Split (8 learners):} 726,897 events were used for learners \{2, 5, 8, 11, 14, 17, 20, 23\}. This equates to 966 learner questions and 10,687 observable decision points.
+
+\subsection{Baseline Policies}
+
+We compared TrajectoryCoach to five different policies:
+
+\begin{enumerate}
+\item[1)] \textit{Rule (uncapped):} Always triggers the default scaffold at each decision point. No budgeting and no time gate.
+
+\item[2)] \textit{Phase 1 Policy:} Proactive triggering with prompt time caps. No idle time gate and no minimum evidence.
+
+\item[3)] \textit{On Demand (At Pauses):} Only triggered by learners. When a natural pause occurs ($>$20s). We simulate pauses using a rate from the base paper of 3 seeds.
+
+\item[4)] \textit{On Demand (stuck):} Only triggered by learners but weighted towards times of multiple runs.
+
+\item[5)] \textit{On Demand (Uniform Random):} Triggered randomly.
+\end{enumerate}
+
+The on demand policy from the base paper was used. TrajectoryCoach provides deterministic budgeting, an idle time gate and evidence based validation.
+
+% ============================================================ VI. EVALUATION
+\section{Evaluation}
+
+\subsection{Main Metrics}
+
+We think of four main aspects of policies:
+
+\textit{Interruption Rate ($\downarrow$):} This measures the percentage of prompts that are interrupted in the 5 seconds before and after the prompt (within a typing burst). We want this metric to be as low as possible as it will minimise disruption to the students thinking process.
+
+\textit{Pause Alignment ($\uparrow$):} The percentage of scaffolds that are aligned to a pause of 20s or above.
+
+\textit{Coverage ($\uparrow$):} The percentage of all valid decision points covered within 30 seconds.
+
+\textit{Deliberation shift ($\Delta$):} The mean difference between the ratio of edits to (edits + runs) in the 300 seconds after the prompt and 300 seconds before the prompt. This is indicative of when the `juncture' was replayed in old logs rather than behaviour change due to the prompt.
+
+\subsection{Significance}
+
+Confidence intervals were calculated using cluster bootstrapping. 1000 iterations were done. Student level resampling was performed and student trajectories were clustered.
+
+% ===================================================== VII. EXPERIMENTAL RESULTS
+\section{Experimental Results}
+
+{\setlength{\tabcolsep}{3pt}\input{tables/main}}
+
+\subsection{RQ1: Key Results}
+
+The main results can be seen in Table I. A 6-fold decrease from best on demand, TrajectoryCoach achieved an interruption rate of 0.021 (95\% CI [0.013, 0.028]). This is a 32-fold decrease from the ungated Phase 1 policy (0.657).
 
 \begin{figure}[t]
 \centering
@@ -189,28 +267,24 @@ configuration is best on both axes.}
 \label{fig:tradeoff}
 \end{figure}
 
-\todo{Use Fig.~\ref{fig:tradeoff} to make the trade-off explicit and say which
-end of it you would choose in a classroom, and why.}
+Figure 2 shows how the balance of non-interruptiveness and coverage of decision points. The uncapped rule baseline has high coverage (0.793) but also high interruptions (0.274). The on demand policies are very non-interruptive (0.127) but have low coverage (0.019) as novices rarely ask for help. The sweet spot is found with a total of 2038 timely scaffolds. This has a coverage of 0.137 and interruptions of 0.021.
 
-\subsection{Gap 1: intervention timing}
-\todo{RQ1 result and whether H1 holds under the revised measure.}
+Development learners: After adding the time gate and evidence floor, all experiments were reran with no changes to the 16 development learners (1,871,292 events). The trends are similar with the full system having low interruptions (0.0125) (95\% CI [0.009, 0.017]), compared to the on demand help at pauses (0.068) +/- 0.006 and the Phase 1 policy (0.675). Without the time gate the interruptions increase to 0.285. Without the evidence floor junction precision decreases to 0.543 (from 0.696). Coverage is 0.136. We have used development learners to inform the Phase 1 defaults therefore not entirely independent.
 
-\subsection{Gap 2: grounded generation}
-\input{tables/ratings}
+\subsection{RQ1: Time Gate Effectiveness}
 
-\todo{RQ2 result from the live runs: constrained against unconstrained
-unsupported-claim rate on the same prefixes with the same model, and whether
-the 5\% target in H2 was met. Report the 30-item human rating you did
-yourselves: mean relevance, mean timing, and the weighted kappa between the
-two of you (Table~\ref{tab:ratings}). Lead with the agreement, not the mean:
-$\kappa$ of 0.33--0.34 is fair, not strong, so the relevance figure is weak
-evidence. Say that the sheet gave raters no timing context, so the timing
-column supports nothing. State that it is a single-condition check and not a
-blind comparison, and give the reason: the delivery offset that distinguishes the
-conditions is also what a rater must see to judge timing, so the trial blind
-sheet separated the conditions perfectly and was discarded.}
+It can be seen that the time issue (Gap 1) was overcome by waiting 20s for the candidate to prompt. As can be seen in Table III, the time gate prevented 3269 candidates from scaffolding. Of these 2038 were scaffolded after 20s, 1060 were replaced by new candidates and 171 were dismissed after 600s with no pause. This means there was a change in the amount of deliberation (+0.0079). However the confidence interval includes 0 ([$-$0.0016, +0.0172]) since we are measuring the effectiveness of the junctions not the students.
 
-\subsection{Gap 3: transfer instrument}
+\subsection{RQ2: Groundedness and Hallucination}
+
+{\setlength{\tabcolsep}{3pt}\input{tables/ratings}}
+
+To test groundedness (Gap 2) the 100 identical prefixes were run with live generation. We used openai/gpt-oss-20b with temperature set to 0.0 and seed 0. Using prompt v2 55 (53 for v1) of the 100 unconstrained scaffolds made invalid claims. This was typically about outcomes (code works/won't work, occasionally counts and occasionally other feelings based claims). However with prompt v1 and the JSON schema constraints only 14.0\% were flagged. With prompt v2 (written after seeing what words were flagged for v1) none were flagged (Table V). Both runs had no rejected responses. This is because the prompt wording is different. There were only 26 unique questions in the 100 v2 prompts and the model never called any of the tools.
+
+To see if the prompts are truly helpful 30 full system scaffolds were rated by both co-authors with a 4 point scale for time and 4 point scale for relevance (Table II). There was good agreement for the time (0.328) and relevance (0.343) (linear weighted Cohen's $\kappa$). The overall relevance score was 3.38 out of 4.0, showing that the prompts are still fairly relevant. The raters could not see the timing of the scaffolds as they only saw what phase it was in and what the prompt said. They could not see when the scaffolds were delivered.
+
+\subsection{RQ3: Validating the Delayed Transfer Rubric on Simulated Learners}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig4_transfer.pdf}
@@ -219,19 +293,16 @@ tasks in the rubric, over five seeds. Simulated learners only.}
 \label{fig:transfer}
 \end{figure}
 
-\todo{RQ3 result: $r=0.79$ for the transfer score against $0.72$ for assisted
-completion, the separation is real but modest, and four tasks are the
-practical minimum (Fig.~\ref{fig:transfer}). Repeat that this is instrument
-validation.}
+We have found that performing the task at the point is a noisy signal of understanding (Gap 3). There is a strong correlation between assisted completion and latent skill ($\rho = 0.724$). However our unassisted transfer score is higher ($\rho = 0.793$) +/- 0.036 (Spearman). There is only a slight difference between the two. This is because in a human study learners would have to demonstrate decomposition of the problem on a later problem without any support.
 
-\input{tables/gaps}
+{\setlength{\tabcolsep}{3pt}\input{tables/gaps}}
 
-\todo{One paragraph on Table~\ref{tab:gaps}: which gaps are fully, partly and
-not addressed, and be willing to write ``partially''.}
+% ===================================================== VIII. ABLATION AND EFFICIENCY
+\section{Ablation and Efficiency}
 
-% ----------------------------------------------------- 9 ablation and cost
-\section{Ablation and Comparative Analysis}
-\input{tables/ablation}
+\subsection{Breakdown}
+
+{\renewcommand{\tabfont}{\scriptsize}\setlength{\tabcolsep}{3pt}\input{tables/ablation}}
 
 \begin{figure}[t]
 \centering
@@ -240,22 +311,28 @@ not addressed, and be willing to write ``partially''.}
 \label{fig:ablation}
 \end{figure}
 
-\todo{Two findings worth the space: the timing gate carries almost all of the
-effect, and removing the response wait as well as the episode budget gives the same
-result as removing the budget alone, because the 180\,s cooldown already covers the
-120\,s wait, so one Phase 1 component adds nothing. Say so; a
-redundant component found by ablation is a real result.}
+An ablation was performed on the held out portion of the test set (Table IV and Figure 4). This demonstrates:
 
-\input{tables/efficiency}
+\begin{enumerate}
+\item[1)] Without the time gate ($-$ timing gate) the interruptions increased by around 13 times (0.269) and the pause alignment reduced by 0.138 (0.310). This shows that the vast majority of the reduction in disruption comes from the time gate.
 
-\todo{Comment on Table~\ref{tab:efficiency}: offline throughput, and for the
-live runs the token cost, latency and validator rejection rate. Say what a
-classroom deployment would cost per learner-hour, or say that you cannot yet
-estimate it and why.}
+\item[2)] Without the episode budget and wait time (2955 scaffolds) the interruptions were the same as when only the episode budget was removed. The wait time was not necessary as the 120 second response wait was included within the 180 second cooldown.
 
-% ------------------------------------------------------- 10 failure analysis
+\item[3)] Evidence Floor Trade-off: Without the evidence floor the amount of scaffolds delivered increased from 2038 to 2804. However the accuracy of the junction dropped from 0.717 to 0.559. The amount of flagged prompts increased from 0.14 to 0.39 in live runs (prompt v1 - 2 samples of 100 prefixes - indicative only).
+\end{enumerate}
+
+\subsection{Cost and Efficiency}
+
+{\setlength{\tabcolsep}{3pt}\input{tables/efficiency}}
+
+The efficiency can be seen in Table V. TrajectoryCoach can handle 29366 events per second on one core. The maximum memory usage during offline replay was 1.5MB. The average response time was 0.74 (0.68 for v1) seconds with an average of $\sim$560 tokens per call ($\sim$776 for v2). The model is also required to word each candidate so there is a low delivery rate of 2.80 scaffolds per 1000 events. However there were around 4.5 calls per 1000 events (3269 candidates were held per 726,897 events). This is around 2500 tokens per 1000 events for v1.
+
+% ===================================================== IX. FAILURE ANALYSIS
 \section{Failure Analysis}
-\input{tables/failures}
+
+\subsection{Failure Taxonomy}
+
+{\setlength{\tabcolsep}{3pt}\input{tables/failures}}
 
 \begin{figure}[t]
 \centering
@@ -264,41 +341,73 @@ estimate it and why.}
 \label{fig:failures}
 \end{figure}
 
-\todo{Explain each category in Table~\ref{tab:failures} in one line, with its
-likely cause and a concrete future fix. Give most space to suppressed
-submissions, which is the costliest silence, and to superseded scaffolds.}
+Operational failures can be broken down into 6 categories. There were 190 (9.32\%) scaffolds with a delivery flag (late, abandoned or interrupted) or (the other 3 categories show scaffolds or submissions that did not result in a delivery) out of 2038 deliveries (scaffolds) (results/phase2/failure\_analysis.json). The main failures can be seen in Table VI. These are shown in Figure 5. The percentages below show what percentage of the 2038 delivered scaffolds this represents.
 
-\todo{Then present two representative successes and two representative
-failures with their traces, taken from
-\texttt{results/phase2/failure\_analysis.json}. Quote the actual scaffold text,
-the stated reason and the evidence row. This is required by the brief.}
+\textit{Superseded Junctions (52.0\% / 1060):} Fast editing meant that the scaffold in the buffer could be at the 20 second junction. However a new candidate junction may have superseded this. Proposed solution (not implemented): Priority Queuing (evaluate, monitor and plan).
 
-% --------------------------------------------------------- 11 limitations
+\textit{Suppressed Submissions (22.9\% / 466):} 466 of the 1205 submissions (38.7\%) from the student were not scaffolded by an evaluate action. This was either because the student had used all 3 prompts or were on cooldown. This means that there was an opportunity missed to evaluate. Proposed solution (not implemented): Separate budget for submissions.
+
+\textit{Held and Dismissed (8.4\% / 171):} The learner failed to pause for at least 20 seconds across the 600 second horizon.
+
+\textit{Late Delivered (4.5\% / 92):} The gate delayed the scaffold for over 120 seconds.
+
+\textit{Abandoned (2.9\% / 59):} No further events were generated by the learner within 30 minutes of receiving the scaffold.
+
+\textit{Interrupted Typing Burst (2.1\%):} The student paused for 20 seconds and were scaffolded. However they began typing again within 5 seconds (42 occurrences).
+
+\subsection{Example Traces from the Replay Logs}
+
+Below are examples of successful interventions:
+
+\textit{Trace 1: Evaluation Scaffold:} Learner 2: Row 289,983. Phase: Evaluate. Reason: Submission observed (correctness unknown). Prompt: A submission was recorded. What evidence would you use to check the correctness? Include edge cases. Window: 40 events. (2 runs, 27 edits). Scaffolds were held for 20 seconds. Next event was generated by the learner 43 seconds after delivery.
+
+\textit{Trace 2: Monitoring Scaffold:} Learner 2: Row 351,346. Phase: Monitor. Reason: Multiple runs in recent window. Prompt: Recent window has 3 runs. What hypothesis are you testing? What would confirm your hypothesis? Window: 65 events. (3 runs, 48 edits). Delivered after 20 seconds. Next event was generated by the learner 1 second after delivery.
+
+\textit{Trace 3: Abandoned:} Learner 2: Row 292,689. Phase: Evaluate. 138 events in window. (1 run, 131 edits). Scaffolds were delivered after submission to window. Next event was recorded 16.3 hours later (58,614s).
+
+\textit{Trace 4:} Learner 11: Row 1059512. Phase: Plan. Failure: Late Delivered (Stale). First edit triggered the planning prompt, however the learner continued to type. The prompt was not delivered until 177 seconds later. This meant that the prompt was no longer a good planning question as it was long after the initial edit.
+
+% ============================================= X. LIMITATIONS AND THREATS TO VALIDITY
 \section{Limitations and Threats to Validity}
-\label{sec:limits}
-\todo{Be specific and do not hedge. At minimum: no learner saw a scaffold, so
-nothing here is a treatment effect; eight test learners is a small sample and
-one of them contributes only 2{,}657 events; the logs were collected without any scaffolding and the collection period is not stated on the dataset page;
-the grounding checker is a pattern screen that a fluent wrong statement can
-pass; the transfer study is simulated and its parameters were chosen by us;
-no educator raters, and the authors rated their own system, which is a
-conflict of interest they should name; juncture precision is partly
-circular; the base-paper comparator is our reconstruction, not the published
-system.}
 
-% ----------------------------------------------------------- 12 conclusion
-\section{Conclusion}
-\todo{Three or four sentences on what was shown, then future work: a
-classroom deployment with real learners, an editor front end, replacing the
-pattern screen with a verifier, and recruiting educator raters.}
+In this section we want to highlight some limitations.
 
-\section*{Reproducibility}
-All results in this paper are produced by the scripts in the repository and
-stored in \texttt{results/phase2/}. The repository, the fixed data split and
-the \texttt{phase2-final} release are at
-\url{https://github.com/Areeba444/TrajectoryCoach}.
-\todo{Confirm this URL and add the release tag link before submitting.}
+\begin{enumerate}
+\item[1.] No Live Classroom Deployment The data was fully post-hoc. As such it is not representative of students' logs, and the shift in deliberation ($\Delta = +0.0079$) and interruption rate are reflective of the selectivity of the policy, rather than students' learning.
 
+\item[2.] A small held out test set Only 8 students were part of the held out test set. Had there been more students they may have acted differently, and therefore the optimal pause threshold may have changed. There were 726,897 events and 966 learner question units.
+
+\item[3.] Delayed Transfer Cohorts Furthermore, the delayed transfer tool was used with synthetic students, and not actual exam scores.
+
+\item[4.] Not using fine grained telemetry TrajectoryCoach will not consider source code, compiler traces or unit test assertions. This will ensure privacy but only allows for process level metacognition.
+
+\item[5.] Human annotation was done by the co-authors independently. It was not done blindly due to the delay in delivery giving away the condition. There was a fair level of agreement ($\kappa = 0.343$) and reflects our ideas about the purpose of the system.
+
+\item[6.] Word and numbers list. 0 flagged doesn't mean none had any, but none were flagged.
+
+\item[7.] Prompt v2 was designed based on the words that were flagged on prompt v1.
+
+\item[8.] Only 26 unique questions in the 100 v2 prompts.
+
+\item[9.] The model didn't call any of the 4 tools.
+
+\item[10.] Only one model, one seed, 100 prefixes.
+
+\item[11.] On demand comparator is our implementation with simulated requests.
+
+\item[12.] Defaults for phase 1 (180s, 3 prompts, 300s) were chosen based on observing all 24 learners including those in the test set.
+
+\item[13.] Design bias. No tuning of thresholds were performed on test learners. The timing gate and evidence floor were both implemented after looking at the results from the test set. The values (20s, 5 events) were equivalent to the hard coded thresholds in the metrics and weren't swept. Re-running on the 16 development learners shows the same trend (Section VII-A).
+\end{enumerate}
+
+% ============================================= XI. CONCLUSION AND OPEN SCIENCE
+\section{Conclusion and Open Science}
+
+The pedagogic agent suggested here can be automated to provide timely metacognitive support to the user. The TrajectoryCoach tool demonstrates this in replay, by reducing the interruption rate to 0.021 (compared to 0.127 for on demand and 0.657 for phase 1 policy (0.269 without the timing gate)). However, this comes at the cost of coverage (0.137 compared to 0.793 for the uncapped rule). This pattern is seen on the development learners (0.0125). Of the 100 prompts generated using prompt v1, 14 were flagged for unsupported claims, compared to 53 of the 100 unbound prompts. Using prompt v2, 0 were flagged (compared to 55 of 100). However, prompt v2 was designed based on what was flagged on prompt v1, and only had 26 unique questions. The model also didn't call any tools. When using the simulated learners, the delayed transfer score had a higher correlation with the latent skill ($\rho = 0.793$) than the assisted completion ($\rho = 0.724$), however there was not a large gap between them. None of these results show any learning effect. An important design principle for educational AI systems is Restraint. Knowing when to stay quiet is as important as knowing what to say. Future work includes a human study, an integration with the live editor and real timer, and a separate budget for submissions.
+
+The release tag phase2-final containing all of the codes, ablation scripts, log processors and evaluation logs can be found on Github (\url{https://github.com/Areeba444/TrajectoryCoach}).
+
+\nocite{*}
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
 

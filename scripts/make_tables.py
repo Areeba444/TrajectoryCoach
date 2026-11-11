@@ -132,7 +132,7 @@ def table_efficiency(exp, llm, llm_v1=None):
         lines.append(live_row('Constrained, prompt v2' if llm_v1 else 'Constrained generation',
                               llm, 'efficiency_constrained'))
         lines.append(live_row('Unconstrained generation', llm, 'efficiency_unconstrained', False))
-        lines.append(r'\multicolumn{5}{l}{\footnotesize Columns for the live rows are: API '
+        lines.append(r'\multicolumn{5}{p{0.92\columnwidth}}{\footnotesize Columns for the live rows are: API '
                      r'calls, total tokens, mean latency (s), validator rejection rate.} \\')
         live = '\n'.join(lines)
     else:
